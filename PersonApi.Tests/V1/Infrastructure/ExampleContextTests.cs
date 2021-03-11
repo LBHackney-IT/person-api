@@ -8,6 +8,7 @@ namespace PersonApi.Tests.V1.Infrastructure
     [TestFixture]
     public class DatabaseContextTest : DatabaseTests
     {
+        [Ignore("Test not needed at the curren moment")]
         [Test]
         public void CanGetADatabaseEntity()
         {
