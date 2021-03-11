@@ -35,6 +35,8 @@ ipch/
 *.bak.*
 *.bak
 
+.vscode/
+
 #Tools
 _ReSharper.*
 _ReSharper*/
