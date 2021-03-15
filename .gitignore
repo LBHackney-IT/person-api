@@ -35,6 +35,8 @@ ipch/
 *.bak.*
 *.bak
 
+.vscode/
+
 #Tools
 _ReSharper.*
 _ReSharper*/
@@ -59,7 +61,7 @@ bin/
 .idea/
 tmp/
 .vs/
-/base-api.Tests/Properties/launchSettings.json
+/person-api.Tests/Properties/launchSettings.json
 
 .fake
 .ionide
