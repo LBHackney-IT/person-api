@@ -21,7 +21,7 @@ resource "aws_dynamodb_table" "personapi_dynamodb_table" {
 resource "aws_iam_policy" "personapi_dynamodb_table_policy" {
     name                  = "Lambda_DynamoDB_PersonAPI"
     description           = "A policy allowing read/write operations on person dynamoDB for the person API"
-    path                  = "/person-api"
+    path                  = "/person-api/"
 
     policy                = <<EOF
 {
