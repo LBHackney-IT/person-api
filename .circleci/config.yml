@@ -199,7 +199,7 @@ workflows:
 #               only: master
 #       - deploy-to-staging:
 #           requires:
-#             - assume-role-staging
+#             - terraform-init-and-apply-to-staging
 #           filters:
 #             branches:
 #               only: master
@@ -230,7 +230,7 @@ workflows:
 #       - deploy-to-production:
 #           requires:
 #             - permit-production-release
-#             - assume-role-production
+#             - terraform-init-and-apply-to-production
 #           filters:
 #             branches:
 #               only: master
