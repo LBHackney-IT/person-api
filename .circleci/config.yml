@@ -174,7 +174,7 @@ workflows:
               only: development
       - deploy-to-development:
           requires:
-            - assume-role-development
+            - terraform-init-and-apply-to-development
           filters:
             branches:
               only: development
