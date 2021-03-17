@@ -4,6 +4,7 @@ provider:
   runtime: dotnetcore3.1
   vpc: ${self:custom.vpc.${opt:stage}}
   stage: ${opt:stage}
+  awsAccount: ${opt:aws-account}
   region: eu-west-2
   apiKeys:
     - secureAccess:
@@ -44,7 +45,7 @@ resources:
               Action: sts:AssumeRole
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
-          - arn:aws:iam::aws:policy/person-api/Lambda_DynamoDB_PersonAPI
+          - arn:aws:iam::${self:provider.awsAccount}:policy/person-api/Lambda_DynamoDB_PersonAPI
         Policies:
           - PolicyName: manageLogs
             PolicyDocument:
