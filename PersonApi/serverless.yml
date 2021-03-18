@@ -45,7 +45,7 @@ resources:
               Action: sts:AssumeRole
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
-          - arn:aws:iam::${self:provider.account}:policy/person-api/Lambda_DynamoDB_PersonAPI
+          - arn:aws:iam::${self:provider.account}:policy/person-api/lambda-dynamodb-person-api
         Policies:
           - PolicyName: manageLogs
             PolicyDocument:
