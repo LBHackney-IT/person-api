@@ -3,10 +3,10 @@ resource "aws_dynamodb_table" "personapi_dynamodb_table" {
     billing_mode          = "PROVISIONED"
     read_capacity         = 10
     write_capacity        = 10
-    hash_key              = "personId"
+    hash_key              = "id"
 
     attribute {
-        name              = "personId"
+        name              = "id"
         type              = "S"
     }
 
