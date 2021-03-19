@@ -62,6 +62,8 @@ commands:
     parameters:
       stage:
         type: string
+      aws-account:
+        type: string
     steps:
       - *attach_workspace
       - checkout
@@ -84,7 +86,7 @@ commands:
           name: Deploy lambda
           command: |
             cd ./PersonApi/
-            sls deploy --stage <<parameters.stage>> --conceal
+            sls deploy --stage <<parameters.stage>> --account <<parameters.aws-account>> --conceal
 
 jobs:
   check-code-formatting:
@@ -143,16 +145,19 @@ jobs:
     steps:
       - deploy-lambda:
           stage: "development"
+          aws-account: $AWS_ACCOUNT_DEVELOPMENT
   deploy-to-staging:
     executor: docker-dotnet
     steps:
       - deploy-lambda:
           stage: "staging"
+          aws-account: $AWS_ACCOUNT_STAGING
   deploy-to-production:
     executor: docker-dotnet
     steps:
       - deploy-lambda:
           stage: "production"
+          aws-account: $AWS_ACCOUNT_PRODUCTION
 
 workflows:
   check-and-deploy-development:
@@ -173,8 +178,9 @@ workflows:
             branches:
               only: master
       - deploy-to-development:
+          context: api-assume-role-housing-development-context
           requires:
-            - assume-role-development
+            - terraform-init-and-apply-to-development
           filters:
             branches:
               only: master
@@ -199,8 +205,9 @@ workflows:
             branches:
               only: release
       - deploy-to-staging:
+          context: api-assume-role-housing-staging-context
           requires:
-            - assume-role-staging
+            - terraform-init-and-apply-to-staging
           filters:
             branches:
               only: release
@@ -229,6 +236,7 @@ workflows:
             branches:
               only: release
       - deploy-to-production:
+          context: api-assume-role-housing-production-context
           requires:
             - permit-production-release
             - assume-role-production

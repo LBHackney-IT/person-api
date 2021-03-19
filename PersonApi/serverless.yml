@@ -4,6 +4,7 @@ provider:
   runtime: dotnetcore3.1
   vpc: ${self:custom.vpc.${opt:stage}}
   stage: ${opt:stage}
+  account: ${opt:account}
   region: eu-west-2
   apiKeys:
     - secureAccess:
@@ -22,9 +23,6 @@ functions:
     name: ${self:service}-${self:provider.stage}
     handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
-    environment:
-# TODO: Create ssm variables for this API's postgres mirror then rename base-api below to match api name
-      CONNECTION_STRING: Host=${ssm:/person-api/${self:provider.stage}/postgres-hostname};Port=${ssm:/person-api/${self:provider.stage}/postgres-port};Database=person-api-mirror;Username=${ssm:/person-api/${self:provider.stage}/postgres-username};Password=${ssm:/person-api/${self:provider.stage}/postgres-password}
     events:
       - http:
           path: /{proxy+}
@@ -47,6 +45,7 @@ resources:
               Action: sts:AssumeRole
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+          - arn:aws:iam::${self:provider.account}:policy/person-api/lambda-dynamodb-person-api
         Policies:
           - PolicyName: manageLogs
             PolicyDocument:
