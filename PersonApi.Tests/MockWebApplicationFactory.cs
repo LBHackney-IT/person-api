@@ -1,11 +1,10 @@
-using System.Data.Common;
-using PersonApi;
-using PersonApi.V1.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PersonApi.V1.Infrastructure;
+using System.Data.Common;
 
 namespace PersonApi.Tests
 {

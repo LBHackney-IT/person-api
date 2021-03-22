@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PersonApi.V1.Controllers
 {
@@ -9,6 +12,17 @@ namespace PersonApi.V1.Controllers
         public BaseController()
         {
             ConfigureJsonSerializer();
+        }
+
+        public string GetCorrelationId()
+        {
+            StringValues correlationId;
+            HttpContext.Request.Headers.TryGetValue(Constants.CorrelationId, out correlationId);
+
+            if (!correlationId.Any())
+                throw new KeyNotFoundException("Request is missing a correlationId");
+
+            return correlationId.First();
         }
 
         public static void ConfigureJsonSerializer()

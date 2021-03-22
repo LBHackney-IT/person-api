@@ -1,13 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using PersonApi.V1.Gateways;
-using PersonApi.V1.Infrastructure;
-using PersonApi.V1.UseCase;
-using PersonApi.V1.UseCase.Interfaces;
-using PersonApi.Versioning;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +8,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using PersonApi.V1.Controllers;
+using PersonApi.V1.Gateways;
+using PersonApi.V1.Infrastructure;
+using PersonApi.V1.UseCase;
+using PersonApi.V1.UseCase.Interfaces;
+using PersonApi.Versioning;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace PersonApi
 {
@@ -132,6 +133,8 @@ namespace PersonApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCorrelation();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
