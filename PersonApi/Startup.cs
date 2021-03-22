@@ -1,3 +1,4 @@
+using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,8 @@ namespace PersonApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            AWSSDKHandler.RegisterXRayForAllServices();
         }
 
         public IConfiguration Configuration { get; }
@@ -116,7 +119,7 @@ namespace PersonApi
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
             services.AddDbContext<DatabaseContext>(
-                opt => opt.UseNpgsql(connectionString));
+                opt => opt.UseNpgsql(connectionString).AddXRayInterceptor(true));
         }
 
         private static void RegisterGateways(IServiceCollection services)
@@ -143,6 +146,10 @@ namespace PersonApi
             {
                 app.UseHsts();
             }
+
+            // TODO
+            // If you DON'T use the renaming script, PLEASE replace with your own API name manually
+            app.UseXRay("person-api");
 
             //Get All ApiVersions,
             var api = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
