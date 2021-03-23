@@ -6,16 +6,16 @@ namespace PersonApi.Tests.V1.Helper
 {
     public static class DatabaseEntityHelper
     {
-        public static DatabaseEntity CreateDatabaseEntity()
+        public static PersonDbEntity CreateDatabaseEntity()
         {
-            var entity = new Fixture().Create<Entity>();
+            var entity = new Fixture().Create<Person>();
 
             return CreateDatabaseEntityFrom(entity);
         }
 
-        public static DatabaseEntity CreateDatabaseEntityFrom(Entity entity)
+        public static PersonDbEntity CreateDatabaseEntityFrom(Person entity)
         {
-            return new DatabaseEntity
+            return new PersonDbEntity
             {
                 Id = entity.Id,
                 CreatedAt = entity.CreatedAt,

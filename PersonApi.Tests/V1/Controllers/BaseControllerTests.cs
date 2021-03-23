@@ -7,7 +7,7 @@ using NUnit.Framework;
 using PersonApi.V1.Controllers;
 using System.Collections.Generic;
 
-namespace BaseApi.Tests.V1.Controllers
+namespace PersonApi.Tests.V1.Controllers
 {
     [TestFixture]
     public class BaseControllerTests
