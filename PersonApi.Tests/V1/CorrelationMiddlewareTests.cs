@@ -1,10 +1,8 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
+using PersonApi.V1.Controllers;
 using PersonApi.V1.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PersonApi.Tests.V1.Infrastructure
