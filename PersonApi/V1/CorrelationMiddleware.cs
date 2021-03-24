@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -24,6 +26,8 @@ namespace PersonApi.V1.Controllers
             if (_next != null)
                 await _next(context).ConfigureAwait(false);
         }
+
+
     }
 
     public static class CorrelationMiddlewareExtensions
@@ -34,4 +38,5 @@ namespace PersonApi.V1.Controllers
             return builder.UseMiddleware<CorrelationMiddleware>();
         }
     }
+
 }
