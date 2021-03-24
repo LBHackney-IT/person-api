@@ -61,7 +61,7 @@ bin/
 .idea/
 tmp/
 .vs/
-/person-api.Tests/Properties/launchSettings.json
+/PersonApi.Tests/Properties/launchSettings.json
 
 .fake
 .ionide

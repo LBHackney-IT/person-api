@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
 
-namespace PersonApi.V1.Infrastructure
+namespace PersonApi.V1.Controllers
 {
     public class CorrelationMiddleware
     {
@@ -16,22 +16,24 @@ namespace PersonApi.V1.Infrastructure
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context.Request.Headers["x-correlation-id"].Count == 0)
+            if (context.Request.Headers[Constants.CorrelationId].Count == 0)
             {
-                context.Request.Headers["x-correlation-id"] = Guid.NewGuid().ToString();
+                context.Request.Headers[Constants.CorrelationId] = Guid.NewGuid().ToString();
             }
+
             if (_next != null)
-                await _next.Invoke(context).ConfigureAwait(false);
+                await _next(context).ConfigureAwait(false);
         }
 
 
     }
 
-    public static class CorrelationMiddlewareExtension
+    public static class CorrelationMiddlewareExtensions
     {
-        public static IApplicationBuilder UseCorrelation(this IApplicationBuilder applicationBuilder)
+        public static IApplicationBuilder UseCorrelation(
+            this IApplicationBuilder builder)
         {
-            return applicationBuilder.UseMiddleware<CorrelationMiddleware>();
+            return builder.UseMiddleware<CorrelationMiddleware>();
         }
     }
 

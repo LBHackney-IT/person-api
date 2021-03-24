@@ -42,10 +42,10 @@ namespace PersonApi.V1.Controllers
         [ProducesResponseType(typeof(ResponseObject), StatusCodes.Status200OK)]
         [HttpGet]
         //TODO: rename to match the identifier that will be used
-        [Route("{yourId}")]
-        public IActionResult ViewRecord(int yourId)
+        [Route("{id}")]
+        public IActionResult ViewRecord(string id)
         {
-            return Ok(_getByIdUseCase.Execute(yourId));
+            return Ok(_getByIdUseCase.Execute(id));
         }
     }
 }
