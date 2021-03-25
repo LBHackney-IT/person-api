@@ -4,6 +4,7 @@ using NUnit.Framework;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
+using System;
 
 namespace PersonApi.Tests.V1.Factories
 {
@@ -12,8 +13,6 @@ namespace PersonApi.Tests.V1.Factories
     {
         private readonly Fixture _fixture = new Fixture();
 
-        //TODO: add assertions for all the fields being mapped in `EntityFactory.ToDomain()`. Also be sure to add test cases for
-        // any edge cases that might exist.
         [Test]
         public void CanMapADatabaseEntityToADomainObject()
         {
@@ -21,11 +20,24 @@ namespace PersonApi.Tests.V1.Factories
             var entity = databaseEntity.ToDomain();
 
             databaseEntity.Id.Should().Be(entity.Id);
-            databaseEntity.CreatedAt.Should().BeSameDateAs(entity.CreatedAt);
+            databaseEntity.Title.Should().Be(entity.Title);
+            databaseEntity.PreferredFirstname.Should().Be(entity.PreferredFirstname);
+            databaseEntity.PreferredSurname.Should().Be(entity.PreferredSurname);
+            databaseEntity.Firstname.Should().Be(entity.Firstname);
+            databaseEntity.MiddleName.Should().Be(entity.MiddleName);
+            databaseEntity.Surname.Should().Be(entity.Surname);
+            databaseEntity.Ethinicity.Should().Be(entity.Ethinicity);
+            databaseEntity.Nationality.Should().Be(entity.Nationality);
+            databaseEntity.PlaceOfBirth.Should().Be(entity.PlaceOfBirth);
+            databaseEntity.DateOfBirth.Should().Be(entity.DateOfBirth);
+            databaseEntity.Gender.Should().Be(entity.Gender);
+            databaseEntity.Identifications.Should().BeEquivalentTo(entity.Identifications);
+            databaseEntity.Languages.Should().BeEquivalentTo(entity.Languages);
+            databaseEntity.CommunicationRequirements.Should().BeEquivalentTo(entity.CommunicationRequirements);
+            databaseEntity.PersonTypes.Should().BeEquivalentTo(entity.PersonTypes);
+            databaseEntity.Links.Should().BeEquivalentTo(entity.Links);
         }
 
-        //TODO: add assertions for all the fields being mapped in `EntityFactory.ToDatabase()`. Also be sure to add test cases for
-        // any edge cases that might exist.
         [Test]
         public void CanMapADomainEntityToADatabaseObject()
         {
@@ -33,7 +45,22 @@ namespace PersonApi.Tests.V1.Factories
             var databaseEntity = entity.ToDatabase();
 
             entity.Id.Should().Be(databaseEntity.Id);
-            entity.CreatedAt.Should().BeSameDateAs(databaseEntity.CreatedAt);
+            entity.Title.Should().Be(entity.Title);
+            entity.PreferredFirstname.Should().Be(databaseEntity.PreferredFirstname);
+            entity.PreferredSurname.Should().Be(databaseEntity.PreferredSurname);
+            entity.Firstname.Should().Be(databaseEntity.Firstname);
+            entity.MiddleName.Should().Be(databaseEntity.MiddleName);
+            entity.Surname.Should().Be(databaseEntity.Surname);
+            entity.Ethinicity.Should().Be(databaseEntity.Ethinicity);
+            entity.Nationality.Should().Be(databaseEntity.Nationality);
+            entity.PlaceOfBirth.Should().Be(databaseEntity.PlaceOfBirth);
+            entity.DateOfBirth.Should().Be(databaseEntity.DateOfBirth);
+            entity.Gender.Should().Be(databaseEntity.Gender);
+            entity.Identifications.Should().BeEquivalentTo(databaseEntity.Identifications);
+            entity.Languages.Should().BeEquivalentTo(databaseEntity.Languages);
+            entity.CommunicationRequirements.Should().BeEquivalentTo(databaseEntity.CommunicationRequirements);
+            entity.PersonTypes.Should().BeEquivalentTo(databaseEntity.PersonTypes);
+            entity.Links.Should().BeEquivalentTo(databaseEntity.Links);
         }
     }
 }

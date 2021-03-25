@@ -2,6 +2,7 @@ using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.UseCase.Interfaces;
+using System;
 
 namespace PersonApi.V1.UseCase
 {
@@ -14,10 +15,9 @@ namespace PersonApi.V1.UseCase
             _gateway = gateway;
         }
 
-        //TODO: rename id to the name of the identifier that will be used for this API, the type may also need to change
-        public ResponseObject Execute(string id)
+        public PersonResponseObject Execute(Guid id)
         {
-            return _gateway.GetEntityById(id).ToResponse();
+            return _gateway.GetEntityById(id.ToString()).ToResponse();
         }
     }
 }

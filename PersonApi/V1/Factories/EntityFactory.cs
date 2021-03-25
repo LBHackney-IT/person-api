@@ -1,5 +1,6 @@
 using PersonApi.V1.Domain;
 using PersonApi.V1.Infrastructure;
+using System;
 
 namespace PersonApi.V1.Factories
 {
@@ -7,24 +8,49 @@ namespace PersonApi.V1.Factories
     {
         public static Person ToDomain(this PersonDbEntity databaseEntity)
         {
-            //TODO: Map the rest of the fields in the domain object.
-            // More information on this can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Factory-object-mappings
-
             return new Person
             {
                 Id = databaseEntity.Id,
-                CreatedAt = databaseEntity.CreatedAt
+                Title = databaseEntity.Title,
+                PreferredFirstname = databaseEntity.PreferredFirstname,
+                PreferredSurname = databaseEntity.PreferredSurname,
+                Firstname = databaseEntity.Firstname,
+                MiddleName = databaseEntity.MiddleName,
+                Surname = databaseEntity.Surname,
+                Ethinicity = databaseEntity.Ethinicity,
+                Nationality = databaseEntity.Nationality,
+                PlaceOfBirth = databaseEntity.PlaceOfBirth,
+                DateOfBirth = databaseEntity.DateOfBirth,
+                Gender = databaseEntity.Gender,
+                Identifications = databaseEntity.Identifications,
+                Languages = databaseEntity.Languages,
+                CommunicationRequirements = databaseEntity.CommunicationRequirements,
+                PersonTypes = databaseEntity.PersonTypes,
+                Links = databaseEntity.Links
             };
         }
 
         public static PersonDbEntity ToDatabase(this Person entity)
         {
-            //TODO: Map the rest of the fields in the database object.
-
             return new PersonDbEntity
             {
                 Id = entity.Id,
-                CreatedAt = entity.CreatedAt
+                Title = entity.Title,
+                PreferredFirstname = entity.PreferredFirstname,
+                PreferredSurname = entity.PreferredSurname,
+                Firstname = entity.Firstname,
+                MiddleName = entity.MiddleName,
+                Surname = entity.Surname,
+                Ethinicity = entity.Ethinicity,
+                Nationality = entity.Nationality,
+                PlaceOfBirth = entity.PlaceOfBirth,
+                DateOfBirth = entity.DateOfBirth,
+                Gender = entity.Gender,
+                Identifications = entity.Identifications,
+                Languages = entity.Languages,
+                CommunicationRequirements = entity.CommunicationRequirements,
+                PersonTypes = entity.PersonTypes,
+                Links = entity.Links
             };
         }
     }

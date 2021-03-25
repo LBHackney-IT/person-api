@@ -7,6 +7,7 @@ using PersonApi.V1.Infrastructure;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using PersonApi.V1.Factories;
 
 namespace PersonApi.Tests.V1.Gateways
 {
@@ -36,17 +37,16 @@ namespace PersonApi.Tests.V1.Gateways
         public void GetEntityByIdReturnsTheEntityIfItExists()
         {
             var entity = _fixture.Create<Person>();
-            var dbEntity = DatabaseEntityHelper.CreateDatabaseEntityFrom(entity);
+            var dbEntity = entity.ToDatabase();
 
-            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(entity.Id, default))
+            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(entity.Id.ToString(), default))
                      .ReturnsAsync(dbEntity);
 
-            var response = _classUnderTest.GetEntityById(entity.Id);
+            var response = _classUnderTest.GetEntityById(entity.Id.ToString());
 
-            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(entity.Id, default), Times.Once);
+            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(entity.Id.ToString(), default), Times.Once);
 
             entity.Id.Should().Be(response.Id);
-            entity.CreatedAt.Should().BeSameDateAs(response.CreatedAt);
         }
     }
 }

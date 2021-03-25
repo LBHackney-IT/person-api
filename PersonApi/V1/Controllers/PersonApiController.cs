@@ -2,6 +2,7 @@ using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace PersonApi.V1.Controllers
 {
@@ -13,25 +14,10 @@ namespace PersonApi.V1.Controllers
     //TODO: rename class to match the API name
     public class PersonApiController : BaseController
     {
-        private readonly IGetAllUseCase _getAllUseCase;
         private readonly IGetByIdUseCase _getByIdUseCase;
-        public PersonApiController(IGetAllUseCase getAllUseCase, IGetByIdUseCase getByIdUseCase)
+        public PersonApiController(IGetByIdUseCase getByIdUseCase)
         {
-            _getAllUseCase = getAllUseCase;
             _getByIdUseCase = getByIdUseCase;
-        }
-
-        //TODO: add xml comments containing information that will be included in the auto generated swagger docs (https://github.com/LBHackney-IT/lbh-base-api/wiki/Controllers-and-Response-Objects)
-        /// <summary>
-        /// ...
-        /// </summary>
-        /// <response code="200">...</response>
-        /// <response code="400">Invalid Query Parameter.</response>
-        [ProducesResponseType(typeof(ResponseObjectList), StatusCodes.Status200OK)]
-        [HttpGet]
-        public IActionResult ListContacts()
-        {
-            return Ok(_getAllUseCase.Execute());
         }
 
         /// <summary>
@@ -39,11 +25,11 @@ namespace PersonApi.V1.Controllers
         /// </summary>
         /// <response code="200">...</response>
         /// <response code="404">No ? found for the specified ID</response>
-        [ProducesResponseType(typeof(ResponseObject), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PersonResponseObject), StatusCodes.Status200OK)]
         [HttpGet]
         //TODO: rename to match the identifier that will be used
         [Route("{id}")]
-        public IActionResult ViewRecord(string id)
+        public IActionResult ViewRecord(Guid id)
         {
             return Ok(_getByIdUseCase.Execute(id));
         }

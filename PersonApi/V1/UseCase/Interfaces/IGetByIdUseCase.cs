@@ -1,9 +1,10 @@
 using PersonApi.V1.Boundary.Response;
+using System;
 
 namespace PersonApi.V1.UseCase.Interfaces
 {
     public interface IGetByIdUseCase
     {
-        ResponseObject Execute(string id);
+        PersonResponseObject Execute(Guid id);
     }
 }
