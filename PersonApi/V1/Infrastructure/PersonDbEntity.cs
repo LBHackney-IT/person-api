@@ -41,7 +41,5 @@ namespace PersonApi.V1.Infrastructure
         public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }
         [DynamoDBProperty]
         public IEnumerable<PersonType> PersonTypes { get; set; }
-        [DynamoDBProperty]
-        public IEnumerable<ApiLink> Links { get; set; }
     }
 }

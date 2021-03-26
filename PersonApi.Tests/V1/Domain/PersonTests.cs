@@ -36,10 +36,6 @@ namespace PersonApi.Tests.V1.Domain
             person.Languages.First().Name.Should().Be(Constants.LANGUAGENAME);
             person.CommunicationRequirements.Should().BeEquivalentTo(Constants.COMMSREQ);
             person.PersonTypes.Should().BeEquivalentTo(Constants.PERSONTYPES);
-            person.Links.Should().ContainSingle();
-            person.Links.First().EndpointType.Should().Be(Constants.LINKENDPOINTTYPE);
-            person.Links.First().Href.Should().Be(Constants.LINKHREF);
-            person.Links.First().Rel.Should().Be(Constants.LINKREL);
         }
     }
 }

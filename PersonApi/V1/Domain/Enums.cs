@@ -41,13 +41,4 @@ namespace PersonApi.V1.Domain
         SignLanguage,
         InterpreterRequired
     }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum HttpVerb
-    {
-        GET,
-        POST,
-        PUT,
-        DELETE
-    }
 }

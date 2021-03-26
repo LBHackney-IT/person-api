@@ -32,11 +32,6 @@ namespace PersonApi.Tests.V1.Helper
         public static IEnumerable<PersonType> PERSONTYPES { get; }
             = new List<PersonType> { PersonType.HousingOfficer };
 
-        public const string LINKHREF = "http://some-domain.com/some-link";
-        public const string LINKREL = "note";
-        public const HttpVerb LINKENDPOINTTYPE = HttpVerb.GET;
-
-
         public static Person ConstructPersonFromConstants()
         {
             var entity = new Person();
@@ -72,15 +67,6 @@ namespace PersonApi.Tests.V1.Helper
             };
             entity.CommunicationRequirements = Constants.COMMSREQ;
             entity.PersonTypes = Constants.PERSONTYPES;
-            entity.Links = new[]
-            {
-                new ApiLink
-                {
-                    EndpointType = Constants.LINKENDPOINTTYPE,
-                    Href = new Uri(Constants.LINKHREF),
-                    Rel = Constants.LINKREL
-                }
-            };
             return entity;
         }
     }

@@ -25,8 +25,7 @@ namespace PersonApi.V1.Factories
                 Identifications = databaseEntity.Identifications,
                 Languages = databaseEntity.Languages,
                 CommunicationRequirements = databaseEntity.CommunicationRequirements,
-                PersonTypes = databaseEntity.PersonTypes,
-                Links = databaseEntity.Links
+                PersonTypes = databaseEntity.PersonTypes
             };
         }
 
@@ -49,8 +48,7 @@ namespace PersonApi.V1.Factories
                 Identifications = entity.Identifications,
                 Languages = entity.Languages,
                 CommunicationRequirements = entity.CommunicationRequirements,
-                PersonTypes = entity.PersonTypes,
-                Links = entity.Links
+                PersonTypes = entity.PersonTypes
             };
         }
     }

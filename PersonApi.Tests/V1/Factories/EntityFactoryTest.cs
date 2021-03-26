@@ -4,7 +4,6 @@ using NUnit.Framework;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
-using System;
 
 namespace PersonApi.Tests.V1.Factories
 {
@@ -35,7 +34,6 @@ namespace PersonApi.Tests.V1.Factories
             databaseEntity.Languages.Should().BeEquivalentTo(entity.Languages);
             databaseEntity.CommunicationRequirements.Should().BeEquivalentTo(entity.CommunicationRequirements);
             databaseEntity.PersonTypes.Should().BeEquivalentTo(entity.PersonTypes);
-            databaseEntity.Links.Should().BeEquivalentTo(entity.Links);
         }
 
         [Test]
@@ -60,7 +58,6 @@ namespace PersonApi.Tests.V1.Factories
             entity.Languages.Should().BeEquivalentTo(databaseEntity.Languages);
             entity.CommunicationRequirements.Should().BeEquivalentTo(databaseEntity.CommunicationRequirements);
             entity.PersonTypes.Should().BeEquivalentTo(databaseEntity.PersonTypes);
-            entity.Links.Should().BeEquivalentTo(databaseEntity.Links);
         }
     }
 }
