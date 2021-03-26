@@ -1,45 +1,39 @@
-using Amazon.DynamoDBv2.DataModel;
 using PersonApi.V1.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace PersonApi.V1.Infrastructure
+namespace PersonApi.V1.Boundary.Response
 {
-    [DynamoDBTable("Persons", LowerCamelCaseProperties = true)]
-    public class PersonDbEntity
+    public class PersonResponseObject
     {
-        [DynamoDBHashKey]
         public Guid Id { get; set; }
 
-        [DynamoDBProperty]
+        /// <example>Mr, Mrs, Miss</example>
         public Title Title { get; set; }
-        [DynamoDBProperty]
+        /// <example>Julie</example>
         public string PreferredFirstname { get; set; }
-        [DynamoDBProperty]
+        /// <example>Evans</example>
         public string PreferredSurname { get; set; }
-        [DynamoDBProperty]
+        /// <example>Julie</example>
         public string Firstname { get; set; }
-        [DynamoDBProperty]
+        /// <example></example>
         public string MiddleName { get; set; }
-        [DynamoDBProperty]
+        /// <example>Evans</example>
         public string Surname { get; set; }
-        [DynamoDBProperty]
+        /// <example>Caucasian</example>
         public string Ethinicity { get; set; }
-        [DynamoDBProperty]
+        /// <example>British</example>
         public string Nationality { get; set; }
-        [DynamoDBProperty]
+        /// <example>London</example>
         public string PlaceOfBirth { get; set; }
-        [DynamoDBProperty]
+        /// <example>1990-02-19</example>
         public DateTime DateOfBirth { get; set; }
-        [DynamoDBProperty]
+        /// <example>M, F</example>
         public Gender Gender { get; set; }
-        [DynamoDBProperty]
         public IEnumerable<Identification> Identifications { get; set; }
-        [DynamoDBProperty]
         public IEnumerable<Language> Languages { get; set; }
-        [DynamoDBProperty]
         public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }
-        [DynamoDBProperty]
         public IEnumerable<PersonType> PersonTypes { get; set; }
+        public IEnumerable<ApiLink> Links { get; set; }
     }
 }
