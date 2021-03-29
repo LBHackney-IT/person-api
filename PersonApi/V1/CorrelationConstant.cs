@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace PersonApi.V1.Infrastructure
 {
+    // TODO: This should go in a common NuGet package...
+
     public static class CorrelationConstants
     {
         public const string CorrelationId = "x-correlation-id";

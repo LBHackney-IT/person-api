@@ -11,35 +11,21 @@ namespace PersonApi.V1.Infrastructure
         [DynamoDBHashKey]
         public Guid Id { get; set; }
 
-        [DynamoDBProperty]
         public Title Title { get; set; }
-        [DynamoDBProperty]
         public string PreferredFirstname { get; set; }
-        [DynamoDBProperty]
         public string PreferredSurname { get; set; }
-        [DynamoDBProperty]
         public string Firstname { get; set; }
-        [DynamoDBProperty]
         public string MiddleName { get; set; }
-        [DynamoDBProperty]
         public string Surname { get; set; }
-        [DynamoDBProperty]
         public string Ethinicity { get; set; }
-        [DynamoDBProperty]
         public string Nationality { get; set; }
-        [DynamoDBProperty]
         public string PlaceOfBirth { get; set; }
-        [DynamoDBProperty]
+        [DynamoDBProperty(Converter=typeof(DynamoDbDateTimeConverter))]
         public DateTime DateOfBirth { get; set; }
-        [DynamoDBProperty]
         public Gender Gender { get; set; }
-        [DynamoDBProperty]
-        public IEnumerable<Identification> Identifications { get; set; }
-        [DynamoDBProperty]
-        public IEnumerable<Language> Languages { get; set; }
-        [DynamoDBProperty]
-        public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }
-        [DynamoDBProperty]
-        public IEnumerable<PersonType> PersonTypes { get; set; }
+        public List<Identification> Identifications { get; set; } = new List<Identification>();
+        public List<Language> Languages { get; set; } = new List<Language>();
+        public List<CommunicationRequirement> CommunicationRequirements { get; set; } = new List<CommunicationRequirement>();
+        public List<PersonType> PersonTypes { get; set; } = new List<PersonType>();
     }
 }

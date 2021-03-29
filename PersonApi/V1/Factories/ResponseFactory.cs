@@ -1,22 +1,53 @@
-using System.Collections.Generic;
-using System.Linq;
+using PersonApi.V1.Boundary;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PersonApi.V1.Factories
 {
-    public static class ResponseFactory
+    public interface IResponseFactory
     {
-        //TODO: Map the fields in the domain object(s) to fields in the response object(s).
-        // More information on this can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Factory-object-mappings
-        public static PersonResponseObject ToResponse(this Person domain)
+        PersonResponseObject ToResponse(Person domain);
+        List<PersonResponseObject> ToResponse(IEnumerable<Person> domainList);
+    }
+
+    public class ResponseFactory : IResponseFactory
+    {
+        private readonly IApiLinkGenerator _apiLinkGenerator;
+        public ResponseFactory(IApiLinkGenerator apiLinkGenerator)
         {
-            return new PersonResponseObject();
+            _apiLinkGenerator = apiLinkGenerator;
         }
 
-        public static List<PersonResponseObject> ToResponse(this IEnumerable<Person> domainList)
+        public PersonResponseObject ToResponse(Person domain)
         {
-            return domainList.Select(domain => domain.ToResponse()).ToList();
+            return (null == domain)? null :
+                new PersonResponseObject
+                {
+                    Id = domain.Id,
+                    Title = domain.Title,
+                    PreferredFirstname = domain.PreferredFirstname,
+                    PreferredSurname = domain.PreferredSurname,
+                    Firstname = domain.Firstname,
+                    MiddleName = domain.MiddleName,
+                    Surname = domain.Surname,
+                    Ethinicity = domain.Ethinicity,
+                    Nationality = domain.Nationality,
+                    PlaceOfBirth = domain.PlaceOfBirth,
+                    DateOfBirth = domain.DateOfBirth,
+                    Gender = domain.Gender,
+                    Identifications = domain.Identifications,
+                    Languages = domain.Languages,
+                    CommunicationRequirements = domain.CommunicationRequirements,
+                    PersonTypes = domain.PersonTypes,
+                    Links = _apiLinkGenerator?.GenerateLinksForPerson(domain)
+                };
+        }
+
+        public List<PersonResponseObject> ToResponse(IEnumerable<Person> domainList)
+        {
+            return domainList.Select(domain => ToResponse(domain)).ToList();
         }
     }
 }

@@ -1,13 +1,14 @@
 using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
-using PersonApi.Tests.V1.Helper;
-using PersonApi.V1.Domain;
-using PersonApi.V1.Gateways;
-using PersonApi.V1.Infrastructure;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
+using PersonApi.V1.Gateways;
+using PersonApi.V1.Infrastructure;
+using System;
+using System.Threading.Tasks;
 
 namespace PersonApi.Tests.V1.Gateways
 {
@@ -26,27 +27,41 @@ namespace PersonApi.Tests.V1.Gateways
         }
 
         [Test]
-        public void GetEntityByIdReturnsNullIfEntityDoesntExist()
+        public async Task GetPersonByIdReturnsNullIfEntityDoesntExist()
         {
-            var response = _classUnderTest.GetEntityById("123");
+            var response = await _classUnderTest.GetPersonByIdAsync(Guid.NewGuid()).ConfigureAwait(false);
 
             response.Should().BeNull();
         }
 
         [Test]
-        public void GetEntityByIdReturnsTheEntityIfItExists()
+        public async Task GetPersonByIdReturnsThePersonIfItExists()
         {
             var entity = _fixture.Create<Person>();
             var dbEntity = entity.ToDatabase();
 
-            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(entity.Id.ToString(), default))
+            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(entity.Id, default))
                      .ReturnsAsync(dbEntity);
 
-            var response = _classUnderTest.GetEntityById(entity.Id.ToString());
+            var response = await _classUnderTest.GetPersonByIdAsync(entity.Id).ConfigureAwait(false);
 
-            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(entity.Id.ToString(), default), Times.Once);
+            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(entity.Id, default), Times.Once);
 
             entity.Id.Should().Be(response.Id);
+        }
+
+        [Test]
+        public void GetPersonByIdExceptionThrow()
+        {
+            var id = Guid.NewGuid();
+            var exception = new ApplicationException("Test exception");
+            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(id, default))
+                     .ThrowsAsync(exception);
+
+            Func<Task<Person>> func = async () => await _classUnderTest.GetPersonByIdAsync(id).ConfigureAwait(false);
+
+            func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
+            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(id, default), Times.Once);
         }
     }
 }

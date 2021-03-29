@@ -1,10 +1,11 @@
 using PersonApi.V1.Boundary.Response;
 using System;
+using System.Threading.Tasks;
 
 namespace PersonApi.V1.UseCase.Interfaces
 {
     public interface IGetByIdUseCase
     {
-        PersonResponseObject Execute(Guid id);
+        Task<PersonResponseObject> ExecuteAsync(Guid id);
     }
 }

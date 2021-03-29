@@ -1,6 +1,6 @@
 using PersonApi.V1.Domain;
 using PersonApi.V1.Infrastructure;
-using System;
+using System.Linq;
 
 namespace PersonApi.V1.Factories
 {
@@ -45,10 +45,10 @@ namespace PersonApi.V1.Factories
                 PlaceOfBirth = entity.PlaceOfBirth,
                 DateOfBirth = entity.DateOfBirth,
                 Gender = entity.Gender,
-                Identifications = entity.Identifications,
-                Languages = entity.Languages,
-                CommunicationRequirements = entity.CommunicationRequirements,
-                PersonTypes = entity.PersonTypes
+                Identifications = entity.Identifications.ToList(),
+                Languages = entity.Languages.ToList(),
+                CommunicationRequirements = entity.CommunicationRequirements.ToList(),
+                PersonTypes = entity.PersonTypes.ToList()
             };
         }
     }
