@@ -1,15 +1,12 @@
 using PersonApi.V1.Boundary;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PersonApi.V1.Factories
 {
     public interface IResponseFactory
     {
         PersonResponseObject ToResponse(Person domain);
-        List<PersonResponseObject> ToResponse(IEnumerable<Person> domainList);
     }
 
     public class ResponseFactory : IResponseFactory
@@ -43,11 +40,6 @@ namespace PersonApi.V1.Factories
                     PersonTypes = domain.PersonTypes,
                     Links = _apiLinkGenerator?.GenerateLinksForPerson(domain)
                 };
-        }
-
-        public List<PersonResponseObject> ToResponse(IEnumerable<Person> domainList)
-        {
-            return domainList.Select(domain => ToResponse(domain)).ToList();
         }
     }
 }

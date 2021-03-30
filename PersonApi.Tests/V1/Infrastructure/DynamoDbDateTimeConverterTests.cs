@@ -47,9 +47,9 @@ namespace PersonApi.Tests.V1.Infrastructure
         public void FromEntryTestDateTimeReturnsConvertedValue()
         {
             DateTime now = DateTime.UtcNow;
-            DynamoDBEntry dbEntry = new Primitive { Value = now.ToString() };
+            DynamoDBEntry dbEntry = new Primitive { Value = now.ToString(DynamoDbDateTimeConverter.DATEFORMAT) };
 
-            ((DateTime) _sut.FromEntry(dbEntry)).Should().BeCloseTo(now, 1000);
+            ((DateTime) _sut.FromEntry(dbEntry)).Should().BeCloseTo(now);
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             DateTime now = DateTime.UtcNow;
             DynamoDBEntry dbEntry = new Primitive { Value = now.Date.ToString() };
 
-            ((DateTime) _sut.FromEntry(dbEntry)).Should().BeCloseTo(now.Date, 1000);
+            ((DateTime) _sut.FromEntry(dbEntry)).Should().BeCloseTo(now.Date);
         }
 
         [Test]

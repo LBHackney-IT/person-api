@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 namespace PersonApi.V1.Controllers
 {
     [ApiController]
-    //TODO: Rename to match the APIs endpoint
     [Route("api/v1/persons")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
-    //TODO: rename class to match the API name
     public class PersonApiController : BaseController
     {
         private readonly IGetByIdUseCase _getByIdUseCase;
