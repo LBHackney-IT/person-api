@@ -25,26 +25,28 @@ namespace PersonApi.V1.Factories
 
         public PersonResponseObject ToResponse(Person domain)
         {
-            return (null == domain)? null : new PersonResponseObject
-                {
-                    Id = domain.Id,
-                    Title = domain.Title,
-                    PreferredFirstname = domain.PreferredFirstname,
-                    PreferredSurname = domain.PreferredSurname,
-                    Firstname = domain.Firstname,
-                    MiddleName = domain.MiddleName,
-                    Surname = domain.Surname,
-                    Ethinicity = domain.Ethinicity,
-                    Nationality = domain.Nationality,
-                    PlaceOfBirth = domain.PlaceOfBirth,
-                    DateOfBirth = FormatDateOfBirth(domain.DateOfBirth),
-                    Gender = domain.Gender,
-                    Identifications = domain.Identifications,
-                    Languages = domain.Languages,
-                    CommunicationRequirements = domain.CommunicationRequirements,
-                    PersonTypes = domain.PersonTypes,
-                    Links = _apiLinkGenerator?.GenerateLinksForPerson(domain)
-                };
+            if (null == domain) return null;
+
+            return new PersonResponseObject
+            {
+                Id = domain.Id,
+                Title = domain.Title,
+                PreferredFirstname = domain.PreferredFirstname,
+                PreferredSurname = domain.PreferredSurname,
+                Firstname = domain.Firstname,
+                MiddleName = domain.MiddleName,
+                Surname = domain.Surname,
+                Ethinicity = domain.Ethinicity,
+                Nationality = domain.Nationality,
+                PlaceOfBirth = domain.PlaceOfBirth,
+                DateOfBirth = FormatDateOfBirth(domain.DateOfBirth),
+                Gender = domain.Gender,
+                Identifications = domain.Identifications,
+                Languages = domain.Languages,
+                CommunicationRequirements = domain.CommunicationRequirements,
+                PersonTypes = domain.PersonTypes,
+                Links = _apiLinkGenerator?.GenerateLinksForPerson(domain)
+            };
         }
     }
 }
