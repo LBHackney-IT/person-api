@@ -8,7 +8,8 @@ namespace PersonApi.V1.Domain
         Mr,
         Mrs,
         Miss,
-        Mx
+        Ms,
+        Dr
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -22,8 +23,9 @@ namespace PersonApi.V1.Domain
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Gender
     {
-        M,
-        F
+        M,  // Male
+        F,  // Female
+        O   // Other?
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

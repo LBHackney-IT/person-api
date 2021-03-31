@@ -1,5 +1,6 @@
 using PersonApi.V1.Domain;
 using PersonApi.V1.Infrastructure;
+using System;
 using System.Linq;
 
 namespace PersonApi.V1.Factories
@@ -10,7 +11,7 @@ namespace PersonApi.V1.Factories
         {
             return new Person
             {
-                Id = databaseEntity.Id,
+                Id = Guid.Parse(databaseEntity.Id),
                 Title = databaseEntity.Title,
                 PreferredFirstname = databaseEntity.PreferredFirstname,
                 PreferredSurname = databaseEntity.PreferredSurname,
@@ -33,7 +34,7 @@ namespace PersonApi.V1.Factories
         {
             return new PersonDbEntity
             {
-                Id = entity.Id,
+                Id = NormaliseDbId(entity.Id),
                 Title = entity.Title,
                 PreferredFirstname = entity.PreferredFirstname,
                 PreferredSurname = entity.PreferredSurname,
@@ -50,6 +51,11 @@ namespace PersonApi.V1.Factories
                 CommunicationRequirements = entity.CommunicationRequirements.ToList(),
                 PersonTypes = entity.PersonTypes.ToList()
             };
+        }
+
+        public static string NormaliseDbId(Guid id)
+        {
+            return id.ToString("N");
         }
     }
 }

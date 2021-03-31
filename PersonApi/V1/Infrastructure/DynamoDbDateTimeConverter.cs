@@ -16,7 +16,7 @@ namespace PersonApi.V1.Infrastructure
 
         public DynamoDBEntry ToEntry(object value)
         {
-            if (null == value) return new Primitive { Value = null };
+            if (null == value) return new DynamoDBNull();
 
             return new Primitive { Value = ((DateTime) value).ToUniversalTime().ToString(DATEFORMAT) };
         }

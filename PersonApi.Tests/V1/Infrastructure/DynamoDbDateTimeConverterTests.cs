@@ -20,7 +20,7 @@ namespace PersonApi.Tests.V1.Infrastructure
         [Test]
         public void ToEntryTestNullValueReturnsNull()
         {
-            _sut.ToEntry(null).Should().BeEquivalentTo(new Primitive { Value = null });
+            _sut.ToEntry(null).Should().BeEquivalentTo(new DynamoDBNull());
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace PersonApi.Tests.V1.Infrastructure
         [Test]
         public void FromEntryTestNullValueReturnsNull()
         {
-            _sut.ToEntry(null).Should().BeEquivalentTo(new Primitive { Value = null });
+            _sut.FromEntry(null).Should().BeNull();
         }
 
         [Test]

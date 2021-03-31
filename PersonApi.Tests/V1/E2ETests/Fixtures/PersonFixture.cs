@@ -1,5 +1,6 @@
 using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
+using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using System;
 
@@ -39,10 +40,11 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             {
                 var person = _fixture.Build<PersonDbEntity>()
                                      .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                                     .With(y => y.Id, EntityFactory.NormaliseDbId(Guid.NewGuid()))
                                      .Create();
                 _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
                 Person = person;
-                PersonId = person.Id;
+                PersonId = Guid.Parse(person.Id);
             }
         }
 

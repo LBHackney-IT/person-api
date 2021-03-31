@@ -1,6 +1,7 @@
 using PersonApi.V1.Boundary;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
+using System;
 
 namespace PersonApi.V1.Factories
 {
@@ -15,6 +16,11 @@ namespace PersonApi.V1.Factories
         public ResponseFactory(IApiLinkGenerator apiLinkGenerator)
         {
             _apiLinkGenerator = apiLinkGenerator;
+        }
+
+        public static string FormatDateOfBirth(DateTime dob)
+        {
+            return dob.ToString("yyyy-MM-dd");
         }
 
         public PersonResponseObject ToResponse(Person domain)
@@ -32,7 +38,7 @@ namespace PersonApi.V1.Factories
                     Ethinicity = domain.Ethinicity,
                     Nationality = domain.Nationality,
                     PlaceOfBirth = domain.PlaceOfBirth,
-                    DateOfBirth = domain.DateOfBirth,
+                    DateOfBirth = FormatDateOfBirth(domain.DateOfBirth),
                     Gender = domain.Gender,
                     Identifications = domain.Identifications,
                     Languages = domain.Languages,

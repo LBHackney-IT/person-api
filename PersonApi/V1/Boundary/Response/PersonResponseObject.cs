@@ -27,7 +27,7 @@ namespace PersonApi.V1.Boundary.Response
         /// <example>London</example>
         public string PlaceOfBirth { get; set; }
         /// <example>1990-02-19</example>
-        public DateTime DateOfBirth { get; set; }
+        public string DateOfBirth { get; set; }
         /// <example>M, F</example>
         public Gender Gender { get; set; }
         public IEnumerable<Identification> Identifications { get; set; }

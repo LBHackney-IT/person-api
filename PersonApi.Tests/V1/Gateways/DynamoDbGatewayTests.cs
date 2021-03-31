@@ -40,12 +40,13 @@ namespace PersonApi.Tests.V1.Gateways
             var entity = _fixture.Create<Person>();
             var dbEntity = entity.ToDatabase();
 
-            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(entity.Id, default))
+            var dbIdUsed = EntityFactory.NormaliseDbId(entity.Id);
+            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(dbIdUsed, default))
                      .ReturnsAsync(dbEntity);
 
             var response = await _classUnderTest.GetPersonByIdAsync(entity.Id).ConfigureAwait(false);
 
-            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(entity.Id, default), Times.Once);
+            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(dbIdUsed, default), Times.Once);
 
             entity.Id.Should().Be(response.Id);
         }
@@ -54,14 +55,15 @@ namespace PersonApi.Tests.V1.Gateways
         public void GetPersonByIdExceptionThrow()
         {
             var id = Guid.NewGuid();
+            var dbIdUsed = EntityFactory.NormaliseDbId(id);
             var exception = new ApplicationException("Test exception");
-            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(id, default))
+            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(dbIdUsed, default))
                      .ThrowsAsync(exception);
 
             Func<Task<Person>> func = async () => await _classUnderTest.GetPersonByIdAsync(id).ConfigureAwait(false);
 
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
-            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(id, default), Times.Once);
+            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(dbIdUsed, default), Times.Once);
         }
     }
 }

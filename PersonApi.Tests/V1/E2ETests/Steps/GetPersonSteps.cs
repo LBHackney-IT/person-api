@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Net;
@@ -34,7 +35,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             var apiPerson = JsonConvert.DeserializeObject<PersonResponseObject>(responseContent);
 
             apiPerson.CommunicationRequirements.Should().BeEquivalentTo(expectedPerson.CommunicationRequirements);
-            apiPerson.DateOfBirth.Should().Be(expectedPerson.DateOfBirth);
+            apiPerson.DateOfBirth.Should().Be(ResponseFactory.FormatDateOfBirth(expectedPerson.DateOfBirth));
             apiPerson.Ethinicity.Should().Be(expectedPerson.Ethinicity);
             apiPerson.Firstname.Should().Be(expectedPerson.Firstname);
             apiPerson.Gender.Should().Be(expectedPerson.Gender);
