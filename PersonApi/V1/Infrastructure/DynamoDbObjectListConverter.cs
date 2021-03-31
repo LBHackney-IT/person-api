@@ -1,10 +1,10 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PersonApi.V1.Infrastructure
 {
@@ -15,6 +15,17 @@ namespace PersonApi.V1.Infrastructure
     /// </summary>
     public class DynamoDbObjectListConverter<T> : IPropertyConverter
     {
+        private static JsonSerializerOptions CreateJsonOptions()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            options.Converters.Add(new JsonStringEnumConverter());
+            return options;
+        }
+
         public DynamoDBEntry ToEntry(object value)
         {
             if (null == value) return new DynamoDBNull();
@@ -23,7 +34,7 @@ namespace PersonApi.V1.Infrastructure
             if (null == list)
                 throw new ArgumentException($"Field value is not a list of {typeof(T).Name}. This attribute has been used on a property that is not a list of custom objects.");
 
-            return new DynamoDBList(list.Select(x => Document.FromJson(JsonConvert.SerializeObject(x, new StringEnumConverter()))));
+            return new DynamoDBList(list.Select(x => Document.FromJson(JsonSerializer.Serialize(x, CreateJsonOptions()))));
         }
 
         public object FromEntry(DynamoDBEntry entry)
@@ -34,7 +45,7 @@ namespace PersonApi.V1.Infrastructure
             if (null == list)
                 throw new ArgumentException("Field value is not a DynamoDBList. This attribute has been used on a property that is not a list of custom objects.");
 
-            return list.AsListOfDocument().Select(x => JsonConvert.DeserializeObject<T>(x.ToJson(), new StringEnumConverter())).ToList();
+            return list.AsListOfDocument().Select(x => JsonSerializer.Deserialize<T>(x.ToJson(), CreateJsonOptions())).ToList();
         }
     }
 }

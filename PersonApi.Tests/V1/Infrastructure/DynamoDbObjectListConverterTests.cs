@@ -1,13 +1,13 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using AutoFixture;
 using FluentAssertions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PersonApi.Tests.V1.Infrastructure
 {
@@ -27,6 +27,17 @@ namespace PersonApi.Tests.V1.Infrastructure
             });
         }
 
+        private static JsonSerializerOptions CreateJsonOptions()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            options.Converters.Add(new JsonStringEnumConverter());
+            return options;
+        }
+
         [SetUp]
         public void TestSetup()
         {
@@ -44,7 +55,7 @@ namespace PersonApi.Tests.V1.Infrastructure
         {
             var list = CreateObjectList<SomeObject>();
             _sut.ToEntry(list).Should().BeEquivalentTo(
-                new DynamoDBList(list.Select(x => Document.FromJson(JsonConvert.SerializeObject(x, new StringEnumConverter())))));
+                new DynamoDBList(list.Select(x => Document.FromJson(JsonSerializer.Serialize(x, CreateJsonOptions())))));
         }
 
         [Test]
@@ -72,7 +83,7 @@ namespace PersonApi.Tests.V1.Infrastructure
         {
             var list = CreateObjectList<SomeObject>();
             var dbEntry = new DynamoDBList(
-                list.Select(x => Document.FromJson(JsonConvert.SerializeObject(x, new StringEnumConverter()))));
+                list.Select(x => Document.FromJson(JsonSerializer.Serialize(x, CreateJsonOptions()))));
 
             _sut.FromEntry(dbEntry).Should().BeEquivalentTo(list);
         }
@@ -91,7 +102,7 @@ namespace PersonApi.Tests.V1.Infrastructure
         {
             var list = CreateObjectList<SomeOtherObject>();
             DynamoDBList dbEntry = new DynamoDBList(
-                list.Select(x => Document.FromJson(JsonConvert.SerializeObject(x, new StringEnumConverter()))));
+                list.Select(x => Document.FromJson(JsonSerializer.Serialize(x, CreateJsonOptions()))));
 
             var expected = new List<SomeObject>(new[]
             {

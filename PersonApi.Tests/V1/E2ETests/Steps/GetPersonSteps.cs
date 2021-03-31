@@ -1,11 +1,12 @@
 using FluentAssertions;
-using Newtonsoft.Json;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PersonApi.Tests.V1.E2ETests.Steps
@@ -20,6 +21,16 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
         {
             _httpClient = httpClient;
         }
+        private static JsonSerializerOptions CreateJsonOptions()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            options.Converters.Add(new JsonStringEnumConverter());
+            return options;
+        }
 
         public async Task WhenThePersonDetailsAreRequested(string id)
         {
@@ -32,7 +43,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             _lastResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var responseContent = await _lastResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var apiPerson = JsonConvert.DeserializeObject<PersonResponseObject>(responseContent);
+            var apiPerson = JsonSerializer.Deserialize<PersonResponseObject>(responseContent, CreateJsonOptions());
 
             apiPerson.CommunicationRequirements.Should().BeEquivalentTo(expectedPerson.CommunicationRequirements);
             apiPerson.DateOfBirth.Should().Be(ResponseFactory.FormatDateOfBirth(expectedPerson.DateOfBirth));

@@ -1,11 +1,11 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using AutoFixture;
 using FluentAssertions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 using PersonApi.V1.Infrastructure;
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PersonApi.Tests.V1.Infrastructure
 {
@@ -14,6 +14,17 @@ namespace PersonApi.Tests.V1.Infrastructure
     {
         private readonly Fixture _fixture = new Fixture();
         private DynamoDbObjectConverter<SomeObject> _sut;
+
+        private static JsonSerializerOptions CreateJsonOptions()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            options.Converters.Add(new JsonStringEnumConverter());
+            return options;
+        }
 
         [SetUp]
         public void TestSetup()
@@ -32,7 +43,7 @@ namespace PersonApi.Tests.V1.Infrastructure
         {
             var obj = _fixture.Create<SomeObject>();
             _sut.ToEntry(obj).Should().BeEquivalentTo(
-                Document.FromJson(JsonConvert.SerializeObject(obj, new StringEnumConverter())));
+                Document.FromJson(JsonSerializer.Serialize(obj, CreateJsonOptions())));
         }
 
         [Test]
@@ -52,7 +63,7 @@ namespace PersonApi.Tests.V1.Infrastructure
         {
             var obj = _fixture.Create<SomeObject>();
             DynamoDBEntry dbEntry = Document.FromJson(
-                JsonConvert.SerializeObject(obj, new StringEnumConverter()));
+                JsonSerializer.Serialize(obj, CreateJsonOptions()));
 
             ((SomeObject) _sut.FromEntry(dbEntry)).Should().BeEquivalentTo(obj);
         }
@@ -71,7 +82,7 @@ namespace PersonApi.Tests.V1.Infrastructure
         {
             var obj = _fixture.Create<SomeOtherObject>();
             DynamoDBEntry dbEntry = Document.FromJson(
-                JsonConvert.SerializeObject(obj, new StringEnumConverter()));
+                JsonSerializer.Serialize(obj, CreateJsonOptions()));
 
             _sut.FromEntry(dbEntry).Should().BeEquivalentTo(new SomeObject());
         }
