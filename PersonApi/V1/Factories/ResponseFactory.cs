@@ -25,7 +25,7 @@ namespace PersonApi.V1.Factories
 
         public PersonResponseObject ToResponse(Person domain)
         {
-            return (null == domain)? null :
+            return (null == domain)?null :
                 new PersonResponseObject
                 {
                     Id = domain.Id,
