@@ -29,7 +29,7 @@ namespace PersonApi.Tests.V1.Controllers
         public async Task GetPersonByIdAsyncNotFoundReturnsNotFound()
         {
             var id = Guid.NewGuid();
-            _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(id)).ReturnsAsync((PersonResponseObject)null);
+            _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(id)).ReturnsAsync((PersonResponseObject) null);
             var response = await _sut.GetPersonByIdAsync(id).ConfigureAwait(false);
 
             response.Should().BeOfType(typeof(NotFoundObjectResult));

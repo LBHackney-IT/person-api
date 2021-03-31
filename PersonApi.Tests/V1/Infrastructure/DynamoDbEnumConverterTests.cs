@@ -57,7 +57,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             var stringValue = "Three";
             DynamoDBEntry dbEntry = new Primitive { Value = stringValue };
 
-            ((Number)_sut.FromEntry(dbEntry)).Should().Be(Number.Three);
+            ((Number) _sut.FromEntry(dbEntry)).Should().Be(Number.Three);
         }
 
         [Test]

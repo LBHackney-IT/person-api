@@ -54,7 +54,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             DynamoDBEntry dbEntry = Document.FromJson(
                 JsonConvert.SerializeObject(obj, new StringEnumConverter()));
 
-            ((SomeObject)_sut.FromEntry(dbEntry)).Should().BeEquivalentTo(obj);
+            ((SomeObject) _sut.FromEntry(dbEntry)).Should().BeEquivalentTo(obj);
         }
 
         [Test]
