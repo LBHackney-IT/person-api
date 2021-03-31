@@ -18,7 +18,7 @@ namespace PersonApi.V1.Gateways
 
         public async Task<Person> GetPersonByIdAsync(Guid id)
         {
-            var result = await _dynamoDbContext.LoadAsync<PersonDbEntity>(EntityFactory.NormaliseDbId(id)).ConfigureAwait(false);
+            var result = await _dynamoDbContext.LoadAsync<PersonDbEntity>(id).ConfigureAwait(false);
             return result?.ToDomain();
         }
     }

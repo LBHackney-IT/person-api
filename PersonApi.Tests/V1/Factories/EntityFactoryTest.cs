@@ -16,12 +16,10 @@ namespace PersonApi.Tests.V1.Factories
         [Test]
         public void CanMapADatabaseEntityToADomainObject()
         {
-            var databaseEntity = _fixture.Build<PersonDbEntity>()
-                                         .With(x => x.Id, EntityFactory.NormaliseDbId(Guid.NewGuid()))
-                                         .Create();
+            var databaseEntity = _fixture.Create<PersonDbEntity>();
             var entity = databaseEntity.ToDomain();
 
-            databaseEntity.Id.Should().Be(EntityFactory.NormaliseDbId(entity.Id));
+            databaseEntity.Id.Should().Be(entity.Id);
             databaseEntity.Title.Should().Be(entity.Title);
             databaseEntity.PreferredFirstname.Should().Be(entity.PreferredFirstname);
             databaseEntity.PreferredSurname.Should().Be(entity.PreferredSurname);
@@ -45,7 +43,7 @@ namespace PersonApi.Tests.V1.Factories
             var person = _fixture.Create<Person>();
             var databaseEntity = person.ToDatabase();
 
-            person.Id.Should().Be(Guid.Parse(databaseEntity.Id));
+            person.Id.Should().Be(databaseEntity.Id);
             person.Title.Should().Be(person.Title);
             person.PreferredFirstname.Should().Be(databaseEntity.PreferredFirstname);
             person.PreferredSurname.Should().Be(databaseEntity.PreferredSurname);
@@ -61,14 +59,6 @@ namespace PersonApi.Tests.V1.Factories
             person.Languages.Should().BeEquivalentTo(databaseEntity.Languages);
             person.CommunicationRequirements.Should().BeEquivalentTo(databaseEntity.CommunicationRequirements);
             person.PersonTypes.Should().BeEquivalentTo(databaseEntity.PersonTypes);
-        }
-
-        [Test]
-        public void NormaliseDbIdReturnsGuidWithoutDashes()
-        {
-            var guid = Guid.NewGuid();
-            var result = EntityFactory.NormaliseDbId(guid);
-            result.Should().Be(guid.ToString("N"));
         }
     }
 }

@@ -36,7 +36,7 @@ namespace PersonApi.Tests.V1.Factories
             var person = _fixture.Create<Person>();
             var response = _sut.ToResponse(person);
 
-            response.Id.Should().Be(EntityFactory.NormaliseDbId(person.Id));
+            response.Id.Should().Be(person.Id);
             response.Title.Should().Be(person.Title);
             response.PreferredFirstname.Should().Be(person.PreferredFirstname);
             response.PreferredSurname.Should().Be(person.PreferredSurname);

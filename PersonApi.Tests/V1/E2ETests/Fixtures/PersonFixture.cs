@@ -40,11 +40,10 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             {
                 var person = _fixture.Build<PersonDbEntity>()
                                      .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                                     .With(y => y.Id, EntityFactory.NormaliseDbId(Guid.NewGuid()))
                                      .Create();
                 _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
                 Person = person;
-                PersonId = Guid.Parse(person.Id);
+                PersonId = person.Id;
             }
         }
 

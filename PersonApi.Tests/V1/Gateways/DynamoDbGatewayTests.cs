@@ -40,7 +40,7 @@ namespace PersonApi.Tests.V1.Gateways
             var entity = _fixture.Create<Person>();
             var dbEntity = entity.ToDatabase();
 
-            var dbIdUsed = EntityFactory.NormaliseDbId(entity.Id);
+            var dbIdUsed = entity.Id;
             _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(dbIdUsed, default))
                      .ReturnsAsync(dbEntity);
 
@@ -55,15 +55,14 @@ namespace PersonApi.Tests.V1.Gateways
         public void GetPersonByIdExceptionThrow()
         {
             var id = Guid.NewGuid();
-            var dbIdUsed = EntityFactory.NormaliseDbId(id);
             var exception = new ApplicationException("Test exception");
-            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(dbIdUsed, default))
+            _dynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(id, default))
                      .ThrowsAsync(exception);
 
             Func<Task<Person>> func = async () => await _classUnderTest.GetPersonByIdAsync(id).ConfigureAwait(false);
 
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
-            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(dbIdUsed, default), Times.Once);
+            _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(id, default), Times.Once);
         }
     }
 }
