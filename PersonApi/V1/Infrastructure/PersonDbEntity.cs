@@ -9,7 +9,7 @@ namespace PersonApi.V1.Infrastructure
     public class PersonDbEntity
     {
         [DynamoDBHashKey]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         [DynamoDBProperty(Converter = typeof(DynamoDbEnumConverter<Title>))]
         public Title Title { get; set; }
