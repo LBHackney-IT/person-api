@@ -21,7 +21,7 @@ namespace PersonApi.V1.Boundary.Response
         /// <example>Evans</example>
         public string Surname { get; set; }
         /// <example>Caucasian</example>
-        public string Ethinicity { get; set; }
+        public string Ethnicity { get; set; }
         /// <example>British</example>
         public string Nationality { get; set; }
         /// <example>London</example>

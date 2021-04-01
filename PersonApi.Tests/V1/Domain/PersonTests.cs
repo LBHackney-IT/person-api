@@ -21,7 +21,7 @@ namespace PersonApi.Tests.V1.Domain
             person.Firstname.Should().Be(Constants.FIRSTNAME);
             person.MiddleName.Should().Be(Constants.MIDDLENAME);
             person.Surname.Should().Be(Constants.SURNAME);
-            person.Ethinicity.Should().Be(Constants.ETHNICITY);
+            person.Ethnicity.Should().Be(Constants.ETHNICITY);
             person.Nationality.Should().Be(Constants.NATIONALITY);
             person.PlaceOfBirth.Should().Be(Constants.PLACEOFBIRTH);
             person.DateOfBirth.Should().Be(Constants.DATEOFBIRTH);

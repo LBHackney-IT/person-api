@@ -47,7 +47,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
 
             apiPerson.CommunicationRequirements.Should().BeEquivalentTo(expectedPerson.CommunicationRequirements);
             apiPerson.DateOfBirth.Should().Be(ResponseFactory.FormatDateOfBirth(expectedPerson.DateOfBirth));
-            apiPerson.Ethinicity.Should().Be(expectedPerson.Ethinicity);
+            apiPerson.Ethnicity.Should().Be(expectedPerson.Ethnicity);
             apiPerson.Firstname.Should().Be(expectedPerson.Firstname);
             apiPerson.Gender.Should().Be(expectedPerson.Gender);
             apiPerson.Id.Should().Be(expectedPerson.Id);

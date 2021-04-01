@@ -26,7 +26,7 @@ namespace PersonApi.Tests.V1.Factories
             databaseEntity.Firstname.Should().Be(entity.Firstname);
             databaseEntity.MiddleName.Should().Be(entity.MiddleName);
             databaseEntity.Surname.Should().Be(entity.Surname);
-            databaseEntity.Ethinicity.Should().Be(entity.Ethinicity);
+            databaseEntity.Ethnicity.Should().Be(entity.Ethnicity);
             databaseEntity.Nationality.Should().Be(entity.Nationality);
             databaseEntity.PlaceOfBirth.Should().Be(entity.PlaceOfBirth);
             databaseEntity.DateOfBirth.Should().Be(entity.DateOfBirth);
@@ -50,7 +50,7 @@ namespace PersonApi.Tests.V1.Factories
             person.Firstname.Should().Be(databaseEntity.Firstname);
             person.MiddleName.Should().Be(databaseEntity.MiddleName);
             person.Surname.Should().Be(databaseEntity.Surname);
-            person.Ethinicity.Should().Be(databaseEntity.Ethinicity);
+            person.Ethnicity.Should().Be(databaseEntity.Ethnicity);
             person.Nationality.Should().Be(databaseEntity.Nationality);
             person.PlaceOfBirth.Should().Be(databaseEntity.PlaceOfBirth);
             person.DateOfBirth.Should().Be(databaseEntity.DateOfBirth);

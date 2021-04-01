@@ -18,7 +18,7 @@ namespace PersonApi.V1.Infrastructure
         public string Firstname { get; set; }
         public string MiddleName { get; set; }
         public string Surname { get; set; }
-        public string Ethinicity { get; set; }
+        public string Ethnicity { get; set; }
         public string Nationality { get; set; }
         public string PlaceOfBirth { get; set; }
 

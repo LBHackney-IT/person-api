@@ -43,7 +43,7 @@ namespace PersonApi.Tests.V1.Factories
             response.Firstname.Should().Be(person.Firstname);
             response.MiddleName.Should().Be(person.MiddleName);
             response.Surname.Should().Be(person.Surname);
-            response.Ethinicity.Should().Be(person.Ethinicity);
+            response.Ethnicity.Should().Be(person.Ethnicity);
             response.Nationality.Should().Be(person.Nationality);
             response.PlaceOfBirth.Should().Be(person.PlaceOfBirth);
             response.DateOfBirth.Should().Be(ResponseFactory.FormatDateOfBirth(person.DateOfBirth));

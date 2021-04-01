@@ -36,7 +36,7 @@ namespace PersonApi.V1.Factories
                 Firstname = domain.Firstname,
                 MiddleName = domain.MiddleName,
                 Surname = domain.Surname,
-                Ethinicity = domain.Ethinicity,
+                Ethnicity = domain.Ethnicity,
                 Nationality = domain.Nationality,
                 PlaceOfBirth = domain.PlaceOfBirth,
                 DateOfBirth = FormatDateOfBirth(domain.DateOfBirth),

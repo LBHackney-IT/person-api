@@ -42,7 +42,7 @@ namespace PersonApi.Tests.V1.Helper
             entity.Firstname = Constants.FIRSTNAME;
             entity.MiddleName = Constants.MIDDLENAME;
             entity.Surname = Constants.SURNAME;
-            entity.Ethinicity = Constants.ETHNICITY;
+            entity.Ethnicity = Constants.ETHNICITY;
             entity.Nationality = Constants.NATIONALITY;
             entity.PlaceOfBirth = Constants.PLACEOFBIRTH;
             entity.DateOfBirth = Constants.DATEOFBIRTH;
