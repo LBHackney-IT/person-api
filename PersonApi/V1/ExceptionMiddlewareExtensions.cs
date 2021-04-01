@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using PersonApi.V1.Controllers;
 using System;
 using System.Diagnostics;
@@ -53,34 +51,5 @@ namespace PersonApi.V1
                 correlationId, context.Response.StatusCode);
             await context.Response.WriteAsync(exceptionResult.ToString()).ConfigureAwait(false);
         }
-    }
-
-    public class ExceptionResult
-    {
-        public const int DefaultStatusCode = 500;
-
-        public ExceptionResult(string message, string traceId, string correlationId, int statusCode = DefaultStatusCode)
-        {
-            Message = message;
-            TraceId = traceId;
-            CorrelationId = correlationId;
-            StatusCode = statusCode;
-        }
-
-        public string Message { get; private set; }
-        public string TraceId { get; private set; }
-        public string CorrelationId { get; private set; }
-        public int StatusCode { get; private set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, _settings);
-        }
-
-        static JsonSerializerSettings _settings = new JsonSerializerSettings()
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        };
     }
 }

@@ -1,4 +1,6 @@
 using FluentAssertions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 using PersonApi.V1;
 using System;
@@ -31,6 +33,20 @@ namespace PersonApi.Tests.V1
             sut.Message.Should().Be(_errorMessage);
             sut.StatusCode.Should().Be(statusCode);
             sut.TraceId.Should().Be(_traceId);
+        }
+
+        [Test]
+        public void ExceptionResultToStringTest()
+        {
+            var sut = new ExceptionResult(_errorMessage, _traceId, _correlationId);
+            var asJson = sut.ToString();
+
+            JsonSerializerSettings settings = new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+            sut.Should().BeEquivalentTo(JsonConvert.DeserializeObject<ExceptionResult>(asJson, settings));
         }
     }
 }

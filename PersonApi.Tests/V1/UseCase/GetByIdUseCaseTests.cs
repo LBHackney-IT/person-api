@@ -30,32 +30,44 @@ namespace PersonApi.Tests.V1.UseCase
         [Test]
         public async Task GetByIdUseCaseGatewayReturnsNullReturnsNull()
         {
+            // Arrange
             var id = Guid.NewGuid();
             _mockGateway.Setup(x => x.GetPersonByIdAsync(id)).ReturnsAsync((Person) null);
+
+            // Act
             var response = await _classUnderTest.ExecuteAsync(id).ConfigureAwait(false);
 
+            // Assert
             response.Should().BeNull();
         }
 
         [Test]
         public async Task GetPersonByIdAsyncFoundReturnsResponse()
         {
+            // Arrange
             var id = Guid.NewGuid();
             var person = _fixture.Create<Person>();
             _mockGateway.Setup(x => x.GetPersonByIdAsync(id)).ReturnsAsync(person);
+
+            // Act
             var response = await _classUnderTest.ExecuteAsync(id).ConfigureAwait(false);
 
+            // Assert
             response.Should().BeEquivalentTo(_responseFactory.ToResponse(person));
         }
 
         [Test]
         public void GetPersonByIdAsyncExceptionIsThrown()
         {
+            // Arrange
             var id = Guid.NewGuid();
             var exception = new ApplicationException("Test exception");
             _mockGateway.Setup(x => x.GetPersonByIdAsync(id)).ThrowsAsync(exception);
+
+            // Act
             Func<Task<PersonResponseObject>> func = async () => await _classUnderTest.ExecuteAsync(id).ConfigureAwait(false);
 
+            // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
         }
     }

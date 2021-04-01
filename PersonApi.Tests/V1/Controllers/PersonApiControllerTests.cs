@@ -28,10 +28,14 @@ namespace PersonApi.Tests.V1.Controllers
         [Test]
         public async Task GetPersonByIdAsyncNotFoundReturnsNotFound()
         {
+            // Arrange
             var id = Guid.NewGuid();
             _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(id)).ReturnsAsync((PersonResponseObject) null);
+
+            // Act
             var response = await _sut.GetPersonByIdAsync(id).ConfigureAwait(false);
 
+            // Assert
             response.Should().BeOfType(typeof(NotFoundObjectResult));
             (response as NotFoundObjectResult).Value.Should().Be(id);
         }
@@ -39,11 +43,15 @@ namespace PersonApi.Tests.V1.Controllers
         [Test]
         public async Task GetPersonByIdAsyncFoundReturnsResponse()
         {
+            // Arrange
             var id = Guid.NewGuid();
             var personResponse = _fixture.Create<PersonResponseObject>();
             _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(id)).ReturnsAsync(personResponse);
+
+            // Act
             var response = await _sut.GetPersonByIdAsync(id).ConfigureAwait(false);
 
+            // Assert
             response.Should().BeOfType(typeof(OkObjectResult));
             (response as OkObjectResult).Value.Should().Be(personResponse);
         }
@@ -51,12 +59,15 @@ namespace PersonApi.Tests.V1.Controllers
         [Test]
         public void GetPersonByIdAsyncExceptionIsThrown()
         {
+            // Arrange
             var id = Guid.NewGuid();
             var exception = new ApplicationException("Test exception");
             _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(id)).ThrowsAsync(exception);
 
+            // Act
             Func<Task<IActionResult>> func = async () => await _sut.GetPersonByIdAsync(id).ConfigureAwait(false);
 
+            // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
         }
     }

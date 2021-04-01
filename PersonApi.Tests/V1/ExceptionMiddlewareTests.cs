@@ -57,20 +57,25 @@ namespace PersonApi.Tests.V1
         [Test]
         public async Task HandleExceptionsTestNoExceptionHandlerWritesResponse()
         {
+            // Arrange
             _httpContext.Features.Set<IExceptionHandlerFeature>(null);
 
+            // Act
             await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext)
                                                .ConfigureAwait(false);
 
+            // Assert
             await VerifyResponse().ConfigureAwait(false);
         }
 
         [Test]
         public async Task HandleExceptionsTestWithHandlerButNoExceptionWritesResponse()
         {
+            // Act
             await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext)
                                                .ConfigureAwait(false);
 
+            // Assert
             await VerifyResponse().ConfigureAwait(false);
             _traceListener.ContainsTrace("Request failed. ").Should().BeTrue();
         }
@@ -78,13 +83,16 @@ namespace PersonApi.Tests.V1
         [Test]
         public async Task HandleExceptionsTestWithHandlerWithExceptionWritesResponse()
         {
+            // Arrange
             var exMessage = "This is an exception";
             var exception = new Exception(exMessage);
             _mockExHandlerFeature.SetupGet(x => x.Error).Returns(exception);
 
+            // Act
             await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext)
                                                .ConfigureAwait(false);
 
+            // Assert
             await VerifyResponse(exMessage).ConfigureAwait(false);
             _traceListener.ContainsTrace($"Request failed. {exMessage}").Should().BeTrue();
         }
