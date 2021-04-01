@@ -1,9 +1,11 @@
 using PersonApi.V1.Domain;
+using System;
+using System.Threading.Tasks;
 
 namespace PersonApi.V1.Gateways
 {
     public interface IPersonApiGateway
     {
-        Person GetEntityById(string id);
+        Task<Person> GetPersonByIdAsync(Guid id);
     }
 }

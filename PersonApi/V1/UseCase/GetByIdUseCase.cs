@@ -3,21 +3,25 @@ using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace PersonApi.V1.UseCase
 {
-    //TODO: Rename class name and interface name to reflect the entity they are representing eg. GetClaimantByIdUseCase
     public class GetByIdUseCase : IGetByIdUseCase
     {
         private readonly IPersonApiGateway _gateway;
-        public GetByIdUseCase(IPersonApiGateway gateway)
+        private readonly IResponseFactory _responseFactory;
+
+        public GetByIdUseCase(IPersonApiGateway gateway, IResponseFactory responseFactory)
         {
             _gateway = gateway;
+            _responseFactory = responseFactory;
         }
 
-        public PersonResponseObject Execute(Guid id)
+        public async Task<PersonResponseObject> ExecuteAsync(Guid id)
         {
-            return _gateway.GetEntityById(id.ToString()).ToResponse();
+            var person = await _gateway.GetPersonByIdAsync(id).ConfigureAwait(false);
+            return _responseFactory.ToResponse(person);
         }
     }
 }

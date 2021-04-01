@@ -65,3 +65,5 @@ tmp/
 
 .fake
 .ionide
+
+testresults/

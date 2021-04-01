@@ -4,6 +4,7 @@ using NUnit.Framework;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
+using System;
 
 namespace PersonApi.Tests.V1.Factories
 {
@@ -39,25 +40,25 @@ namespace PersonApi.Tests.V1.Factories
         [Test]
         public void CanMapADomainEntityToADatabaseObject()
         {
-            var entity = _fixture.Create<Person>();
-            var databaseEntity = entity.ToDatabase();
+            var person = _fixture.Create<Person>();
+            var databaseEntity = person.ToDatabase();
 
-            entity.Id.Should().Be(databaseEntity.Id);
-            entity.Title.Should().Be(entity.Title);
-            entity.PreferredFirstname.Should().Be(databaseEntity.PreferredFirstname);
-            entity.PreferredSurname.Should().Be(databaseEntity.PreferredSurname);
-            entity.Firstname.Should().Be(databaseEntity.Firstname);
-            entity.MiddleName.Should().Be(databaseEntity.MiddleName);
-            entity.Surname.Should().Be(databaseEntity.Surname);
-            entity.Ethinicity.Should().Be(databaseEntity.Ethinicity);
-            entity.Nationality.Should().Be(databaseEntity.Nationality);
-            entity.PlaceOfBirth.Should().Be(databaseEntity.PlaceOfBirth);
-            entity.DateOfBirth.Should().Be(databaseEntity.DateOfBirth);
-            entity.Gender.Should().Be(databaseEntity.Gender);
-            entity.Identifications.Should().BeEquivalentTo(databaseEntity.Identifications);
-            entity.Languages.Should().BeEquivalentTo(databaseEntity.Languages);
-            entity.CommunicationRequirements.Should().BeEquivalentTo(databaseEntity.CommunicationRequirements);
-            entity.PersonTypes.Should().BeEquivalentTo(databaseEntity.PersonTypes);
+            person.Id.Should().Be(databaseEntity.Id);
+            person.Title.Should().Be(person.Title);
+            person.PreferredFirstname.Should().Be(databaseEntity.PreferredFirstname);
+            person.PreferredSurname.Should().Be(databaseEntity.PreferredSurname);
+            person.Firstname.Should().Be(databaseEntity.Firstname);
+            person.MiddleName.Should().Be(databaseEntity.MiddleName);
+            person.Surname.Should().Be(databaseEntity.Surname);
+            person.Ethinicity.Should().Be(databaseEntity.Ethinicity);
+            person.Nationality.Should().Be(databaseEntity.Nationality);
+            person.PlaceOfBirth.Should().Be(databaseEntity.PlaceOfBirth);
+            person.DateOfBirth.Should().Be(databaseEntity.DateOfBirth);
+            person.Gender.Should().Be(databaseEntity.Gender);
+            person.Identifications.Should().BeEquivalentTo(databaseEntity.Identifications);
+            person.Languages.Should().BeEquivalentTo(databaseEntity.Languages);
+            person.CommunicationRequirements.Should().BeEquivalentTo(databaseEntity.CommunicationRequirements);
+            person.PersonTypes.Should().BeEquivalentTo(databaseEntity.PersonTypes);
         }
     }
 }

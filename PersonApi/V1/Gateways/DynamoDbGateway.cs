@@ -2,6 +2,8 @@ using Amazon.DynamoDBv2.DataModel;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
+using System;
+using System.Threading.Tasks;
 
 namespace PersonApi.V1.Gateways
 {
@@ -14,9 +16,9 @@ namespace PersonApi.V1.Gateways
             _dynamoDbContext = dynamoDbContext;
         }
 
-        public Person GetEntityById(string id)
+        public async Task<Person> GetPersonByIdAsync(Guid id)
         {
-            var result = _dynamoDbContext.LoadAsync<PersonDbEntity>(id).GetAwaiter().GetResult();
+            var result = await _dynamoDbContext.LoadAsync<PersonDbEntity>(id).ConfigureAwait(false);
             return result?.ToDomain();
         }
     }

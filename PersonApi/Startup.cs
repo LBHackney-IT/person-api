@@ -1,3 +1,5 @@
+using Amazon;
+using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,7 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using PersonApi.V1;
+using PersonApi.V1.Boundary;
 using PersonApi.V1.Controllers;
+using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;
 using PersonApi.V1.UseCase;
@@ -21,6 +26,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace PersonApi
 {
@@ -43,6 +49,10 @@ namespace PersonApi
         {
             services
                 .AddMvc()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddApiVersioning(o =>
             {
@@ -111,6 +121,8 @@ namespace PersonApi
             });
 
             ConfigureLogging(services, Configuration);
+            AWSXRayRecorder.InitializeInstance(Configuration);
+            AWSXRayRecorder.RegisterLogger(LoggingOptions.SystemDiagnostics);
 
             services.ConfigureDynamoDB();
 
@@ -146,13 +158,15 @@ namespace PersonApi
         private static void RegisterUseCases(IServiceCollection services)
         {
             services.AddScoped<IGetByIdUseCase, GetByIdUseCase>();
+
+            // Used by the Use cases to add api links to any response object
+            services.AddScoped<IResponseFactory, ResponseFactory>();
+            services.AddScoped<IApiLinkGenerator, ApiLinkGenerator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCorrelation();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -162,6 +176,8 @@ namespace PersonApi
                 app.UseHsts();
             }
 
+            app.UseCustomExceptionHandler();
+            app.UseCorrelation();
             app.UseXRay("person-api");
 
             //Get All ApiVersions,
