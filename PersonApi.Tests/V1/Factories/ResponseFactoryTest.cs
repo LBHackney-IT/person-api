@@ -38,9 +38,9 @@ namespace PersonApi.Tests.V1.Factories
 
             response.Id.Should().Be(person.Id);
             response.Title.Should().Be(person.Title);
-            response.PreferredFirstname.Should().Be(person.PreferredFirstname);
+            response.PreferredFirstName.Should().Be(person.PreferredFirstname);
             response.PreferredSurname.Should().Be(person.PreferredSurname);
-            response.Firstname.Should().Be(person.Firstname);
+            response.FirstName.Should().Be(person.Firstname);
             response.MiddleName.Should().Be(person.MiddleName);
             response.Surname.Should().Be(person.Surname);
             response.Ethnicity.Should().Be(person.Ethnicity);
