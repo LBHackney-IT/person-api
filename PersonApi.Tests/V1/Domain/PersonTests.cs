@@ -1,15 +1,14 @@
 using FluentAssertions;
-using NUnit.Framework;
 using PersonApi.Tests.V1.Helper;
 using PersonApi.V1.Domain;
 using System.Linq;
+using Xunit;
 
 namespace PersonApi.Tests.V1.Domain
 {
-    [TestFixture]
     public class PersonTests
     {
-        [Test]
+        [Fact]
         public void PersonHasPropertiesSet()
         {
             Person person = Constants.ConstructPersonFromConstants();

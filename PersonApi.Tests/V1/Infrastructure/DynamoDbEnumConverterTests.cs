@@ -1,57 +1,55 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using FluentAssertions;
-using NUnit.Framework;
 using PersonApi.V1.Infrastructure;
 using System;
+using Xunit;
 
 namespace PersonApi.Tests.V1.Infrastructure
 {
-    [TestFixture]
     public class DynamoDbEnumConverterTests
     {
         public enum Number { One, Two, Three, Four, Five }
 
-        private DynamoDbEnumConverter<Number> _sut;
+        private readonly DynamoDbEnumConverter<Number> _sut;
 
-        [SetUp]
-        public void TestSetup()
+        public DynamoDbEnumConverterTests()
         {
             _sut = new DynamoDbEnumConverter<Number>();
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestNullValueReturnsNull()
         {
             _sut.ToEntry(null).Should().BeEquivalentTo(new DynamoDBNull());
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestEnumValueReturnsConvertedValue()
         {
             var value = Number.Five;
             _sut.ToEntry(value).Should().BeEquivalentTo(new Primitive { Value = "Five" });
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestInvalidInputThrows()
         {
             _sut.Invoking((c) => c.ToEntry("This is an error"))
                 .Should().Throw<ArgumentException>();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestNullValueReturnsEnumDefault()
         {
             _sut.FromEntry(null).Should().BeEquivalentTo(default(Number));
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestDynamoDBNullReturnsEnumDefault()
         {
             _sut.FromEntry(new DynamoDBNull()).Should().BeEquivalentTo(default(Number));
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestEnumValueReturnsConvertedValue()
         {
             var stringValue = "Three";
@@ -60,7 +58,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             ((Number) _sut.FromEntry(dbEntry)).Should().Be(Number.Three);
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestInvalidInputThrows()
         {
             DynamoDBEntry dbEntry = new Primitive { Value = "This is an error" };

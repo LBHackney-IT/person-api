@@ -1,36 +1,34 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using FluentAssertions;
-using NUnit.Framework;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
 namespace PersonApi.Tests.V1.Infrastructure
 {
-    [TestFixture]
     public class DynamoDbEnumListConverterTest
     {
         public enum Number { One, Two, Three, Four, Five }
 
-        private DynamoDbEnumListConverter<Number> _sut;
+        private readonly DynamoDbEnumListConverter<Number> _sut;
 
-        [SetUp]
-        public void TestSetup()
+        public DynamoDbEnumListConverterTest()
         {
             _sut = new DynamoDbEnumListConverter<Number>();
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestNullValueReturnsNull()
         {
             _sut.ToEntry(null).Should().BeEquivalentTo(new DynamoDBNull());
         }
 
-        [TestCase()]
-        [TestCase(Number.One)]
-        [TestCase(Number.One, Number.Three)]
-        [TestCase(Number.One, Number.Three, Number.Four)]
+        [Theory]
+        [InlineData(Number.One)]
+        [InlineData(Number.One, Number.Three)]
+        [InlineData(Number.One, Number.Three, Number.Four)]
         public void ToEntryTestEnumValueReturnsConvertedValues(params Number[] args)
         {
             var list = args.ToList();
@@ -38,7 +36,7 @@ namespace PersonApi.Tests.V1.Infrastructure
                 new DynamoDBList(list.Select(x => new Primitive(Enum.GetName(typeof(Number), x)))));
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestInvalidInputThrows()
         {
             List<string> list = new List<string>(new[] { "Some", "Thing" });
@@ -46,19 +44,19 @@ namespace PersonApi.Tests.V1.Infrastructure
                 .Should().Throw<ArgumentException>();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestNullValueReturnsNull()
         {
             _sut.FromEntry(null).Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestDynamoDBNullReturnsNull()
         {
             _sut.FromEntry(new DynamoDBNull()).Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestEnumValuesReturnsConvertedValues()
         {
             List<string> list = new List<string>(new[] { "One", "Four", "Five" });
@@ -68,7 +66,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             ((List<Number>) _sut.FromEntry(dbEntry)).Should().BeEquivalentTo(expected);
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestInputNotAListThrows()
         {
             DynamoDBEntry dbEntry = new Primitive { Value = "This is an error" };
@@ -77,7 +75,7 @@ namespace PersonApi.Tests.V1.Infrastructure
                 .Should().Throw<ArgumentException>();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestInvalidEnumInputThrows()
         {
             List<string> list = new List<string>(new[] { "One", "Nine", "Five" });

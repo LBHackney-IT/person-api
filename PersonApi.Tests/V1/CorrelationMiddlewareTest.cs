@@ -1,24 +1,21 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using NUnit.Framework;
 using PersonApi.V1.Controllers;
-using System.Linq;
 using System.Threading.Tasks;
+using Xunit;
 
-namespace PersonApi.Tests.V1.Infrastructure
+namespace PersonApi.Tests.V1
 {
-    [TestFixture]
     public class CorrelationMiddlewareTest
     {
-        private CorrelationMiddleware _sut;
+        private readonly CorrelationMiddleware _sut;
 
-        [SetUp]
-        public void Init()
+        public CorrelationMiddlewareTest()
         {
             _sut = new CorrelationMiddleware(null);
         }
 
-        [Test]
+        [Fact]
         public async Task DoesNotReplaceCorrelationIdIfOneExists()
         {
             // Arrange
@@ -34,7 +31,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             httpContext.HttpContext.Request.Headers[Constants.CorrelationId].Should().BeEquivalentTo(headerValue);
         }
 
-        [Test]
+        [Fact]
         public async Task AddsCorrelationIdIfOneDoesNotExist()
         {
             // Arrange

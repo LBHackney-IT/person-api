@@ -1,19 +1,18 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using AutoFixture;
 using FluentAssertions;
-using NUnit.Framework;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Xunit;
 
 namespace PersonApi.Tests.V1.Infrastructure
 {
-    [TestFixture]
     public class DynamoDbObjectConverterTests
     {
         private readonly Fixture _fixture = new Fixture();
-        private DynamoDbObjectConverter<SomeObject> _sut;
+        private readonly DynamoDbObjectConverter<SomeObject> _sut;
 
         private static JsonSerializerOptions CreateJsonOptions()
         {
@@ -26,19 +25,18 @@ namespace PersonApi.Tests.V1.Infrastructure
             return options;
         }
 
-        [SetUp]
-        public void TestSetup()
+        public DynamoDbObjectConverterTests()
         {
             _sut = new DynamoDbObjectConverter<SomeObject>();
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestNullValueReturnsNull()
         {
             _sut.ToEntry(null).Should().BeEquivalentTo(new DynamoDBNull());
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestEnumValueReturnsConvertedValue()
         {
             var obj = _fixture.Create<SomeObject>();
@@ -46,19 +44,19 @@ namespace PersonApi.Tests.V1.Infrastructure
                 Document.FromJson(JsonSerializer.Serialize(obj, CreateJsonOptions())));
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestNullValueReturnsNull()
         {
             _sut.FromEntry(null).Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestDynamoDBNullReturnsNull()
         {
             _sut.FromEntry(new DynamoDBNull()).Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestEnumValueReturnsConvertedValue()
         {
             var obj = _fixture.Create<SomeObject>();
@@ -68,7 +66,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             ((SomeObject) _sut.FromEntry(dbEntry)).Should().BeEquivalentTo(obj);
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestInvalidInputNotAnObjectTypeThrows()
         {
             DynamoDBEntry dbEntry = new Primitive { Value = "This is an error" };
@@ -77,7 +75,7 @@ namespace PersonApi.Tests.V1.Infrastructure
                 .Should().Throw<ArgumentException>();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestInvalidInputWrongObjectReturnsEmptyObject()
         {
             var obj = _fixture.Create<SomeOtherObject>();

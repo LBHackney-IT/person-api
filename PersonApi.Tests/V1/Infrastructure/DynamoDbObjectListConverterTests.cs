@@ -1,21 +1,20 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using AutoFixture;
 using FluentAssertions;
-using NUnit.Framework;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Xunit;
 
 namespace PersonApi.Tests.V1.Infrastructure
 {
-    [TestFixture]
     public class DynamoDbObjectListConverterTests
     {
         private readonly Fixture _fixture = new Fixture();
-        private DynamoDbObjectListConverter<SomeObject> _sut;
+        private readonly DynamoDbObjectListConverter<SomeObject> _sut;
 
         private List<T> CreateObjectList<T>() where T : class
         {
@@ -38,19 +37,18 @@ namespace PersonApi.Tests.V1.Infrastructure
             return options;
         }
 
-        [SetUp]
-        public void TestSetup()
+        public DynamoDbObjectListConverterTests()
         {
             _sut = new DynamoDbObjectListConverter<SomeObject>();
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestNullValueReturnsNull()
         {
             _sut.ToEntry(null).Should().BeEquivalentTo(new DynamoDBNull());
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestEnumValueReturnsConvertedObjects()
         {
             var list = CreateObjectList<SomeObject>();
@@ -58,7 +56,7 @@ namespace PersonApi.Tests.V1.Infrastructure
                 new DynamoDBList(list.Select(x => Document.FromJson(JsonSerializer.Serialize(x, CreateJsonOptions())))));
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestInvalidInputThrows()
         {
             List<SomeOtherObject> list = new List<SomeOtherObject>(new[] { _fixture.Create<SomeOtherObject>() });
@@ -66,19 +64,19 @@ namespace PersonApi.Tests.V1.Infrastructure
                 .Should().Throw<ArgumentException>();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestNullValueReturnsNull()
         {
             _sut.FromEntry(null).Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestDynamoDBNullReturnsNull()
         {
             _sut.FromEntry(new DynamoDBNull()).Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestObjectListReturnsConvertedList()
         {
             var list = CreateObjectList<SomeObject>();
@@ -88,7 +86,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             _sut.FromEntry(dbEntry).Should().BeEquivalentTo(list);
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestInputNotAListThrows()
         {
             DynamoDBEntry dbEntry = new Primitive { Value = "This is an error" };
@@ -97,7 +95,7 @@ namespace PersonApi.Tests.V1.Infrastructure
                 .Should().Throw<ArgumentException>();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestWrongObjectsReturnsEmptyObjects()
         {
             var list = CreateObjectList<SomeOtherObject>();

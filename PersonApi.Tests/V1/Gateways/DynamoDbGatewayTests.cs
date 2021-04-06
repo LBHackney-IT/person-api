@@ -2,31 +2,29 @@ using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
 using FluentAssertions;
 using Moq;
-using NUnit.Framework;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace PersonApi.Tests.V1.Gateways
 {
-    [TestFixture]
     public class DynamoDbGatewayTests
     {
         private readonly Fixture _fixture = new Fixture();
-        private Mock<IDynamoDBContext> _dynamoDb;
-        private DynamoDbGateway _classUnderTest;
+        private readonly Mock<IDynamoDBContext> _dynamoDb;
+        private readonly DynamoDbGateway _classUnderTest;
 
-        [SetUp]
-        public void Setup()
+        public DynamoDbGatewayTests()
         {
             _dynamoDb = new Mock<IDynamoDBContext>();
             _classUnderTest = new DynamoDbGateway(_dynamoDb.Object);
         }
 
-        [Test]
+        [Fact]
         public async Task GetPersonByIdReturnsNullIfEntityDoesntExist()
         {
             // Act
@@ -36,7 +34,7 @@ namespace PersonApi.Tests.V1.Gateways
             response.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public async Task GetPersonByIdReturnsThePersonIfItExists()
         {
             // Arrange
@@ -55,7 +53,7 @@ namespace PersonApi.Tests.V1.Gateways
             entity.Id.Should().Be(response.Id);
         }
 
-        [Test]
+        [Fact]
         public void GetPersonByIdExceptionThrow()
         {
             // Arrange
