@@ -31,9 +31,9 @@ namespace PersonApi.V1.Factories
             {
                 Id = domain.Id,
                 Title = domain.Title,
-                PreferredFirstname = domain.PreferredFirstname,
+                PreferredFirstName = domain.PreferredFirstname,
                 PreferredSurname = domain.PreferredSurname,
-                Firstname = domain.Firstname,
+                FirstName = domain.Firstname,
                 MiddleName = domain.MiddleName,
                 Surname = domain.Surname,
                 Ethnicity = domain.Ethnicity,
