@@ -11,11 +11,11 @@ namespace PersonApi.V1.Boundary.Response
         /// <example>Mr, Mrs, Miss</example>
         public Title Title { get; set; }
         /// <example>Julie</example>
-        public string PreferredFirstname { get; set; }
+        public string PreferredFirstName { get; set; }
         /// <example>Evans</example>
         public string PreferredSurname { get; set; }
         /// <example>Julie</example>
-        public string Firstname { get; set; }
+        public string FirstName { get; set; }
         /// <example></example>
         public string MiddleName { get; set; }
         /// <example>Evans</example>
