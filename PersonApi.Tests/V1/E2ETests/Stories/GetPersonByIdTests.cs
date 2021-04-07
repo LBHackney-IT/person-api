@@ -11,20 +11,18 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         AsA = "Service",
         IWant = "an endpoint to return person details",
         SoThat = "it is possible to view the details of a person")]
-    [Collection("GetPersonByIdTests")]
-    [CollectionDefinition("GetPersonByIdTests", DisableParallelization = true)]
-    public class GetPersonByIdTests : IClassFixture<DynamoDbIntegrationTests<Startup>>, IDisposable
+    [Collection("DynamoDb collection")]
+    public class GetPersonByIdTests : IDisposable
     {
-        private readonly DynamoDbIntegrationTests<Startup> _classFixture;
+        private readonly DynamoDbIntegrationTests<Startup> _dbFixture;
         private readonly PersonFixture _personFixture;
         private readonly GetPersonSteps _steps;
 
-        public GetPersonByIdTests(DynamoDbIntegrationTests<Startup> classFixture)
+        public GetPersonByIdTests(DynamoDbIntegrationTests<Startup> dbFixture)
         {
-            _classFixture = classFixture;
-            _classFixture.CreateClient();
-            _personFixture = new PersonFixture(_classFixture.DynamoDbContext);
-            _steps = new GetPersonSteps(_classFixture.Client);
+            _dbFixture = dbFixture;
+            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext);
+            _steps = new GetPersonSteps(_dbFixture.Client);
         }
 
         public void Dispose()

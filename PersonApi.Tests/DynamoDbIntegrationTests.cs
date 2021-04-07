@@ -3,10 +3,10 @@ using Amazon.DynamoDBv2.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Xunit;
 
 namespace PersonApi.Tests
 {
-
     public class DynamoDbIntegrationTests<TStartup> : IDisposable where TStartup : class
     {
         public HttpClient Client { get; private set; }
@@ -23,6 +23,7 @@ namespace PersonApi.Tests
             EnsureEnvVarConfigured("DynamoDb_LocalMode", "true");
             EnsureEnvVarConfigured("DynamoDb_LocalServiceUrl", "http://localhost:8000");
             _factory = new DynamoDbMockWebApplicationFactory<TStartup>(_tables);
+            Client = _factory.CreateClient();
         }
 
         public void Dispose()
@@ -47,11 +48,6 @@ namespace PersonApi.Tests
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(name)))
                 Environment.SetEnvironmentVariable(name, defaultValue);
         }
-
-        public void CreateClient()
-        {
-            Client = _factory.CreateClient();
-        }
     }
 
     public class TableDef
@@ -59,5 +55,14 @@ namespace PersonApi.Tests
         public string Name { get; set; }
         public string KeyName { get; set; }
         public ScalarAttributeType KeyType { get; set; }
+    }
+
+
+    [CollectionDefinition("DynamoDb collection", DisableParallelization = true)]
+    public class DynamoDbCollection : ICollectionFixture<DynamoDbIntegrationTests<Startup>>
+    {
+        // This class has no code, and is never created. Its purpose is simply
+        // to be the place to apply [CollectionDefinition] and all the
+        // ICollectionFixture<> interfaces.
     }
 }
