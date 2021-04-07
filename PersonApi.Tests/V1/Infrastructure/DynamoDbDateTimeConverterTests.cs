@@ -1,49 +1,47 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using FluentAssertions;
-using NUnit.Framework;
 using PersonApi.V1.Infrastructure;
 using System;
+using Xunit;
 
 namespace PersonApi.Tests.V1.Infrastructure
 {
-    [TestFixture]
     public class DynamoDbDateTimeConverterTests
     {
-        private DynamoDbDateTimeConverter _sut;
+        private readonly DynamoDbDateTimeConverter _sut;
 
-        [SetUp]
-        public void TestSetup()
+        public DynamoDbDateTimeConverterTests()
         {
             _sut = new DynamoDbDateTimeConverter();
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestNullValueReturnsNull()
         {
             _sut.ToEntry(null).Should().BeEquivalentTo(new DynamoDBNull());
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestDateTimeReturnsConvertedValue()
         {
             DateTime now = DateTime.UtcNow;
             _sut.ToEntry(now).Should().BeEquivalentTo(new Primitive { Value = now.ToString(DynamoDbDateTimeConverter.DATEFORMAT) });
         }
 
-        [Test]
+        [Fact]
         public void ToEntryTestInvalidInputThrows()
         {
             _sut.Invoking((c) => c.ToEntry("This is an error"))
                 .Should().Throw<InvalidCastException>();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestNullValueReturnsNull()
         {
             _sut.FromEntry(null).Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestDateTimeReturnsConvertedValue()
         {
             DateTime now = DateTime.UtcNow;
@@ -52,7 +50,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             ((DateTime) _sut.FromEntry(dbEntry)).Should().BeCloseTo(now);
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestDateOnlyReturnsConvertedValue()
         {
             DateTime now = DateTime.UtcNow;
@@ -61,7 +59,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             ((DateTime) _sut.FromEntry(dbEntry)).Should().BeCloseTo(now.Date);
         }
 
-        [Test]
+        [Fact]
         public void FromEntryTestInvalidInputThrows()
         {
             DynamoDBEntry dbEntry = new Primitive { Value = "This is an error" };

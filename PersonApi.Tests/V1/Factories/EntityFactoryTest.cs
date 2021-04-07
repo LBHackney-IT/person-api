@@ -1,19 +1,17 @@
 using AutoFixture;
 using FluentAssertions;
-using NUnit.Framework;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
-using System;
+using Xunit;
 
 namespace PersonApi.Tests.V1.Factories
 {
-    [TestFixture]
     public class EntityFactoryTest
     {
         private readonly Fixture _fixture = new Fixture();
 
-        [Test]
+        [Fact]
         public void CanMapADatabaseEntityToADomainObject()
         {
             var databaseEntity = _fixture.Create<PersonDbEntity>();
@@ -37,7 +35,7 @@ namespace PersonApi.Tests.V1.Factories
             databaseEntity.PersonTypes.Should().BeEquivalentTo(entity.PersonTypes);
         }
 
-        [Test]
+        [Fact]
         public void CanMapADomainEntityToADatabaseObject()
         {
             var person = _fixture.Create<Person>();

@@ -1,8 +1,9 @@
-using NUnit.Framework;
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.Tests.V1.E2ETests.Steps;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using TestStack.BDDfy;
+using Xunit;
 
 namespace PersonApi.Tests.V1.E2ETests.Stories
 {
@@ -10,26 +11,39 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         AsA = "Service",
         IWant = "an endpoint to return person details",
         SoThat = "it is possible to view the details of a person")]
-    [TestFixture]
-    public class GetPersonByIdTests : DynamoDbIntegrationTests<Startup>
+    [Collection("DynamoDb collection")]
+    public class GetPersonByIdTests : IDisposable
     {
-        private PersonFixture _personFixture;
-        private GetPersonSteps _steps;
+        private readonly DynamoDbIntegrationTests<Startup> _dbFixture;
+        private readonly PersonFixture _personFixture;
+        private readonly GetPersonSteps _steps;
 
-        [SetUp]
-        public void Setup()
+        public GetPersonByIdTests(DynamoDbIntegrationTests<Startup> dbFixture)
         {
-            _personFixture = new PersonFixture(DynamoDbContext);
-            _steps = new GetPersonSteps(Client);
+            _dbFixture = dbFixture;
+            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext);
+            _steps = new GetPersonSteps(_dbFixture.Client);
         }
 
-        [TearDown]
-        public void TearDown()
+        public void Dispose()
         {
-            _personFixture.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        [Test]
+        private bool _disposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                if (null != _personFixture)
+                    _personFixture.Dispose();
+
+                _disposed = true;
+            }
+        }
+
+        [Fact]
         [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "BDDfy")]
         public void ServiceReturnsTheRequestedPerson()
         {
@@ -39,7 +53,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
                 .BDDfy();
         }
 
-        [Test]
+        [Fact]
         [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "BDDfy")]
         public void ServiceReturnsNotFoundIfPersonNotExist()
         {
@@ -49,7 +63,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
                 .BDDfy();
         }
 
-        [Test]
+        [Fact]
         [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "BDDfy")]
         public void ServiceReturnsBadRequestIfIdInvalid()
         {

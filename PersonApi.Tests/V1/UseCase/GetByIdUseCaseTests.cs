@@ -1,33 +1,32 @@
+using AutoFixture;
+using FluentAssertions;
+using Moq;
+using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Domain;
+using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.UseCase;
-using Moq;
-using NUnit.Framework;
-using System.Threading.Tasks;
 using System;
-using PersonApi.V1.Domain;
-using FluentAssertions;
-using AutoFixture;
-using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.Factories;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace PersonApi.Tests.V1.UseCase
 {
     public class GetByIdUseCaseTests
     {
-        private Mock<IPersonApiGateway> _mockGateway;
-        private ResponseFactory _responseFactory;
-        private GetByIdUseCase _classUnderTest;
+        private readonly Mock<IPersonApiGateway> _mockGateway;
+        private readonly ResponseFactory _responseFactory;
+        private readonly GetByIdUseCase _classUnderTest;
         private readonly Fixture _fixture = new Fixture();
 
-        [SetUp]
-        public void SetUp()
+        public GetByIdUseCaseTests()
         {
             _mockGateway = new Mock<IPersonApiGateway>();
             _responseFactory = new ResponseFactory(null);
             _classUnderTest = new GetByIdUseCase(_mockGateway.Object, _responseFactory);
         }
 
-        [Test]
+        [Fact]
         public async Task GetByIdUseCaseGatewayReturnsNullReturnsNull()
         {
             // Arrange
@@ -41,7 +40,7 @@ namespace PersonApi.Tests.V1.UseCase
             response.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public async Task GetPersonByIdAsyncFoundReturnsResponse()
         {
             // Arrange
@@ -56,7 +55,7 @@ namespace PersonApi.Tests.V1.UseCase
             response.Should().BeEquivalentTo(_responseFactory.ToResponse(person));
         }
 
-        [Test]
+        [Fact]
         public void GetPersonByIdAsyncExceptionIsThrown()
         {
             // Arrange

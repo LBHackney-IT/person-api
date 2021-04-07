@@ -3,17 +3,16 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Moq;
-using NUnit.Framework;
 using PersonApi.V1;
 using PersonApi.V1.Controllers;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace PersonApi.Tests.V1
 {
-    [TestFixture]
     public class ExceptionMiddlewareTests
     {
         private readonly string _traceId = Guid.NewGuid().ToString();
@@ -21,12 +20,11 @@ namespace PersonApi.Tests.V1
         private const int DEFAULTERRORCODE = 500;
         private const string DEFAULTERRORMESSAGE = "Internal Server Error.";
 
-        private HttpContext _httpContext;
-        private Mock<IExceptionHandlerFeature> _mockExHandlerFeature;
+        private readonly HttpContext _httpContext;
+        private readonly Mock<IExceptionHandlerFeature> _mockExHandlerFeature;
         private readonly InMemoryTraceListener _traceListener = new InMemoryTraceListener();
 
-        [SetUp]
-        public void TestSetup()
+        public ExceptionMiddlewareTests()
         {
             _httpContext = new DefaultHttpContext();
             _httpContext.TraceIdentifier = _traceId;
@@ -54,7 +52,7 @@ namespace PersonApi.Tests.V1
             }
         }
 
-        [Test]
+        [Fact]
         public async Task HandleExceptionsTestNoExceptionHandlerWritesResponse()
         {
             // Arrange
@@ -68,7 +66,7 @@ namespace PersonApi.Tests.V1
             await VerifyResponse().ConfigureAwait(false);
         }
 
-        [Test]
+        [Fact]
         public async Task HandleExceptionsTestWithHandlerButNoExceptionWritesResponse()
         {
             // Act
@@ -80,7 +78,7 @@ namespace PersonApi.Tests.V1
             _traceListener.ContainsTrace("Request failed. ").Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public async Task HandleExceptionsTestWithHandlerWithExceptionWritesResponse()
         {
             // Arrange

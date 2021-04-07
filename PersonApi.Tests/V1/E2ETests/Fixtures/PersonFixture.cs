@@ -1,6 +1,5 @@
 using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
-using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using System;
 
@@ -10,7 +9,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
     {
         private readonly Fixture _fixture = new Fixture();
         private readonly IDynamoDBContext _dbContext;
-        public PersonDbEntity Person { get; private set; } = null;
+        public PersonDbEntity Person { get; private set; }
         public Guid PersonId { get; private set; }
         public string InvalidPersonId { get; private set; }
 
@@ -25,12 +24,15 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             GC.SuppressFinalize(this);
         }
 
+        private bool _disposed;
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && !_disposed)
             {
                 if (null != Person)
                     _dbContext.DeleteAsync<PersonDbEntity>(Person.Id).GetAwaiter().GetResult();
+
+                _disposed = true;
             }
         }
 

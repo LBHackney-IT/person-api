@@ -2,30 +2,28 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NUnit.Framework;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Controllers;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace PersonApi.Tests.V1.Controllers
 {
-    [TestFixture]
     public class PersonApiControllerTests
     {
-        private Mock<IGetByIdUseCase> _mockGetByIdUseCase;
-        private PersonApiController _sut;
+        private readonly Mock<IGetByIdUseCase> _mockGetByIdUseCase;
+        private readonly PersonApiController _sut;
         private readonly Fixture _fixture = new Fixture();
 
-        [SetUp]
-        public void Setup()
+        public PersonApiControllerTests()
         {
             _mockGetByIdUseCase = new Mock<IGetByIdUseCase>();
             _sut = new PersonApiController(_mockGetByIdUseCase.Object);
         }
 
-        [Test]
+        [Fact]
         public async Task GetPersonByIdAsyncNotFoundReturnsNotFound()
         {
             // Arrange
@@ -40,7 +38,7 @@ namespace PersonApi.Tests.V1.Controllers
             (response as NotFoundObjectResult).Value.Should().Be(id);
         }
 
-        [Test]
+        [Fact]
         public async Task GetPersonByIdAsyncFoundReturnsResponse()
         {
             // Arrange
@@ -56,7 +54,7 @@ namespace PersonApi.Tests.V1.Controllers
             (response as OkObjectResult).Value.Should().Be(personResponse);
         }
 
-        [Test]
+        [Fact]
         public void GetPersonByIdAsyncExceptionIsThrown()
         {
             // Arrange

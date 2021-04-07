@@ -1,13 +1,12 @@
-using PersonApi.V1.UseCase;
 using FluentAssertions;
-using NUnit.Framework;
+using PersonApi.V1.UseCase;
+using Xunit;
 
 namespace PersonApi.Tests.V1.UseCase
 {
-    [TestFixture]
     public class ThrowOpsErrorUsecaseTests
     {
-        [Test]
+        [Fact]
         public void ThrowsTestOpsErrorException()
         {
             var ex = Assert.Throws<TestOpsErrorException>(

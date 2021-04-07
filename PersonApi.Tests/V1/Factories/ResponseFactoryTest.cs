@@ -1,28 +1,27 @@
-using PersonApi.V1.Domain;
-using PersonApi.V1.Factories;
-using NUnit.Framework;
-using System;
-using FluentAssertions;
 using AutoFixture;
+using FluentAssertions;
 using Moq;
 using PersonApi.V1.Boundary;
+using PersonApi.V1.Domain;
+using PersonApi.V1.Factories;
+using System;
+using Xunit;
 
 namespace PersonApi.Tests.V1.Factories
 {
     public class ResponseFactoryTest
     {
         private readonly Fixture _fixture = new Fixture();
-        private Mock<IApiLinkGenerator> _mockLinkGenerator;
-        private ResponseFactory _sut;
+        private readonly Mock<IApiLinkGenerator> _mockLinkGenerator;
+        private readonly ResponseFactory _sut;
 
-        [SetUp]
-        public void Setup()
+        public ResponseFactoryTest()
         {
             _mockLinkGenerator = new Mock<IApiLinkGenerator>();
             _sut = new ResponseFactory(_mockLinkGenerator.Object);
         }
 
-        [Test]
+        [Fact]
         public void FormatDOBTest()
         {
             var dob = DateTime.UtcNow.AddYears(-30);
@@ -30,7 +29,7 @@ namespace PersonApi.Tests.V1.Factories
             formatted.Should().Be(dob.ToString("yyyy-MM-dd"));
         }
 
-        [Test]
+        [Fact]
         public void CanMapADomainPersonToAResponsePerson()
         {
             var person = _fixture.Create<Person>();
