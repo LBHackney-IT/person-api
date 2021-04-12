@@ -8,7 +8,6 @@ provider:
     apiGateway: true
   vpc: ${self:custom.vpc.${opt:stage}}
   stage: ${opt:stage}
-  account: ${opt:account}
   region: eu-west-2
   apiKeys:
     - secureAccess:
@@ -58,7 +57,7 @@ resources:
               Action: sts:AssumeRole
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
-          - arn:aws:iam::${self:provider.account}:policy/person-api/lambda-dynamodb-person-api
+          - arn:aws:iam::aws:policy/person-api/lambda-dynamodb-person-api
           - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
         Policies:
           - PolicyName: manageLogs
