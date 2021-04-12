@@ -86,7 +86,7 @@ commands:
           name: Deploy lambda
           command: |
             cd ./PersonApi/
-            sls deploy --stage <<parameters.stage>> --conceal
+            sls deploy --stage <<parameters.stage>> --account <<parameters.aws-account>> --conceal
 
 jobs:
   check-code-formatting:
