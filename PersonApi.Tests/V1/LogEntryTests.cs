@@ -13,7 +13,7 @@ namespace PersonApi.Tests.V1
         {
             var sut = new LogEntry();
             sut.CorrelationId.Should().BeNull();
-            sut.Timestamp .Should().Be(default(DateTime));
+            sut.Timestamp.Should().Be(default(DateTime));
             sut.UserId.Should().BeNull();
             sut.Level.Should().Be(default(LogLevel));
             sut.Message.Should().BeNull();
