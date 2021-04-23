@@ -1,7 +1,7 @@
-using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
 
@@ -13,9 +13,12 @@ namespace PersonApi.V1.Controllers
     [ApiVersion("1.0")]
     public class PersonApiController : BaseController
     {
+        private readonly IMethodLogger _methodLogger;
         private readonly IGetByIdUseCase _getByIdUseCase;
-        public PersonApiController(IGetByIdUseCase getByIdUseCase)
+        public PersonApiController(IMethodLogger methodLogger,
+            IGetByIdUseCase getByIdUseCase)
         {
+            _methodLogger = methodLogger;
             _getByIdUseCase = getByIdUseCase;
         }
 
@@ -34,10 +37,13 @@ namespace PersonApi.V1.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetPersonByIdAsync(Guid id)
         {
-            var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-            if (null == person) return NotFound(id);
+            return await _methodLogger.ExecuteAsync<IActionResult>("GetPersonByIdAsync", async () =>
+            {
+                var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+                if (null == person) return NotFound(id);
 
-            return Ok(person);
+                return Ok(person);
+            }).ConfigureAwait(false);
         }
     }
 }

@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using PersonApi.V1.Controllers;
 using System;
-using System.Diagnostics;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace PersonApi.V1
@@ -13,18 +13,19 @@ namespace PersonApi.V1
 
     public static class ExceptionMiddlewareExtensions
     {
-        public static void UseCustomExceptionHandler(this IApplicationBuilder app)
+        [ExcludeFromCodeCoverage]
+        public static void UseCustomExceptionHandler(this IApplicationBuilder app, IApiLogger logger)
         {
-            app.UseExceptionHandler(appError =>
+            app.UseExceptionHandler(builder =>
             {
-                appError.Run(async context =>
+                builder.Run(async context =>
                 {
-                    await HandleExceptions(context/*, logger*/).ConfigureAwait(false);
+                    await HandleExceptions(context, logger).ConfigureAwait(false);
                 });
             });
         }
 
-        public static async Task HandleExceptions(HttpContext context)
+        public static async Task HandleExceptions(HttpContext context, IApiLogger logger)
         {
             context.Response.ContentType = "application/json";
             string message = "Internal Server Error.";
@@ -43,10 +44,10 @@ namespace PersonApi.V1
                         break;
                 }
 
-                Trace.TraceError($"Request failed. {contextFeature.Error?.Message}");
+                logger.Log(LogLevel.Error, "Exception thrown", contextFeature.Error);
             }
 
-            var correlationId = context.Request.Headers[Constants.CorrelationId].FirstOrDefault();
+            var correlationId = context.Request.Headers.GetHeaderValue(Constants.CorrelationId);
             var exceptionResult = new ExceptionResult(message, context.TraceIdentifier,
                 correlationId, context.Response.StatusCode);
             await context.Response.WriteAsync(exceptionResult.ToString()).ConfigureAwait(false);

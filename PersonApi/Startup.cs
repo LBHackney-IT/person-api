@@ -23,6 +23,7 @@ using PersonApi.Versioning;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -30,6 +31,7 @@ using System.Text.Json.Serialization;
 
 namespace PersonApi
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -125,6 +127,7 @@ namespace PersonApi
             AWSXRayRecorder.RegisterLogger(LoggingOptions.SystemDiagnostics);
 
             services.ConfigureDynamoDB();
+            services.RegisterLogging();
 
             RegisterGateways(services);
             RegisterUseCases(services);
@@ -165,7 +168,7 @@ namespace PersonApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiLogger logger)
         {
             if (env.IsDevelopment())
             {
@@ -176,8 +179,8 @@ namespace PersonApi
                 app.UseHsts();
             }
 
-            app.UseCustomExceptionHandler();
             app.UseCorrelation();
+            app.UseCustomExceptionHandler(logger);
             app.UseXRay("person-api");
 
             //Get All ApiVersions,

@@ -1,12 +1,12 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using PersonApi.V1;
 using PersonApi.V1.Controllers;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
@@ -22,7 +22,8 @@ namespace PersonApi.Tests.V1
 
         private readonly HttpContext _httpContext;
         private readonly Mock<IExceptionHandlerFeature> _mockExHandlerFeature;
-        private readonly InMemoryTraceListener _traceListener = new InMemoryTraceListener();
+
+        private readonly Mock<IApiLogger> _mockLogger;
 
         public ExceptionMiddlewareTests()
         {
@@ -35,8 +36,7 @@ namespace PersonApi.Tests.V1
             _mockExHandlerFeature = new Mock<IExceptionHandlerFeature>();
             _httpContext.Features.Set(_mockExHandlerFeature.Object);
 
-            _traceListener.Reset();
-            Trace.Listeners.Add(_traceListener);
+            _mockLogger = new Mock<IApiLogger>();
         }
 
         private async Task VerifyResponse(string resultMessage = DEFAULTERRORMESSAGE, int statusCode = DEFAULTERRORCODE)
@@ -59,7 +59,7 @@ namespace PersonApi.Tests.V1
             _httpContext.Features.Set<IExceptionHandlerFeature>(null);
 
             // Act
-            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext)
+            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext, _mockLogger.Object)
                                                .ConfigureAwait(false);
 
             // Assert
@@ -70,12 +70,13 @@ namespace PersonApi.Tests.V1
         public async Task HandleExceptionsTestWithHandlerButNoExceptionWritesResponse()
         {
             // Act
-            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext)
+            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext, _mockLogger.Object)
                                                .ConfigureAwait(false);
 
             // Assert
             await VerifyResponse().ConfigureAwait(false);
-            _traceListener.ContainsTrace("Request failed. ").Should().BeTrue();
+            _mockLogger.Verify(x => x.Log(LogLevel.Error,
+                It.Is<string>(y => y.Contains("Exception thrown")), null), Times.Once);
         }
 
         [Fact]
@@ -87,12 +88,13 @@ namespace PersonApi.Tests.V1
             _mockExHandlerFeature.SetupGet(x => x.Error).Returns(exception);
 
             // Act
-            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext)
+            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext, _mockLogger.Object)
                                                .ConfigureAwait(false);
 
             // Assert
             await VerifyResponse(exMessage).ConfigureAwait(false);
-            _traceListener.ContainsTrace($"Request failed. {exMessage}").Should().BeTrue();
+            _mockLogger.Verify(x => x.Log(LogLevel.Error,
+                It.Is<string>(y => y.Contains("Exception thrown")), exception), Times.Once);
         }
     }
 }

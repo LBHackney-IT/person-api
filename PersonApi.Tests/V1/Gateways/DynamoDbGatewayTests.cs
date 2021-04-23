@@ -2,6 +2,7 @@ using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
 using FluentAssertions;
 using Moq;
+using PersonApi.V1;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
@@ -16,12 +17,14 @@ namespace PersonApi.Tests.V1.Gateways
     {
         private readonly Fixture _fixture = new Fixture();
         private readonly Mock<IDynamoDBContext> _dynamoDb;
+        private readonly Mock<IApiLogger> _mockLogger;
         private readonly DynamoDbGateway _classUnderTest;
 
         public DynamoDbGatewayTests()
         {
             _dynamoDb = new Mock<IDynamoDBContext>();
-            _classUnderTest = new DynamoDbGateway(_dynamoDb.Object);
+            _mockLogger = new Mock<IApiLogger>();
+            _classUnderTest = new DynamoDbGateway(_dynamoDb.Object, _mockLogger.Object);
         }
 
         [Fact]

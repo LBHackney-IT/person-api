@@ -2,6 +2,7 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using PersonApi.V1;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Controllers;
 using PersonApi.V1.UseCase.Interfaces;
@@ -13,14 +14,17 @@ namespace PersonApi.Tests.V1.Controllers
 {
     public class PersonApiControllerTests
     {
+        private readonly MethodLogger _methodLogger;
+        private readonly Mock<IApiLogger> _mockLogger = new Mock<IApiLogger>();
         private readonly Mock<IGetByIdUseCase> _mockGetByIdUseCase;
         private readonly PersonApiController _sut;
         private readonly Fixture _fixture = new Fixture();
 
         public PersonApiControllerTests()
         {
+            _methodLogger = new MethodLogger(_mockLogger.Object);
             _mockGetByIdUseCase = new Mock<IGetByIdUseCase>();
-            _sut = new PersonApiController(_mockGetByIdUseCase.Object);
+            _sut = new PersonApiController(_methodLogger, _mockGetByIdUseCase.Object);
         }
 
         [Fact]
