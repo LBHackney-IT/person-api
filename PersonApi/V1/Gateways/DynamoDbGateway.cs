@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
+using PersonApi.V1.Logging;
 using System;
 using System.Threading.Tasks;
 

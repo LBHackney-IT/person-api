@@ -1,46 +1,10 @@
-using Amazon.Lambda.Core;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace PersonApi.V1
+namespace PersonApi.V1.Logging
 {
-    public static class LoggingExtensions
-    {
-        public static IServiceCollection RegisterLogging(this IServiceCollection services)
-        {
-            services.AddScoped<IApiLogger, ApiLogger>();
-            services.AddScoped<IMethodLogger, MethodLogger>();
-            return services;
-        }
-    }
-
-    public interface IApiLogger
-    {
-        void Log(LogLevel level, string message, Exception exception = null);
-    }
-
-    public class ApiLogger : IApiLogger
-    {
-        public void Log(LogLevel level, string message, Exception exception = null)
-        {
-            var logEntry = new LogEntry
-            {
-                Level = level,
-                Message = message,
-                ExceptionObject = exception,
-                CorrelationId = CallContext.Current?.CorrelationId,
-                UserId = CallContext.Current?.UserId,
-                Timestamp = DateTime.UtcNow
-            };
-
-            LambdaLogger.Log(logEntry.ToString());
-        }
-    }
-
-
     public class LogEntry
     {
         private const string DATEFORMAT = "yyyy-MM-ddTHH\\:mm\\:ss.fffffffZ";

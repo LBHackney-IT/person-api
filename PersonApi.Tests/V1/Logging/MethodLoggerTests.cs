@@ -1,13 +1,12 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using PersonApi.V1;
+using PersonApi.V1.Logging;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace PersonApi.Tests.V1
+namespace PersonApi.Tests.V1.Logging
 {
     public class MethodLoggerTests
     {

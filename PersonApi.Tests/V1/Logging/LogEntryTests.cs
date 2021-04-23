@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using PersonApi.V1;
+using PersonApi.V1.Logging;
 using System;
 using Xunit;
 
-namespace PersonApi.Tests.V1
+namespace PersonApi.Tests.V1.Logging
 {
     public class LogEntryTests
     {

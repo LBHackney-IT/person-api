@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace PersonApi.V1
+namespace PersonApi.V1.Logging
 {
     public interface IMethodLogger
     {

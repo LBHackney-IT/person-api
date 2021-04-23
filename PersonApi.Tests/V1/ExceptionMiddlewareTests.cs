@@ -6,6 +6,7 @@ using Microsoft.Extensions.Primitives;
 using Moq;
 using PersonApi.V1;
 using PersonApi.V1.Controllers;
+using PersonApi.V1.Logging;
 using System;
 using System.IO;
 using System.Threading.Tasks;

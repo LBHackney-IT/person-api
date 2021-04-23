@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Logging;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
