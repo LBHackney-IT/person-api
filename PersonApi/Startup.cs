@@ -143,6 +143,18 @@ namespace PersonApi
                 config.AddDebug();
                 config.AddEventSourceLogger();
 
+                // Create and populate LambdaLoggerOptions object
+                var loggerOptions = new LambdaLoggerOptions
+                {
+                    IncludeCategory = true,
+                    IncludeLogLevel = true,
+                    IncludeNewline = true,
+                    IncludeEventId = true,
+                    IncludeException = true,
+                    IncludeScopes = true
+                };
+                config.AddLambdaLogger(loggerOptions);
+
                 if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development)
                 {
                     config.AddConsole();
@@ -165,7 +177,7 @@ namespace PersonApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -176,8 +188,9 @@ namespace PersonApi
                 app.UseHsts();
             }
 
-            app.UseCustomExceptionHandler();
             app.UseCorrelation();
+            app.UseLoggingScope();
+            app.UseCustomExceptionHandler(logger);
             app.UseXRay("person-api");
 
             //Get All ApiVersions,

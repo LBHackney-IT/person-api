@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace PersonApi.V1.Controllers
 {
@@ -14,8 +16,11 @@ namespace PersonApi.V1.Controllers
     public class PersonApiController : BaseController
     {
         private readonly IGetByIdUseCase _getByIdUseCase;
-        public PersonApiController(IGetByIdUseCase getByIdUseCase)
+        private readonly ILogger<PersonApiController> _logger;
+
+        public PersonApiController(ILogger<PersonApiController> logger, IGetByIdUseCase getByIdUseCase)
         {
+            _logger = logger;
             _getByIdUseCase = getByIdUseCase;
         }
 
@@ -34,10 +39,19 @@ namespace PersonApi.V1.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetPersonByIdAsync(Guid id)
         {
-            var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-            if (null == person) return NotFound(id);
+            try
+            {
+                _logger.LogInformation("GetPersonByIdAsync STARTING");
 
-            return Ok(person);
+                var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+                if (null == person) return NotFound(id);
+
+                return Ok(person);
+            }
+            finally
+            {
+                _logger.LogInformation("GetPersonByIdAsync ENDING");
+            }
         }
     }
 }
