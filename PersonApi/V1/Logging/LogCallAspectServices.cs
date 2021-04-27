@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -11,6 +12,12 @@ namespace PersonApi.V1.Logging
         {
             ServiceProvider = builder.ApplicationServices;
             return builder;
+        }
+
+        public static IServiceCollection AddLogCallAspect(this IServiceCollection services)
+        {
+            services.AddTransient<LogCallAspect>();
+            return services;
         }
 
         public static IServiceProvider ServiceProvider { get; private set; }

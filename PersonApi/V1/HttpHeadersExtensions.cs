@@ -17,7 +17,7 @@ namespace PersonApi.V1
         /// <returns>The required value or null</returns>
         public static string GetHeaderValue(this IHeaderDictionary headers, string key)
         {
-            if (null == headers)
+            if (headers is null)
                 throw new ArgumentNullException(nameof(headers));
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentNullException(nameof(key));

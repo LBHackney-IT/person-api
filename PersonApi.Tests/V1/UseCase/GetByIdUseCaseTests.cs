@@ -15,15 +15,13 @@ namespace PersonApi.Tests.V1.UseCase
     [Collection("LogCall collection")]
     public class GetByIdUseCaseTests
     {
-        private readonly LogCallAspectFixture _logCallFixture;
         private readonly Mock<IPersonApiGateway> _mockGateway;
         private readonly ResponseFactory _responseFactory;
         private readonly GetByIdUseCase _classUnderTest;
         private readonly Fixture _fixture = new Fixture();
 
-        public GetByIdUseCaseTests(LogCallAspectFixture logCallFixture)
+        public GetByIdUseCaseTests()
         {
-            _logCallFixture = logCallFixture;
             _mockGateway = new Mock<IPersonApiGateway>();
             _responseFactory = new ResponseFactory(null);
             _classUnderTest = new GetByIdUseCase(_mockGateway.Object, _responseFactory);

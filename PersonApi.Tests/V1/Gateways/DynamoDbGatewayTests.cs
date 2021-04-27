@@ -16,16 +16,13 @@ namespace PersonApi.Tests.V1.Gateways
     [Collection("LogCall collection")]
     public class DynamoDbGatewayTests
     {
-        private readonly LogCallAspectFixture _logCallFixture;
         private readonly Fixture _fixture = new Fixture();
         private readonly Mock<IDynamoDBContext> _dynamoDb;
         private readonly Mock<ILogger<DynamoDbGateway>> _logger;
         private readonly DynamoDbGateway _classUnderTest;
 
-        public DynamoDbGatewayTests(LogCallAspectFixture logCallFixture)
+        public DynamoDbGatewayTests()
         {
-            _logCallFixture = logCallFixture;
-
             _dynamoDb = new Mock<IDynamoDBContext>();
             _logger = new Mock<ILogger<DynamoDbGateway>>();
             _classUnderTest = new DynamoDbGateway(_dynamoDb.Object, _logger.Object);

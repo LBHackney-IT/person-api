@@ -130,12 +130,11 @@ namespace PersonApi
             AWSXRayRecorder.InitializeInstance(Configuration);
             AWSXRayRecorder.RegisterLogger(LoggingOptions.SystemDiagnostics);
 
+            services.AddLogCallAspect();
             services.ConfigureDynamoDB();
 
             RegisterGateways(services);
             RegisterUseCases(services);
-
-            services.AddTransient<LogCallAspect>();
         }
 
         private static void ConfigureLogging(IServiceCollection services, IConfiguration configuration)

@@ -11,16 +11,14 @@ namespace PersonApi.Tests.V1.Logging
     [Collection("LogCall collection")]
     public class LogCallAspectTests
     {
-        private readonly LogCallAspectFixture _logCallFixture;
         private readonly Mock<ILogger<LogCallAspect>> _logger;
         private readonly LogCallAspect _sut;
 
         private readonly Type _type = typeof(PersonApiController);
         private readonly string _methodName = "SomeMethodName";
 
-        public LogCallAspectTests(LogCallAspectFixture logCallFixture)
+        public LogCallAspectTests()
         {
-            _logCallFixture = logCallFixture;
             _logger = new Mock<ILogger<LogCallAspect>>();
             _sut = new LogCallAspect(_logger.Object);
         }
