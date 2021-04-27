@@ -1,7 +1,9 @@
-using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Logging;
+using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
 
@@ -14,6 +16,7 @@ namespace PersonApi.V1.Controllers
     public class PersonApiController : BaseController
     {
         private readonly IGetByIdUseCase _getByIdUseCase;
+
         public PersonApiController(IGetByIdUseCase getByIdUseCase)
         {
             _getByIdUseCase = getByIdUseCase;
@@ -32,6 +35,7 @@ namespace PersonApi.V1.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [Route("{id}")]
+        [LogCall(LogLevel.Information)]
         public async Task<IActionResult> GetPersonByIdAsync(Guid id)
         {
             var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);

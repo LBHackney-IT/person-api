@@ -1,6 +1,7 @@
 using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
@@ -12,26 +13,31 @@ using Xunit;
 
 namespace PersonApi.Tests.V1.Gateways
 {
+    [Collection("LogCall collection")]
     public class DynamoDbGatewayTests
     {
         private readonly Fixture _fixture = new Fixture();
         private readonly Mock<IDynamoDBContext> _dynamoDb;
+        private readonly Mock<ILogger<DynamoDbGateway>> _logger;
         private readonly DynamoDbGateway _classUnderTest;
 
         public DynamoDbGatewayTests()
         {
             _dynamoDb = new Mock<IDynamoDBContext>();
-            _classUnderTest = new DynamoDbGateway(_dynamoDb.Object);
+            _logger = new Mock<ILogger<DynamoDbGateway>>();
+            _classUnderTest = new DynamoDbGateway(_dynamoDb.Object, _logger.Object);
         }
 
         [Fact]
         public async Task GetPersonByIdReturnsNullIfEntityDoesntExist()
         {
             // Act
-            var response = await _classUnderTest.GetPersonByIdAsync(Guid.NewGuid()).ConfigureAwait(false);
+            var id = Guid.NewGuid();
+            var response = await _classUnderTest.GetPersonByIdAsync(id).ConfigureAwait(false);
 
             // Assert
             response.Should().BeNull();
+            _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {id}", Times.Once());
         }
 
         [Fact]
@@ -51,6 +57,7 @@ namespace PersonApi.Tests.V1.Gateways
             // Assert
             _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(dbIdUsed, default), Times.Once);
             entity.Id.Should().Be(response.Id);
+            _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {entity.Id}", Times.Once());
         }
 
         [Fact]
@@ -68,6 +75,7 @@ namespace PersonApi.Tests.V1.Gateways
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
             _dynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(id, default), Times.Once);
+            _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {id}", Times.Once());
         }
     }
 }

@@ -17,19 +17,25 @@ using PersonApi.V1.Controllers;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;
+using PersonApi.V1.Logging;
 using PersonApi.V1.UseCase;
 using PersonApi.V1.UseCase.Interfaces;
 using PersonApi.Versioning;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+
+//[assembly: InternalsVisibleTo("PersonApi.Tests")]
 
 namespace PersonApi
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -124,6 +130,7 @@ namespace PersonApi
             AWSXRayRecorder.InitializeInstance(Configuration);
             AWSXRayRecorder.RegisterLogger(LoggingOptions.SystemDiagnostics);
 
+            services.AddLogCallAspect();
             services.ConfigureDynamoDB();
 
             RegisterGateways(services);
@@ -142,6 +149,18 @@ namespace PersonApi
                 config.AddConfiguration(configuration.GetSection("Logging"));
                 config.AddDebug();
                 config.AddEventSourceLogger();
+
+                // Create and populate LambdaLoggerOptions object
+                var loggerOptions = new LambdaLoggerOptions
+                {
+                    IncludeCategory = false,
+                    IncludeLogLevel = true,
+                    IncludeNewline = true,
+                    IncludeEventId = true,
+                    IncludeException = true,
+                    IncludeScopes = true
+                };
+                config.AddLambdaLogger(loggerOptions);
 
                 if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development)
                 {
@@ -165,7 +184,7 @@ namespace PersonApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -176,8 +195,9 @@ namespace PersonApi
                 app.UseHsts();
             }
 
-            app.UseCustomExceptionHandler();
             app.UseCorrelation();
+            app.UseLoggingScope();
+            app.UseCustomExceptionHandler(logger);
             app.UseXRay("person-api");
 
             //Get All ApiVersions,
@@ -201,6 +221,8 @@ namespace PersonApi
                 // SwaggerGen won't find controllers that are routed via this technique.
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseLogCall();
         }
     }
 }

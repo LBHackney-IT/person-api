@@ -1,6 +1,8 @@
+using Microsoft.Extensions.Logging;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
+using PersonApi.V1.Logging;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -18,6 +20,7 @@ namespace PersonApi.V1.UseCase
             _responseFactory = responseFactory;
         }
 
+        [LogCall]
         public async Task<PersonResponseObject> ExecuteAsync(Guid id)
         {
             var person = await _gateway.GetPersonByIdAsync(id).ConfigureAwait(false);
