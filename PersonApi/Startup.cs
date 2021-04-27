@@ -17,19 +17,25 @@ using PersonApi.V1.Controllers;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;
+using PersonApi.V1.Logging;
 using PersonApi.V1.UseCase;
 using PersonApi.V1.UseCase.Interfaces;
 using PersonApi.Versioning;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+
+//[assembly: InternalsVisibleTo("PersonApi.Tests")]
 
 namespace PersonApi
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -128,6 +134,8 @@ namespace PersonApi
 
             RegisterGateways(services);
             RegisterUseCases(services);
+
+            services.AddTransient<LogCallAspect>();
         }
 
         private static void ConfigureLogging(IServiceCollection services, IConfiguration configuration)
@@ -146,7 +154,7 @@ namespace PersonApi
                 // Create and populate LambdaLoggerOptions object
                 var loggerOptions = new LambdaLoggerOptions
                 {
-                    IncludeCategory = true,
+                    IncludeCategory = false,
                     IncludeLogLevel = true,
                     IncludeNewline = true,
                     IncludeEventId = true,
@@ -214,6 +222,8 @@ namespace PersonApi
                 // SwaggerGen won't find controllers that are routed via this technique.
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseLogCall();
         }
     }
 }

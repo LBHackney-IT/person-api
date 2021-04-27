@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using PersonApi.V1.Controllers;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace PersonApi.V1
@@ -12,6 +13,7 @@ namespace PersonApi.V1
 
     public static class ExceptionMiddlewareExtensions
     {
+        [ExcludeFromCodeCoverage]
         public static void UseCustomExceptionHandler(this IApplicationBuilder app, ILogger logger)
         {
             app.UseExceptionHandler(appError =>
@@ -42,7 +44,7 @@ namespace PersonApi.V1
                         break;
                 }
 
-                logger.LogError(contextFeature.Error, $"Request failed.");
+                logger.LogError(contextFeature.Error, "Request failed.");
             }
 
             var correlationId = context.Request.Headers.GetHeaderValue(Constants.CorrelationId);

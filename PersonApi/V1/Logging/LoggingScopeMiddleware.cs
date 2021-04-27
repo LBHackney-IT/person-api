@@ -2,12 +2,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using PersonApi.V1.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-namespace PersonApi.V1
+namespace PersonApi.V1.Logging
 {
     public class LoggingScopeMiddleware
     {
@@ -31,6 +29,7 @@ namespace PersonApi.V1
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public static class LoggingScopeMiddlewareExtensions
     {
         public static IApplicationBuilder UseLoggingScope(this IApplicationBuilder builder)

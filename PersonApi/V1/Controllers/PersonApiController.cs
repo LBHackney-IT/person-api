@@ -1,11 +1,11 @@
-using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Logging;
+using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 
 namespace PersonApi.V1.Controllers
 {
@@ -16,11 +16,9 @@ namespace PersonApi.V1.Controllers
     public class PersonApiController : BaseController
     {
         private readonly IGetByIdUseCase _getByIdUseCase;
-        private readonly ILogger<PersonApiController> _logger;
 
-        public PersonApiController(ILogger<PersonApiController> logger, IGetByIdUseCase getByIdUseCase)
+        public PersonApiController(IGetByIdUseCase getByIdUseCase)
         {
-            _logger = logger;
             _getByIdUseCase = getByIdUseCase;
         }
 
@@ -37,21 +35,13 @@ namespace PersonApi.V1.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [Route("{id}")]
+        [LogCall(LogLevel.Information)]
         public async Task<IActionResult> GetPersonByIdAsync(Guid id)
         {
-            try
-            {
-                _logger.LogInformation("GetPersonByIdAsync STARTING");
+            var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+            if (null == person) return NotFound(id);
 
-                var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-                if (null == person) return NotFound(id);
-
-                return Ok(person);
-            }
-            finally
-            {
-                _logger.LogInformation("GetPersonByIdAsync ENDING");
-            }
+            return Ok(person);
         }
     }
 }

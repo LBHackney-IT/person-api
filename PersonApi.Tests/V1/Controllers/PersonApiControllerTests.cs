@@ -11,14 +11,17 @@ using Xunit;
 
 namespace PersonApi.Tests.V1.Controllers
 {
+    [Collection("LogCall collection")]
     public class PersonApiControllerTests
     {
+        private readonly LogCallAspectFixture _logCallFixture;
         private readonly Mock<IGetByIdUseCase> _mockGetByIdUseCase;
         private readonly PersonApiController _sut;
         private readonly Fixture _fixture = new Fixture();
 
-        public PersonApiControllerTests()
+        public PersonApiControllerTests(LogCallAspectFixture logCallFixture)
         {
+            _logCallFixture = logCallFixture;
             _mockGetByIdUseCase = new Mock<IGetByIdUseCase>();
             _sut = new PersonApiController(_mockGetByIdUseCase.Object);
         }

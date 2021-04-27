@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
+using PersonApi.V1.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ namespace PersonApi.V1.Gateways
             _logger = logger;
         }
 
+        [LogCall]
         public async Task<Person> GetPersonByIdAsync(Guid id)
         {
             _logger.LogDebug($"Calling IDynamoDBContext.LoadAsync for id {id}");
