@@ -8,25 +8,45 @@ using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace PersonApi.Tests.V1.Gateways
 {
     [Collection("DynamoDb collection")]
-    public class DynamoDbGatewayTests
+    public class DynamoDbGatewayTests : IDisposable
     {
         private readonly Fixture _fixture = new Fixture();
         private readonly Mock<ILogger<DynamoDbGateway>> _logger;
         private DynamoDbGateway _classUnderTest;
 
         private readonly IDynamoDBContext _dynamoDb;
+        private readonly List<Action> _cleanup = new List<Action>();
 
         public DynamoDbGatewayTests(DynamoDbIntegrationTests<Startup> dbTestFixture)
         {
             _dynamoDb = dbTestFixture.DynamoDbContext;
             _logger = new Mock<ILogger<DynamoDbGateway>>();
             _classUnderTest = new DynamoDbGateway(_dynamoDb, _logger.Object);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _disposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                foreach (var action in _cleanup)
+                    action();
+
+                _disposed = true;
+            }
         }
 
         [Fact]
@@ -51,6 +71,7 @@ namespace PersonApi.Tests.V1.Gateways
             var dbEntity = entity.ToDatabase();
 
             await _dynamoDb.SaveAsync(dbEntity).ConfigureAwait(false);
+            _cleanup.Add(async () => await _dynamoDb.DeleteAsync(dbEntity).ConfigureAwait(false));
 
             // Act
             var response = await _classUnderTest.GetPersonByIdAsync(entity.Id).ConfigureAwait(false);
@@ -58,8 +79,6 @@ namespace PersonApi.Tests.V1.Gateways
             // Assert
             entity.Should().BeEquivalentTo(response);
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {entity.Id}", Times.Once());
-
-            await _dynamoDb.DeleteAsync(dbEntity).ConfigureAwait(false);
         }
 
         [Fact]
