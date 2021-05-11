@@ -11,6 +11,7 @@ using Xunit;
 
 namespace PersonApi.Tests.V1.Controllers
 {
+    [Collection("LogCall collection")]
     public class PersonApiControllerTests
     {
         private readonly Mock<IGetByIdUseCase> _mockGetByIdUseCase;

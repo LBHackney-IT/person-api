@@ -12,6 +12,7 @@ using Xunit;
 
 namespace PersonApi.Tests.V1.UseCase
 {
+    [Collection("LogCall collection")]
     public class GetByIdUseCaseTests
     {
         private readonly Mock<IPersonApiGateway> _mockGateway;
