@@ -45,7 +45,8 @@ namespace PersonApi.V1.Factories
                 Languages = domain.Languages,
                 CommunicationRequirements = domain.CommunicationRequirements,
                 PersonTypes = domain.PersonTypes,
-                Links = _apiLinkGenerator?.GenerateLinksForPerson(domain)
+                Links = _apiLinkGenerator?.GenerateLinksForPerson(domain),
+                Tenures = domain.Tenures
             };
         }
     }

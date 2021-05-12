@@ -39,5 +39,8 @@ namespace PersonApi.V1.Infrastructure
 
         [DynamoDBProperty(Converter = typeof(DynamoDbEnumListConverter<PersonType>))]
         public List<PersonType> PersonTypes { get; set; } = new List<PersonType>();
+
+        [DynamoDBProperty(Converter = typeof(DynamoDbObjectListConverter<Tenure>))]
+        public List<Tenure> Tenures { get; set; } = new List<Tenure>();
     }
 }

@@ -35,5 +35,6 @@ namespace PersonApi.V1.Boundary.Response
         public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }
         public IEnumerable<PersonType> PersonTypes { get; set; }
         public IEnumerable<ApiLink> Links { get; set; }
+        public IEnumerable<Tenure> Tenures { get; set; }
     }
 }

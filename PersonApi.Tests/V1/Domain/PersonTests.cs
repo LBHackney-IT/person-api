@@ -35,6 +35,10 @@ namespace PersonApi.Tests.V1.Domain
             person.Languages.First().Name.Should().Be(Constants.LANGUAGENAME);
             person.CommunicationRequirements.Should().BeEquivalentTo(Constants.COMMSREQ);
             person.PersonTypes.Should().BeEquivalentTo(Constants.PERSONTYPES);
+            person.Tenures.Should().ContainSingle();
+            person.Tenures.First().AssetId.Should().Be(Constants.ASSETID);
+            person.Tenures.First().AssetFullAddress.Should().Be(Constants.ASSETFULLADDRESS);
+            person.Tenures.First().Type.Should().Be(Constants.SOMETYPE);
         }
     }
 }
