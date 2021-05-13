@@ -31,6 +31,8 @@ namespace PersonApi.Tests.V1.Helper
         public const string SOMETYPE = "SomeType";
         public const string ASSETID = "SomeId";
         public const string ASSETFULLADDRESS = "SomeAddress";
+        public const string STARTDATE = "2012-07-19";
+        public const string ENDDATE = "2015-07-19";
 
         public static IEnumerable<CommunicationRequirement> COMMSREQ { get; }
             = new List<CommunicationRequirement> { CommunicationRequirement.SignLanguage };
@@ -77,8 +79,8 @@ namespace PersonApi.Tests.V1.Helper
                 {
                     AssetFullAddress = ASSETFULLADDRESS,
                     AssetId = ASSETID,
-                    EndDate = DateTime.MaxValue,
-                    StartDate = DateTime.MinValue,
+                    EndDate = ENDDATE,
+                    StartDate = STARTDATE,
                     Id = Guid.NewGuid(),
                     Type = SOMETYPE,
                     Uprn = SOMEUPRN
