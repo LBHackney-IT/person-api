@@ -33,6 +33,7 @@ namespace PersonApi.Tests.V1.Factories
             databaseEntity.Languages.Should().BeEquivalentTo(entity.Languages);
             databaseEntity.CommunicationRequirements.Should().BeEquivalentTo(entity.CommunicationRequirements);
             databaseEntity.PersonTypes.Should().BeEquivalentTo(entity.PersonTypes);
+            databaseEntity.Tenures.Should().BeEquivalentTo(entity.Tenures);
         }
 
         [Fact]
@@ -57,6 +58,7 @@ namespace PersonApi.Tests.V1.Factories
             person.Languages.Should().BeEquivalentTo(databaseEntity.Languages);
             person.CommunicationRequirements.Should().BeEquivalentTo(databaseEntity.CommunicationRequirements);
             person.PersonTypes.Should().BeEquivalentTo(databaseEntity.PersonTypes);
+            person.Tenures.Should().BeEquivalentTo(databaseEntity.Tenures);
         }
     }
 }

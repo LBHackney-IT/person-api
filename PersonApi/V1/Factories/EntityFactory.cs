@@ -26,7 +26,8 @@ namespace PersonApi.V1.Factories
                 Identifications = databaseEntity.Identifications,
                 Languages = databaseEntity.Languages,
                 CommunicationRequirements = databaseEntity.CommunicationRequirements,
-                PersonTypes = databaseEntity.PersonTypes
+                PersonTypes = databaseEntity.PersonTypes,
+                Tenures = databaseEntity.Tenures
             };
         }
 
@@ -49,7 +50,8 @@ namespace PersonApi.V1.Factories
                 Identifications = entity.Identifications.ToList(),
                 Languages = entity.Languages.ToList(),
                 CommunicationRequirements = entity.CommunicationRequirements.ToList(),
-                PersonTypes = entity.PersonTypes.ToList()
+                PersonTypes = entity.PersonTypes.ToList(),
+                Tenures = entity.Tenures.ToList()
             };
         }
     }
