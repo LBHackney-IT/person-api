@@ -63,6 +63,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             apiPerson.PreferredSurname.Should().Be(expectedPerson.PreferredSurname);
             apiPerson.Surname.Should().Be(expectedPerson.Surname);
             apiPerson.Title.Should().Be(expectedPerson.Title);
+            apiPerson.Tenures.Should().BeEquivalentTo(expectedPerson.Tenures);
         }
 
         public void ThenBadRequestIsReturned()

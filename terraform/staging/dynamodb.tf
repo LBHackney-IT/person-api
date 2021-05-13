@@ -17,30 +17,3 @@ resource "aws_dynamodb_table" "personapi_dynamodb_table" {
         project_name      = var.project_name
     }
 }
-
-resource "aws_iam_policy" "personapi_dynamodb_table_policy" {
-    name                  = "lambda-dynamodb-person-api"
-    description           = "A policy allowing read/write operations on person dynamoDB for the person API"
-    path                  = "/person-api/"
-
-    policy                = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                        "dynamodb:BatchGetItem",
-                        "dynamodb:GetItem",
-                        "dynamodb:Query",
-                        "dynamodb:Scan",
-                        "dynamodb:BatchWriteItem",
-                        "dynamodb:PutItem",
-                        "dynamodb:UpdateItem"
-                     ],
-            "Resource": "${aws_dynamodb_table.personapi_dynamodb_table.arn}"
-        }
-    ]
-}
-EOF
-}

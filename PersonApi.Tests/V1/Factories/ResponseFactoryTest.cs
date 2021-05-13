@@ -51,6 +51,7 @@ namespace PersonApi.Tests.V1.Factories
             response.Languages.Should().BeEquivalentTo(person.Languages);
             response.CommunicationRequirements.Should().BeEquivalentTo(person.CommunicationRequirements);
             response.PersonTypes.Should().BeEquivalentTo(person.PersonTypes);
+            response.Tenures.Should().BeEquivalentTo(person.Tenures);
         }
     }
 }

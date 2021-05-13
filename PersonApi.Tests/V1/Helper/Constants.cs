@@ -27,6 +27,13 @@ namespace PersonApi.Tests.V1.Helper
         public const bool LANGUAGEISPRIMARY = true;
         public const string LANGUAGENAME = "English";
 
+        public const string SOMEUPRN = "SomeUprn";
+        public const string SOMETYPE = "SomeType";
+        public const string ASSETID = "SomeId";
+        public const string ASSETFULLADDRESS = "SomeAddress";
+        public const string STARTDATE = "2012-07-19";
+        public const string ENDDATE = "2015-07-19";
+
         public static IEnumerable<CommunicationRequirement> COMMSREQ { get; }
             = new List<CommunicationRequirement> { CommunicationRequirement.SignLanguage };
         public static IEnumerable<PersonType> PERSONTYPES { get; }
@@ -65,6 +72,21 @@ namespace PersonApi.Tests.V1.Helper
                     Name = Constants.LANGUAGENAME
                 }
             };
+
+            entity.Tenures = new[]
+            {
+                new Tenure
+                {
+                    AssetFullAddress = ASSETFULLADDRESS,
+                    AssetId = ASSETID,
+                    EndDate = ENDDATE,
+                    StartDate = STARTDATE,
+                    Id = Guid.NewGuid(),
+                    Type = SOMETYPE,
+                    Uprn = SOMEUPRN
+                }
+            };
+
             entity.CommunicationRequirements = Constants.COMMSREQ;
             entity.PersonTypes = Constants.PERSONTYPES;
             return entity;
