@@ -18,13 +18,5 @@ namespace PersonApi.V1.Controllers
 
             return Ok(result);
         }
-
-        [HttpGet]
-        [Route("error")]
-        public void ThrowError()
-        {
-            ThrowOpsErrorUsecase.Execute();
-        }
-
     }
 }

@@ -27,10 +27,5 @@ namespace PersonApi.Tests.V1.Controllers
             response.Value.Should().BeEquivalentTo(expected);
         }
 
-        [Fact]
-        public void ThrowErrorThrows()
-        {
-            Assert.Throws<TestOpsErrorException>(_classUnderTest.ThrowError);
-        }
     }
 }
