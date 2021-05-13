@@ -1,29 +1,14 @@
-# Person Api
+# Running a local coverage report
 
-The Person Api is the LBH Api responsible for person/comments within the new MTFH application.
+It is easily possible to gerenate a full interactive coverage report to see where the test coverage may be lacking.
 
-### Api definition
-
-Swagger Hub - https://app.swaggerhub.com/apis/Hackney/personApi/1.0.0
-
-## Stack
-
-- .NET Core v.3.1 as a web framework.
-- xUnit as a test framework.
-- DynamoDb as a datastore.
-
-
-## Contacts
-
-### Active Maintainers
-
-- **Selwyn Preston**, Lead Developer at London Borough of Hackney (selwyn.preston@hackney.gov.uk)
-- **Mirela Georgieva**, Lead Developer at London Borough of Hackney (mirela.georgieva@hackney.gov.uk)
-- **Matt Keyworth**, Lead Developer at London Borough of Hackney (matthew.keyworth@hackney.gov.uk)
-
-### Other Contacts
-
-- **Rashmi Shetty**, Product Owner at London Borough of Hackney (rashmi.shetty@hackney.gov.uk)
-
-[docker-download]: https://www.docker.com/products/docker-desktop
-[AWS-CLI]: https://aws.amazon.com/cli/
+* Install the dotnet report generator (this only need be done once)
+    ```bash
+    dotnet tool install -g dotnet-reportgenerator-globaltool
+    ```
+* Ensure that the test project has a NuGet reference to the latest *coverlet.msbuild* package.
+* Open a command window in the root of the test project and run the handy `RunCoverage.bat` file located there.
+    ```bash
+    .\RunCoverage.bat
+    ```
+* This will generate the coverage data, convert it into a report and then open it for you to view.
