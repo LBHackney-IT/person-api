@@ -2,6 +2,7 @@ using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
 using PersonApi.V1.Infrastructure;
 using System;
+using System.Linq;
 
 namespace PersonApi.Tests.V1.E2ETests.Fixtures
 {
@@ -43,6 +44,9 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 var person = _fixture.Build<PersonDbEntity>()
                                      .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                                      .Create();
+
+                person.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
+
                 _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
                 Person = person;
                 PersonId = person.Id;

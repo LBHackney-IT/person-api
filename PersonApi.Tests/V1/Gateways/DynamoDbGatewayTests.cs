@@ -9,6 +9,7 @@ using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -68,6 +69,8 @@ namespace PersonApi.Tests.V1.Gateways
             var entity = _fixture.Build<Person>()
                                  .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                                  .Create();
+            entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
+
             var dbEntity = entity.ToDatabase();
 
             await _dynamoDb.SaveAsync(dbEntity).ConfigureAwait(false);
