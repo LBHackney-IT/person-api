@@ -69,6 +69,7 @@ namespace PersonApi.Tests.V1.Gateways
             var entity = _fixture.Build<Person>()
                                  .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                                  .Create();
+            entity.Tenures = new [] { entity.Tenures.First()};
             entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
 
             var dbEntity = entity.ToDatabase();
