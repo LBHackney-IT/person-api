@@ -27,7 +27,7 @@ namespace PersonApi.Tests.V1.Domain
         {
             // given
             _classUnderTest.EndDate = DateTime.Now.AddDays(1).ToShortDateString();
-            
+
             // when + then
             _classUnderTest.IsActive.Should().BeTrue();
         }
