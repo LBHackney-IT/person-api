@@ -24,13 +24,12 @@ functions:
       - http:
           path: /{proxy+}
           method: ANY
-          private: true
           authorizer:
             arn: ${ssm:/api-authenticator/${self:provider.stage}/arn}
             type: request
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
-            managedExternally: true          
+            managedExternally: true       
           cors: true
 resources:
   Resources:
