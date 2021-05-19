@@ -6,6 +6,8 @@ using PersonApi.V1.Logging;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
+using PersonApi.V1.Boundary.Request;
+using PersonApi.V1.Domain;
 
 namespace PersonApi.V1.Controllers
 {
@@ -16,10 +18,12 @@ namespace PersonApi.V1.Controllers
     public class PersonApiController : BaseController
     {
         private readonly IGetByIdUseCase _getByIdUseCase;
+        private readonly IPostNewPersonUseCase _newPersonUseCase;
 
-        public PersonApiController(IGetByIdUseCase getByIdUseCase)
+        public PersonApiController(IGetByIdUseCase getByIdUseCase, IPostNewPersonUseCase newPersonUseCase)
         {
             _getByIdUseCase = getByIdUseCase;
+            _newPersonUseCase = newPersonUseCase;
         }
 
         /// <summary>
@@ -40,6 +44,17 @@ namespace PersonApi.V1.Controllers
         {
             var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
             if (null == person) return NotFound(id);
+
+            return Ok(person);
+        }
+
+        [ProducesResponseType(typeof(PersonResponseObject), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost]
+        public async Task<IActionResult> PostNewPerson(PersonRequestObject personRequestObject)
+        {
+            var person = await _newPersonUseCase.ExecuteAsync(personRequestObject)
+                .ConfigureAwait(false);
 
             return Ok(person);
         }
