@@ -30,9 +30,16 @@ namespace PersonApi.V1.Gateways
             return result?.ToDomain();
         }
 
-        public Task<Person> PostNewPersonAsync(PersonRequestObject requestObject)
+        [LogCall]
+        public async Task<Person> PostNewPersonAsync(PersonRequestObject requestObject)
         {
-            throw new NotImplementedException();
+            _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync");
+            var personDbEntity = requestObject.ToDatabase();
+            personDbEntity.Id = Guid.NewGuid();
+
+            await _dynamoDbContext.SaveAsync(personDbEntity).ConfigureAwait(false);
+
+            return personDbEntity?.ToDomain();
         }
     }
 }

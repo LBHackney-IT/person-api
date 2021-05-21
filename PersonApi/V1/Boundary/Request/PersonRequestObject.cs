@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PersonApi.V1.Domain;
+using PersonApi.V1.Infrastructure;
 
 namespace PersonApi.V1.Boundary.Request
 {
@@ -35,5 +37,28 @@ namespace PersonApi.V1.Boundary.Request
         public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }
         public IEnumerable<PersonType> PersonTypes { get; set; }
         public IEnumerable<Tenure> Tenures { get; set; }
+
+        public PersonDbEntity ToDatabase()
+        {
+            return new PersonDbEntity()
+            {
+                Title = Title,
+                PreferredFirstname = PreferredFirstname,
+                PreferredSurname = PreferredSurname,
+                Firstname = Firstname,
+                MiddleName = MiddleName,
+                Surname = Surname,
+                Ethnicity = Ethnicity,
+                Nationality = Nationality,
+                PlaceOfBirth = PlaceOfBirth,
+                DateOfBirth = DateOfBirth,
+                Gender = Gender,
+                Identifications = Identifications == null ? new List<Identification>() : Identifications.Select(x => x).ToList(),
+                Languages = Languages == null ? new List<Language>() : Languages.Select(x => x).ToList(),
+                CommunicationRequirements = CommunicationRequirements == null ? new List<CommunicationRequirement>() : CommunicationRequirements.Select(x => x).ToList(),
+                PersonTypes = PersonTypes == null ? new List<PersonType>() : PersonTypes.Select(x => x).ToList(),
+                Tenures = Tenures == null ? new List<Tenure>() : Tenures.Select(x => x).ToList()
+            };
+        }
     }
 }

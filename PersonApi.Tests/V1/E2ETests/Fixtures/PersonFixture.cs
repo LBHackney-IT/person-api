@@ -2,15 +2,22 @@ using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
 using PersonApi.V1.Infrastructure;
 using System;
+using PersonApi.V1.Boundary.Request;
 
 namespace PersonApi.Tests.V1.E2ETests.Fixtures
 {
     public class PersonFixture : IDisposable
     {
         private readonly Fixture _fixture = new Fixture();
+
         private readonly IDynamoDBContext _dbContext;
+
         public PersonDbEntity Person { get; private set; }
+
+        public PersonRequestObject PersonRequest { get; private set; }
+
         public Guid PersonId { get; private set; }
+
         public string InvalidPersonId { get; private set; }
 
         public PersonFixture(IDynamoDBContext dbContext)
@@ -52,6 +59,15 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         public void GivenAPersonDoesNotExist()
         {
             PersonId = Guid.NewGuid();
+        }
+
+        public void GivenANewPersonIsCreated()
+        {
+            var personRequest = _fixture.Build<PersonRequestObject>()
+                .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                .Create();
+            
+            PersonRequest = personRequest;
         }
 
         public void GivenAnInvalidPersonId()
