@@ -66,7 +66,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             var personRequest = _fixture.Build<PersonRequestObject>()
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                 .Create();
-            
+
             PersonRequest = personRequest;
         }
 

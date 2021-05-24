@@ -51,7 +51,7 @@ namespace PersonApi.V1.Controllers
         [ProducesResponseType(typeof(PersonResponseObject), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> PostNewPerson([FromBody]PersonRequestObject personRequestObject)
+        public async Task<IActionResult> PostNewPerson([FromBody] PersonRequestObject personRequestObject)
         {
             var person = await _newPersonUseCase.ExecuteAsync(personRequestObject)
                 .ConfigureAwait(false);
