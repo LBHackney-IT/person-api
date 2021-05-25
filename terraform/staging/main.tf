@@ -37,7 +37,7 @@ terraform {
   }
 }
 
-resource "aws_sns_topic" "person_updates" {
+resource "aws_sns_topic" "person_created" {
   name                        = "PersonCreated"
   fifo_topic                  = true
   content_based_deduplication = true
@@ -45,7 +45,7 @@ resource "aws_sns_topic" "person_updates" {
 }
 
 resource "aws_ssm_parameter" "new_person_sns_arn" {
-  name  = "/sns-topic/person_updates/arn"
+  name  = "/sns-topic/person_created/arn"
   type  = "String"
-  value = aws_sns_topic.person_updates.arn
+  value = aws_sns_topic.person_created.arn
 }
