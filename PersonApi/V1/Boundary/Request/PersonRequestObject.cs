@@ -8,6 +8,8 @@ namespace PersonApi.V1.Boundary.Request
 {
     public class PersonRequestObject
     {
+        public Guid Id { get; set; }
+
         public Title Title { get; set; }
 
         public string PreferredFirstname { get; set; }
@@ -42,6 +44,7 @@ namespace PersonApi.V1.Boundary.Request
         {
             return new PersonDbEntity()
             {
+                Id = Id == Guid.Empty ? Guid.NewGuid() : Id,
                 Title = Title,
                 PreferredFirstname = PreferredFirstname,
                 PreferredSurname = PreferredSurname,

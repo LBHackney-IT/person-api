@@ -35,7 +35,6 @@ namespace PersonApi.V1.Gateways
         {
             _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync");
             var personDbEntity = requestObject.ToDatabase();
-            personDbEntity.Id = Guid.NewGuid();
 
             await _dynamoDbContext.SaveAsync(personDbEntity).ConfigureAwait(false);
 
