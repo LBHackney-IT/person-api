@@ -36,3 +36,9 @@ terraform {
     key     = "services/person-api/state"
   }
 }
+
+resource "aws_sns_topic" "user_updates" {
+  name                        = "Person"
+  fifo_topic                  = true
+  content_based_deduplication = true
+}
