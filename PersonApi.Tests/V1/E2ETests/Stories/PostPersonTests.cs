@@ -9,8 +9,8 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
 {
     [Story(
         AsA = "Service",
-        IWant = "an endpoint to return person details",
-        SoThat = "it is possible to view the details of a person")]
+        IWant = "an endpoint to create a new person",
+        SoThat = "it is possible to create the details of a person")]
     [Collection("DynamoDb collection")]
     public class PostPersonTests : IDisposable
     {
@@ -52,17 +52,5 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
                 .Then(t => _steps.ThenThePersonDetailsAreReturnedAndIdIsNotEmpty())
                 .BDDfy();
         }
-
-
-
-        //[Fact]
-        //[SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "BDDfy")]
-        //public void ServiceReturnsBadRequestIfIdInvalid()
-        //{
-        //    this.Given(g => _personFixture.GivenAnInvalidPersonId())
-        //        .When(w => _steps.WhenThePersonDetailsAreRequested(_personFixture.InvalidPersonId))
-        //        .Then(t => _steps.ThenBadRequestIsReturned())
-        //        .BDDfy();
-        //}
     }
 }
