@@ -56,7 +56,7 @@ namespace PersonApi.V1.Controllers
             var person = await _newPersonUseCase.ExecuteAsync(personRequestObject)
                 .ConfigureAwait(false);
 
-            return Ok(person);
+            return Created(new Uri("http://api/v1/persons"), person);
         }
     }
 }

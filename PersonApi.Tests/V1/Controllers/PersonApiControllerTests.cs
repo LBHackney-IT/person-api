@@ -89,8 +89,8 @@ namespace PersonApi.Tests.V1.Controllers
             var response = await _sut.PostNewPerson(new PersonRequestObject()).ConfigureAwait(false);
 
             // Assert
-            response.Should().BeOfType(typeof(OkObjectResult));
-            (response as OkObjectResult).Value.Should().Be(personResponse);
+            response.Should().BeOfType(typeof(CreatedResult));
+            (response as CreatedResult).Value.Should().Be(personResponse);
         }
 
         [Fact]
