@@ -48,7 +48,7 @@ namespace PersonApi.V1.Controllers
             return Ok(person);
         }
 
-        [ProducesResponseType(typeof(PersonResponseObject), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PersonResponseObject), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         public async Task<IActionResult> PostNewPerson([FromBody] PersonRequestObject personRequestObject)
