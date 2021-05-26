@@ -36,3 +36,16 @@ terraform {
     key     = "services/person-api/state"
   }
 }
+
+resource "aws_sns_topic" "person_created" {
+  name                        = "PersonCreated"
+  fifo_topic                  = true
+  content_based_deduplication = true
+  kms_master_key_id = "alias/aws/sns"
+}
+
+resource "aws_ssm_parameter" "new_person_sns_arn" {
+  name  = "/sns-topic/person_created/arn"
+  type  = "String"
+  value = aws_sns_topic.person_created.arn
+}
