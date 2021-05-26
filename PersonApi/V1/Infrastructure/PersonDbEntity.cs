@@ -21,6 +21,7 @@ namespace PersonApi.V1.Infrastructure
         public string Ethnicity { get; set; }
         public string Nationality { get; set; }
         public string PlaceOfBirth { get; set; }
+        public string Reason { get; set; }
 
         [DynamoDBProperty(Converter = typeof(DynamoDbDateTimeConverter))]
         public DateTime DateOfBirth { get; set; }
