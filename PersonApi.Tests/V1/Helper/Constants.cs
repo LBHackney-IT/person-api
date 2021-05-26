@@ -33,7 +33,7 @@ namespace PersonApi.Tests.V1.Helper
         public const string ASSETFULLADDRESS = "SomeAddress";
         public const string STARTDATE = "2012-07-19";
         public const string ENDDATE = "2015-07-19";
-                   
+
         public static IEnumerable<CommunicationRequirement> COMMSREQ { get; }
             = new List<CommunicationRequirement> { CommunicationRequirement.SignLanguage };
         public static IEnumerable<PersonType> PERSONTYPES { get; }
