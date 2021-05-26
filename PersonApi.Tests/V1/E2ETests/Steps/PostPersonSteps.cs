@@ -47,7 +47,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
 
         public async Task ThenThePersonDetailsAreReturnedAndIdIsNotEmpty()
         {
-            _lastResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            _lastResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var responseContent = await _lastResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             var apiPerson = JsonSerializer.Deserialize<PersonResponseObject>(responseContent, CreateJsonOptions());
