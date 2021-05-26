@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PersonApi.V1.Boundary.Request;
 using Xunit;
 
 namespace PersonApi.Tests.V1.Gateways
@@ -83,6 +84,26 @@ namespace PersonApi.Tests.V1.Gateways
             // Assert
             entity.Should().BeEquivalentTo(response);
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {entity.Id}", Times.Once());
+        }
+
+        [Fact]
+        public async Task PostNewPersonSuccessfulSaves()
+        {
+            // Arrange
+            var entity = _fixture.Build<PersonRequestObject>()
+                .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                .Create();
+            entity.Tenures = new[] { entity.Tenures.First() };
+            entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
+
+            var dbEntity = entity.ToDatabase();
+
+            // Act
+            await _dynamoDb.SaveAsync(dbEntity).ConfigureAwait(false);
+
+            // Assert
+            var response = await _classUnderTest.GetPersonByIdAsync(dbEntity.Id).ConfigureAwait(false);
+            response.Should().NotBeNull();
         }
 
         [Fact]

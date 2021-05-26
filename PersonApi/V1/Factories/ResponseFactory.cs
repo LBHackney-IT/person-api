@@ -46,7 +46,8 @@ namespace PersonApi.V1.Factories
                 CommunicationRequirements = domain.CommunicationRequirements,
                 PersonTypes = domain.PersonTypes,
                 Links = _apiLinkGenerator?.GenerateLinksForPerson(domain),
-                Tenures = domain.Tenures
+                Tenures = domain.Tenures,
+                Reason = domain.Reason
             };
         }
     }
