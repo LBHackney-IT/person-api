@@ -2,12 +2,52 @@ using PersonApi.V1.Boundary;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+using PersonApi.V1.Controllers;
 
 namespace PersonApi.V1.Factories
 {
-    public interface IResponseFactory
+    public class SnsFactory : ISnsFactory
     {
-        PersonResponseObject ToResponse(Person domain);
+        public PersonSns Create(Person person, string correlationId)
+        {
+            return new PersonSns
+            {
+                CorrelationId = correlationId,
+                DateTime = DateTime.UtcNow,
+                EntityId = Guid.NewGuid().ToString(),
+                EventType = "PersonCreatedEvent",
+                Id = person.Id.ToString(),
+                SourceDomain = "Person",
+                SourceSystem = "PersonAPI",
+                Version = "v1",
+                User = new User
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = string.Join(' ', person.Firstname, person.MiddleName, person.Surname)
+                }
+            };
+        }
+
+        private string GetCorrelationId()
+        {
+            StringValues correlationId;
+
+            HttpContext
+
+            if (!correlationId.Any())
+                throw new KeyNotFoundException("Request is missing a correlationId");
+
+            return correlationId.First();
+        }
+    }
+
+    public interface ISnsFactory
+    {
+        PersonSns Create(Person person, string correlationId);
     }
 
     public class ResponseFactory : IResponseFactory

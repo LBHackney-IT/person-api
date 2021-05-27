@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~P:PersonApi.V1.Domain.Tenure.IsActive")]
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:PersonApi.V1.Gateways.PersonSnsGateway.Publish(PersonApi.V1.Domain.PersonSns)~System.Threading.Tasks.Task")]

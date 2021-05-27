@@ -30,6 +30,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+using Amazon.SimpleNotificationService;
+using PersonApi.V1.Domain.Configuration;
 
 //[assembly: InternalsVisibleTo("PersonApi.Tests")]
 
@@ -126,6 +128,8 @@ namespace PersonApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 if (File.Exists(xmlPath))
                     c.IncludeXmlComments(xmlPath);
+
+                services.Configure<AwsConfiguration>(options => Configuration.GetSection("AWS").Bind(options));
             });
 
             ConfigureLogging(services, Configuration);
@@ -176,6 +180,8 @@ namespace PersonApi
         private static void RegisterGateways(IServiceCollection services)
         {
             services.AddScoped<IPersonApiGateway, DynamoDbGateway>();
+            services.AddScoped<ISnsGateway, PersonSnsGateway>();
+            services.AddScoped<IAmazonSimpleNotificationService, AmazonSimpleNotificationServiceClient>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)

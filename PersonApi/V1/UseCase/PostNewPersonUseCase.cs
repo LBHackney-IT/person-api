@@ -11,17 +11,26 @@ namespace PersonApi.V1.UseCase
     {
         private readonly IPersonApiGateway _gateway;
         private readonly IResponseFactory _responseFactory;
+        private readonly ISnsGateway _snsGateway;
+        private readonly ISnsFactory _snsFactory;
 
-        public PostNewPersonUseCase(IPersonApiGateway gateway, IResponseFactory responseFactory)
+        public PostNewPersonUseCase(IPersonApiGateway gateway, IResponseFactory responseFactory,
+            ISnsGateway snsGateway, ISnsFactory snsFactory)
         {
             _gateway = gateway;
             _responseFactory = responseFactory;
+            _snsGateway = snsGateway;
+            _snsFactory = snsFactory;
         }
 
-        public async Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject)
+        public async Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject,
+            string correlationId)
         {
             var person = await _gateway.PostNewPersonAsync(personRequestObject).
                 ConfigureAwait(false);
+
+            var personSns = _snsFactory.Create(person, correlationId);
+            await _snsGateway.Publish(personSns).ConfigureAwait(false);
 
             return _responseFactory.ToResponse(person);
         }
