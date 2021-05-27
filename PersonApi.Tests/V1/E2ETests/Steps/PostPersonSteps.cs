@@ -1,40 +1,20 @@
 using FluentAssertions;
+using Newtonsoft.Json;
+using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.Factories;
-using PersonApi.V1.Infrastructure;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using PersonApi.V1.Boundary.Request;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace PersonApi.Tests.V1.E2ETests.Steps
 {
-    public class PostPersonSteps
+    public class PostPersonSteps : BaseSteps
     {
-        private readonly HttpClient _httpClient;
-
-        private HttpResponseMessage _lastResponse;
-
-        public PostPersonSteps(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
-        private static JsonSerializerOptions CreateJsonOptions()
-        {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            options.Converters.Add(new JsonStringEnumConverter());
-            return options;
-        }
+        public PostPersonSteps(HttpClient httpClient) : base(httpClient)
+        { }
 
         public async Task WhenAPersonIsCreated(PersonRequestObject requestObject)
         {
