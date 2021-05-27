@@ -1,7 +1,10 @@
 using Amazon;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
+using Hackney.Core.DynamoDb.HealthCheck;
+using Hackney.Core.HealthCheck;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -28,10 +31,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-
-//[assembly: InternalsVisibleTo("PersonApi.Tests")]
 
 namespace PersonApi
 {
@@ -70,6 +70,8 @@ namespace PersonApi
             });
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
+
+            services.AddDynamoDbHealthCheck<PersonDbEntity>();
 
             services.AddSwaggerGen(c =>
             {
@@ -230,6 +232,11 @@ namespace PersonApi
             {
                 // SwaggerGen won't find controllers that are routed via this technique.
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapHealthChecks("/api/v1/healthcheck/ping", new HealthCheckOptions()
+                {
+                    ResponseWriter = HealthCheckResponseWriter.WriteResponse
+                });
             });
 
             app.UseLogCall();

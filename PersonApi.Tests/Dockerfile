@@ -3,12 +3,18 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1
 # disable microsoft telematry
 ENV DOTNET_CLI_TELEMETRY_OPTOUT='true'
 
+ENV DynamoDb_LocalMode='true'
+
+ARG LBHPACKAGESTOKEN
+ENV LBHPACKAGESTOKEN=$LBHPACKAGESTOKEN
+
 WORKDIR /app
 
-# Copy csproj and restore as distinct layers
+# Copy csproj and nuget config and restore as distinct layers
 COPY ./PersonApi.sln ./
 COPY ./PersonApi/PersonApi.csproj ./PersonApi/
 COPY ./PersonApi.Tests/PersonApi.Tests.csproj ./PersonApi.Tests/
+COPY /NuGet.Config /root/.nuget/NuGet/NuGet.Config
 
 RUN dotnet restore ./PersonApi/PersonApi.csproj
 RUN dotnet restore ./PersonApi.Tests/PersonApi.Tests.csproj
