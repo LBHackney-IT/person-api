@@ -1,13 +1,12 @@
+using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.Logging;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
-using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Domain;
 
 namespace PersonApi.V1.Controllers
 {
@@ -56,7 +55,7 @@ namespace PersonApi.V1.Controllers
             var person = await _newPersonUseCase.ExecuteAsync(personRequestObject)
                 .ConfigureAwait(false);
 
-            return Created(new Uri("http://api/v1/persons"), person);
+            return Created(new Uri($"api/v1/persons/{person.Id}", UriKind.Relative), person);
         }
     }
 }

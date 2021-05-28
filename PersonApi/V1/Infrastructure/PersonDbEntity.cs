@@ -1,4 +1,5 @@
 using Amazon.DynamoDBv2.DataModel;
+using Hackney.Core.DynamoDb.Converters;
 using PersonApi.V1.Domain;
 using System;
 using System.Collections.Generic;
