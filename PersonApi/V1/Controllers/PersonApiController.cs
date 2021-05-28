@@ -39,10 +39,10 @@ namespace PersonApi.V1.Controllers
         [HttpGet]
         [Route("{id}")]
         [LogCall(LogLevel.Information)]
-        public async Task<IActionResult> GetPersonByIdAsync(Guid id)
+        public async Task<IActionResult> GetPersonByIdAsync([FromRoute] PersonQueryObject query)
         {
-            var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-            if (null == person) return NotFound(id);
+            var person = await _getByIdUseCase.ExecuteAsync(query).ConfigureAwait(false);
+            if (null == person) return NotFound(query.Id);
 
             return Ok(person);
         }
