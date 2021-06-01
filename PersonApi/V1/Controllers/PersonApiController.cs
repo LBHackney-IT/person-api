@@ -53,7 +53,7 @@ namespace PersonApi.V1.Controllers
         [HttpPost]
         public async Task<IActionResult> PostNewPerson([FromBody] PersonRequestObject personRequestObject)
         {
-            var person = await _newPersonUseCase.ExecuteAsync(personRequestObject, GetCorrelationId())
+            var person = await _newPersonUseCase.ExecuteAsync(personRequestObject)
                 .ConfigureAwait(false);
 
             return Created(new Uri("http://api/v1/persons"), person);

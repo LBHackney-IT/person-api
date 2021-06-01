@@ -31,23 +31,19 @@ namespace PersonApi.V1.Factories
                 }
             };
         }
-
-        private string GetCorrelationId()
-        {
-            StringValues correlationId;
-
-            HttpContext
-
-            if (!correlationId.Any())
-                throw new KeyNotFoundException("Request is missing a correlationId");
-
-            return correlationId.First();
-        }
     }
 
     public interface ISnsFactory
     {
         PersonSns Create(Person person, string correlationId);
+    }
+
+    public class PersonSnsFactory : ISnsFactory
+    {
+        public PersonSns Create(Person person, string correlationId)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class ResponseFactory : IResponseFactory

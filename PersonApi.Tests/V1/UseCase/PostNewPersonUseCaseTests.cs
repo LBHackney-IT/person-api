@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Amazon.SimpleNotificationService;
 using AutoFixture;
 using FluentAssertions;
 using Moq;
@@ -17,6 +18,8 @@ namespace PersonApi.Tests.V1.UseCase
     {
         private readonly Mock<IPersonApiGateway> _mockGateway;
         private readonly ResponseFactory _responseFactory;
+        private readonly Mock<ISnsGateway> _personSnsGateway;
+        private readonly PersonSnsFactory _personSnsFactory;
         private readonly PostNewPersonUseCase _classUnderTest;
         private readonly Fixture _fixture = new Fixture();
 
@@ -24,7 +27,9 @@ namespace PersonApi.Tests.V1.UseCase
         {
             _mockGateway = new Mock<IPersonApiGateway>();
             _responseFactory = new ResponseFactory(null);
-            _classUnderTest = new PostNewPersonUseCase(_mockGateway.Object, _responseFactory);
+            _personSnsGateway = new Mock<ISnsGateway>();
+            _personSnsFactory = new PersonSnsFactory();
+            _classUnderTest = new PostNewPersonUseCase(_mockGateway.Object, _responseFactory, _personSnsGateway.Object, _personSnsFactory);
         }
 
         [Fact]

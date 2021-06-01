@@ -6,7 +6,6 @@ namespace PersonApi.V1.UseCase.Interfaces
 {
     public interface IPostNewPersonUseCase
     {
-        Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject,
-            string correlationId);
+        Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject);
     }
 }

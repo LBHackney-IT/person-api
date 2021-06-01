@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
@@ -23,13 +24,12 @@ namespace PersonApi.V1.UseCase
             _snsFactory = snsFactory;
         }
 
-        public async Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject,
-            string correlationId)
+        public async Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject)
         {
             var person = await _gateway.PostNewPersonAsync(personRequestObject).
                 ConfigureAwait(false);
 
-            var personSns = _snsFactory.Create(person, correlationId);
+            var personSns = _snsFactory.Create(person, Guid.NewGuid().ToString());
             await _snsGateway.Publish(personSns).ConfigureAwait(false);
 
             return _responseFactory.ToResponse(person);
