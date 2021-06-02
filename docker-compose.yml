@@ -40,23 +40,15 @@ services:
 
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
-    image: localstack/localstack
-    network_mode: bridge
-    hostname: localstack
+    image: localstack/localstack    
+    hostname: awslocal    
     ports:
-      - "4566:4566"
-      - "4571:4571"
-      - "4575:4575"
-      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+      - "4566:4566"      
     environment:
-      - SERVICES=${SERVICES- }
-      - DEBUG=${DEBUG- }
-      - DATA_DIR=${DATA_DIR- }
-      - PORT_WEB_UI=${PORT_WEB_UI- }
-      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
-      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - SERVICES=sns
+      - DEBUG=1                  
       - DOCKER_HOST=unix:///var/run/docker.sock
-      - HOST_TMP_FOLDER=${TMPDIR}
+      - HOST_TMP_FOLDER=/tmp/localstack      
     volumes:
-      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "./.localstack:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"

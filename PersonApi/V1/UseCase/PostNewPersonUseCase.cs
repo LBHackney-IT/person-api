@@ -6,6 +6,7 @@ using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure.JWT;
+using PersonApi.V1.Logging;
 using PersonApi.V1.UseCase.Interfaces;
 
 namespace PersonApi.V1.UseCase
@@ -26,6 +27,7 @@ namespace PersonApi.V1.UseCase
             _snsFactory = snsFactory;
         }
 
+        [LogCall]
         public async Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject, Token token)
         {
             try
