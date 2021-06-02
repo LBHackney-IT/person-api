@@ -27,7 +27,6 @@ namespace PersonApi.V1.UseCase
             _snsFactory = snsFactory;
         }
 
-        [LogCall]
         public async Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject, Token token)
         {
             var person = await _gateway.PostNewPersonAsync(personRequestObject).ConfigureAwait(false);
