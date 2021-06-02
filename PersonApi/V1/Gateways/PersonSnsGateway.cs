@@ -24,12 +24,9 @@ namespace PersonApi.V1.Gateways
             _logger = logger;
         }
 
-        [LogCall]
         public async Task Publish(PersonSns personSns)
         {
             string message = JsonConvert.SerializeObject(personSns);
-            _logger.Log(LogLevel.Information, Environment.GetEnvironmentVariable("DynamoDb_LocalMode"));
-            _logger.Log(LogLevel.Information, Environment.GetEnvironmentVariable("Localstack_SnsServiceUrl"));
 
             var request = new PublishRequest { Message = message, TopicArn = Environment.GetEnvironmentVariable("PersonTopicArn") };
             await _amazonSimpleNotificationService.PublishAsync(request).ConfigureAwait(false);
