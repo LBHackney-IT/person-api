@@ -8,18 +8,20 @@ namespace PersonApi.Tests.V1.Helper
     {
         public static Guid ID { get; } = Guid.NewGuid();
         public const Title TITLE = Title.Mr;
+        public const Title PRETITLE = Title.Mr;
         public const string PREFIRSTNAME = "Bob";
+        public const string PREMIDDLENAME = "Tim";
         public const string PREFSURNAME = "Roberts";
         public const string FIRSTNAME = "Robert";
         public const string MIDDLENAME = "Tim";
         public const string SURNAME = "Roberts";
         public const string ETHNICITY = "Caucasian";
         public const string NATIONALITY = "British";
+        public const string NINO = "AA123456C";
         public const string PLACEOFBIRTH = "London";
         public static DateTime DATEOFBIRTH { get; } = DateTime.UtcNow.AddYears(-40);
         public const Gender GENDER = Gender.M;
-
-        public const IdentificationType IDENTIFICATIONTYPE = IdentificationType.NI;
+        public const IdentificationType IDENTIFICATIONTYPE = IdentificationType.Passport;
         public const string IDENTIFICATIONVALUE = "Some id value";
         public const bool IDENTIFICATIONISSEEN = true;
         public const string IDENTIFICATIONLINKTODOC = "Some link";
@@ -44,13 +46,16 @@ namespace PersonApi.Tests.V1.Helper
             var entity = new Person();
             entity.Id = Constants.ID;
             entity.Title = Constants.TITLE;
+            entity.PreferredTitle = Constants.PRETITLE;
             entity.PreferredFirstname = Constants.PREFIRSTNAME;
+            entity.PreferredMiddleName = Constants.PREMIDDLENAME;
             entity.PreferredSurname = Constants.PREFSURNAME;
             entity.Firstname = Constants.FIRSTNAME;
             entity.MiddleName = Constants.MIDDLENAME;
             entity.Surname = Constants.SURNAME;
             entity.Ethnicity = Constants.ETHNICITY;
             entity.Nationality = Constants.NATIONALITY;
+            entity.NationalInsuranceNo = Constants.NINO;
             entity.PlaceOfBirth = Constants.PLACEOFBIRTH;
             entity.DateOfBirth = Constants.DATEOFBIRTH;
             entity.Gender = Constants.GENDER;

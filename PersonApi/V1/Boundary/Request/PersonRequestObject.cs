@@ -12,7 +12,11 @@ namespace PersonApi.V1.Boundary.Request
 
         public Title Title { get; set; }
 
+        public Title PreferredTitle { get; set; }
+
         public string PreferredFirstname { get; set; }
+
+        public string PreferredMiddleName { get; set; }
 
         public string PreferredSurname { get; set; }
 
@@ -25,6 +29,8 @@ namespace PersonApi.V1.Boundary.Request
         public string Ethnicity { get; set; }
 
         public string Nationality { get; set; }
+
+        public string NationalInsuranceNo { get; set; }
 
         public string PlaceOfBirth { get; set; }
 
