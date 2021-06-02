@@ -184,6 +184,7 @@ namespace PersonApi
             services.AddScoped<IAmazonSimpleNotificationService, AmazonSimpleNotificationServiceClient>();
             services.AddScoped<ISnsFactory, PersonSnsFactory>();
             services.AddScoped<ITokenFactory, TokenFactory>();
+            services.AddScoped<IHttpContextWrapper, HttpContextWrapper>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
