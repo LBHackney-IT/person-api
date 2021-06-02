@@ -25,7 +25,7 @@ services:
     environment:
       - DynamoDb_LocalMode=true
       - DynamoDb_LocalServiceUrl=http://dynamodb-database:8000
-      - Localstack_SnsServiceUrl=http://127.0.0.1:4566
+      - Localstack_SnsServiceUrl=http://localstack:4566
       - AWS_REGION=eu-west-2
       - AWS_ACCESS_KEY_ID=local
       - AWS_SECRET_ACCESS_KEY=local
@@ -42,6 +42,7 @@ services:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
     image: localstack/localstack
     network_mode: bridge
+    hostname: localstack
     ports:
       - "4566:4566"
       - "4571:4571"
