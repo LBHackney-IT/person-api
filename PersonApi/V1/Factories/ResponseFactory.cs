@@ -37,7 +37,7 @@ namespace PersonApi.V1.Factories
     {
         public PersonSns Create(Person person, string correlationId)
         {
-            throw new NotImplementedException();
+            return new PersonSns();
         }
     }
 
