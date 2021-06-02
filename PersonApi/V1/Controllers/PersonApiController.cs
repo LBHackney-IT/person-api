@@ -53,7 +53,7 @@ namespace PersonApi.V1.Controllers
         {
             var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
             if (null == person) return NotFound(id);
-            
+
             return Ok(person);
         }
 
