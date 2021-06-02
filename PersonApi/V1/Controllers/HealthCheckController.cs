@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using PersonApi.V1.UseCase;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PersonApi.V1.Controllers

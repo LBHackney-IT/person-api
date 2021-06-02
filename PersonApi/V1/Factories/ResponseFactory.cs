@@ -2,11 +2,6 @@ using PersonApi.V1.Boundary;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using PersonApi.V1.Controllers;
 
 namespace PersonApi.V1.Factories
 {

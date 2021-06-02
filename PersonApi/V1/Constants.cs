@@ -1,4 +1,4 @@
-namespace PersonApi.V1.Controllers
+namespace PersonApi.V1
 {
     public static class Constants
     {

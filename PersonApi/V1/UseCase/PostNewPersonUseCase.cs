@@ -1,9 +1,11 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
+using PersonApi.V1.Infrastructure.JWT;
 using PersonApi.V1.UseCase.Interfaces;
 
 namespace PersonApi.V1.UseCase
@@ -24,7 +26,7 @@ namespace PersonApi.V1.UseCase
             _snsFactory = snsFactory;
         }
 
-        public async Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject)
+        public async Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject, Token token)
         {
             var person = await _gateway.PostNewPersonAsync(personRequestObject).
                 ConfigureAwait(false);

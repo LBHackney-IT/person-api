@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using PersonApi.V1.Controllers;
-using PersonApi.V1.UseCase;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;

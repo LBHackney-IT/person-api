@@ -1,10 +1,10 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using System;
-using System.Threading.Tasks;
 
-namespace PersonApi.V1.Controllers
+namespace PersonApi.V1
 {
     // TODO: This should go in a common NuGet package...
 

@@ -1,14 +1,15 @@
 using System;
 using System.Threading.Tasks;
-using Amazon.SimpleNotificationService;
 using AutoFixture;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
+using PersonApi.V1.Infrastructure.JWT;
 using PersonApi.V1.UseCase;
 using Xunit;
 
@@ -37,12 +38,14 @@ namespace PersonApi.Tests.V1.UseCase
         {
             // Arrange
             var personRequest = new PersonRequestObject();
+            var token = new Token();
+
             var person = _fixture.Create<Person>();
 
             _mockGateway.Setup(x => x.PostNewPersonAsync(personRequest)).ReturnsAsync(person);
 
             // Act
-            var response = await _classUnderTest.ExecuteAsync(personRequest)
+            var response = await _classUnderTest.ExecuteAsync(personRequest, token)
                 .ConfigureAwait(false);
 
             // Assert
@@ -54,11 +57,12 @@ namespace PersonApi.Tests.V1.UseCase
         {
             // Arrange
             var personRequest = new PersonRequestObject();
+            var token = new Token();
             var exception = new ApplicationException("Test exception");
             _mockGateway.Setup(x => x.PostNewPersonAsync(personRequest)).ThrowsAsync(exception);
 
             // Act
-            Func<Task<PersonResponseObject>> func = async () => await _classUnderTest.ExecuteAsync(personRequest).ConfigureAwait(false);
+            Func<Task<PersonResponseObject>> func = async () => await _classUnderTest.ExecuteAsync(personRequest, token).ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);

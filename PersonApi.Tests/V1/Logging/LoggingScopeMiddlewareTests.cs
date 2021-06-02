@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Moq;
-using PersonApi.V1.Controllers;
 using PersonApi.V1.Logging;
 using System;
 using System.Threading.Tasks;
+using PersonApi.V1;
 using Xunit;
 
 namespace PersonApi.Tests.V1.Logging

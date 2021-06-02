@@ -7,7 +7,11 @@ using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
 using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Domain;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using PersonApi.V1.Infrastructure;
+using PersonApi.V1.Infrastructure.JWT;
 
 namespace PersonApi.V1.Controllers
 {
@@ -19,11 +23,14 @@ namespace PersonApi.V1.Controllers
     {
         private readonly IGetByIdUseCase _getByIdUseCase;
         private readonly IPostNewPersonUseCase _newPersonUseCase;
+        private readonly ITokenFactory _tokenFactory;
 
-        public PersonApiController(IGetByIdUseCase getByIdUseCase, IPostNewPersonUseCase newPersonUseCase)
+        public PersonApiController(IGetByIdUseCase getByIdUseCase, IPostNewPersonUseCase newPersonUseCase,
+            ITokenFactory tokenFactory)
         {
             _getByIdUseCase = getByIdUseCase;
             _newPersonUseCase = newPersonUseCase;
+            _tokenFactory = tokenFactory;
         }
 
         /// <summary>
@@ -53,7 +60,9 @@ namespace PersonApi.V1.Controllers
         [HttpPost]
         public async Task<IActionResult> PostNewPerson([FromBody] PersonRequestObject personRequestObject)
         {
-            var person = await _newPersonUseCase.ExecuteAsync(personRequestObject)
+            var token = _tokenFactory.Create(HttpContext.Request.Headers);
+
+            var person = await _newPersonUseCase.ExecuteAsync(personRequestObject, token)
                 .ConfigureAwait(false);
 
             return Created(new Uri("http://api/v1/persons"), person);

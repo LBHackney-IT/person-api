@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using PersonApi.V1.Controllers;
 using System.Threading.Tasks;
+using PersonApi.V1;
 using Xunit;
 
 namespace PersonApi.Tests.V1

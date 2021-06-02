@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace PersonApi.V1.Domain.Configuration
 {
     public class AwsConfiguration

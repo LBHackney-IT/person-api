@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using PersonApi.V1;
 using PersonApi.V1.Boundary;
-using PersonApi.V1.Controllers;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;
@@ -28,10 +27,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using Amazon.SimpleNotificationService;
 using PersonApi.V1.Domain.Configuration;
+using PersonApi.V1.Infrastructure.JWT;
 
 //[assembly: InternalsVisibleTo("PersonApi.Tests")]
 
@@ -182,6 +181,8 @@ namespace PersonApi
             services.AddScoped<IPersonApiGateway, DynamoDbGateway>();
             services.AddScoped<ISnsGateway, PersonSnsGateway>();
             services.AddScoped<IAmazonSimpleNotificationService, AmazonSimpleNotificationServiceClient>();
+            services.AddScoped<ISnsFactory, PersonSnsFactory>();
+            services.AddScoped<ITokenFactory, TokenFactory>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)

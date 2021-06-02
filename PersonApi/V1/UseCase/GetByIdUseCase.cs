@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;

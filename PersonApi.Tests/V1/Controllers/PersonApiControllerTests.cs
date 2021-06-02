@@ -7,7 +7,9 @@ using PersonApi.V1.Controllers;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using PersonApi.V1.Boundary.Request;
+using PersonApi.V1.Infrastructure.JWT;
 using Xunit;
 
 namespace PersonApi.Tests.V1.Controllers
@@ -17,6 +19,7 @@ namespace PersonApi.Tests.V1.Controllers
     {
         private readonly Mock<IGetByIdUseCase> _mockGetByIdUseCase;
         private readonly Mock<IPostNewPersonUseCase> _mockNewPersonUseCase;
+        private readonly Mock<ITokenFactory> _mockTokenFactory;
 
         private readonly PersonApiController _sut;
         private readonly Fixture _fixture = new Fixture();
@@ -25,9 +28,9 @@ namespace PersonApi.Tests.V1.Controllers
         {
             _mockGetByIdUseCase = new Mock<IGetByIdUseCase>();
             _mockNewPersonUseCase = new Mock<IPostNewPersonUseCase>();
+            _mockTokenFactory = new Mock<ITokenFactory>();
 
-
-            _sut = new PersonApiController(_mockGetByIdUseCase.Object, _mockNewPersonUseCase.Object);
+            _sut = new PersonApiController(_mockGetByIdUseCase.Object, _mockNewPersonUseCase.Object, _mockTokenFactory.Object);
         }
 
         [Fact]
@@ -82,7 +85,7 @@ namespace PersonApi.Tests.V1.Controllers
             // Arrange
             var id = Guid.NewGuid();
             var personResponse = _fixture.Create<PersonResponseObject>();
-            _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>()))
+            _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>(), It.IsAny<Token>()))
                 .ReturnsAsync(personResponse);
 
             // Act
@@ -99,7 +102,7 @@ namespace PersonApi.Tests.V1.Controllers
             // Arrange
             var id = Guid.NewGuid();
             var exception = new ApplicationException("Test exception");
-            _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>())).ThrowsAsync(exception);
+            _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>(), It.IsAny<Token>())).ThrowsAsync(exception);
 
             // Act
             Func<Task<IActionResult>> func = async () => await _sut.PostNewPerson(new PersonRequestObject())
