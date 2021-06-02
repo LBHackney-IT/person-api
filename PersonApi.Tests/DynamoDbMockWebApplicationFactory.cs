@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using Amazon.SimpleNotificationService;
 
 namespace PersonApi.Tests
 {
@@ -17,6 +18,7 @@ namespace PersonApi.Tests
 
         public IAmazonDynamoDB DynamoDb { get; private set; }
         public IDynamoDBContext DynamoDbContext { get; private set; }
+        public IAmazonSimpleNotificationService SimpleNotificationService { get; private set; }
 
         public DynamoDbMockWebApplicationFactory(List<TableDef> tables)
         {
@@ -29,11 +31,12 @@ namespace PersonApi.Tests
                 .UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
-                services.ConfigureDynamoDB();
+                services.ConfigureAws();
 
                 var serviceProvider = services.BuildServiceProvider();
                 DynamoDb = serviceProvider.GetRequiredService<IAmazonDynamoDB>();
                 DynamoDbContext = serviceProvider.GetRequiredService<IDynamoDBContext>();
+                SimpleNotificationService = serviceProvider.GetRequiredService<IAmazonSimpleNotificationService>();
 
                 EnsureTablesExist(DynamoDb, _tables);
             });

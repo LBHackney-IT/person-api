@@ -137,7 +137,7 @@ namespace PersonApi
             AWSXRayRecorder.RegisterLogger(LoggingOptions.SystemDiagnostics);
 
             services.AddLogCallAspect();
-            services.ConfigureDynamoDB();
+            services.ConfigureAws();
 
             RegisterGateways(services);
             RegisterUseCases(services);
@@ -181,7 +181,6 @@ namespace PersonApi
         {
             services.AddScoped<IPersonApiGateway, DynamoDbGateway>();
             services.AddScoped<ISnsGateway, PersonSnsGateway>();
-            services.AddScoped<IAmazonSimpleNotificationService, AmazonSimpleNotificationServiceClient>();
             services.AddScoped<ISnsFactory, PersonSnsFactory>();
             services.AddScoped<ITokenFactory, TokenFactory>();
             services.AddScoped<IHttpContextWrapper, HttpContextWrapper>();

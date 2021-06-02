@@ -3,6 +3,7 @@ using Amazon.DynamoDBv2.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Amazon.SimpleNotificationService;
 using Xunit;
 
 namespace PersonApi.Tests
@@ -11,6 +12,7 @@ namespace PersonApi.Tests
     {
         public HttpClient Client { get; private set; }
         public IDynamoDBContext DynamoDbContext => _factory?.DynamoDbContext;
+        public IAmazonSimpleNotificationService SimpleNotificationService => _factory?.SimpleNotificationService;
 
         private readonly DynamoDbMockWebApplicationFactory<TStartup> _factory;
         private readonly List<TableDef> _tables = new List<TableDef>
@@ -22,6 +24,7 @@ namespace PersonApi.Tests
         {
             EnsureEnvVarConfigured("DynamoDb_LocalMode", "true");
             EnsureEnvVarConfigured("DynamoDb_LocalServiceUrl", "http://localhost:8000");
+            EnsureEnvVarConfigured("Localstack_SnsServiceUrl", "http://localhost:4566");
             _factory = new DynamoDbMockWebApplicationFactory<TStartup>(_tables);
             Client = _factory.CreateClient();
         }

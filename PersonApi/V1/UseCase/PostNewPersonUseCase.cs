@@ -28,13 +28,23 @@ namespace PersonApi.V1.UseCase
 
         public async Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject, Token token)
         {
-            var person = await _gateway.PostNewPersonAsync(personRequestObject).
-                ConfigureAwait(false);
+            try
+            {
+                var person = await _gateway.PostNewPersonAsync(personRequestObject).ConfigureAwait(false);
 
-            var personSns = _snsFactory.Create(person, Guid.NewGuid().ToString());
-            await _snsGateway.Publish(personSns).ConfigureAwait(false);
+                var personSns = _snsFactory.Create(person, Guid.NewGuid().ToString());
+                await _snsGateway.Publish(personSns).ConfigureAwait(false);
 
-            return _responseFactory.ToResponse(person);
+                return _responseFactory.ToResponse(person);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+
+            }
         }
     }
 }

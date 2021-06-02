@@ -21,7 +21,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         public PostPersonTests(DynamoDbIntegrationTests<Startup> dbFixture)
         {
             _dbFixture = dbFixture;
-            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext);
+            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, _dbFixture.SimpleNotificationService);
             _steps = new PostPersonSteps(_dbFixture.Client);
         }
 

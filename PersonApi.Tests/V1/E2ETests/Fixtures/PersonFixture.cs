@@ -2,6 +2,10 @@ using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
 using PersonApi.V1.Infrastructure;
 using System;
+using System.Collections.Generic;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
+using Microsoft.EntityFrameworkCore.Internal;
 using PersonApi.V1.Boundary.Request;
 
 namespace PersonApi.Tests.V1.E2ETests.Fixtures
@@ -11,6 +15,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         private readonly Fixture _fixture = new Fixture();
 
         private readonly IDynamoDBContext _dbContext;
+        private readonly IAmazonSimpleNotificationService _amazonSimpleNotificationService;
 
         public PersonDbEntity Person { get; private set; }
 
@@ -20,9 +25,10 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
         public string InvalidPersonId { get; private set; }
 
-        public PersonFixture(IDynamoDBContext dbContext)
+        public PersonFixture(IDynamoDBContext dbContext, IAmazonSimpleNotificationService amazonSimpleNotificationService)
         {
             _dbContext = dbContext;
+            _amazonSimpleNotificationService = amazonSimpleNotificationService;
         }
 
         public void Dispose()
@@ -66,6 +72,18 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             var personRequest = _fixture.Build<PersonRequestObject>()
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                 .Create();
+
+            var snsAttrs = new Dictionary<string, string>();
+            snsAttrs.Add("fifo_topic", "true");
+            snsAttrs.Add("content_based_deduplication", "true");
+
+            var response = _amazonSimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
+            {
+                Name = "personcreated",
+                Attributes = snsAttrs
+            }).Result;
+
+            Environment.SetEnvironmentVariable("PersonTopicArn",response.TopicArn);
 
             PersonRequest = personRequest;
         }

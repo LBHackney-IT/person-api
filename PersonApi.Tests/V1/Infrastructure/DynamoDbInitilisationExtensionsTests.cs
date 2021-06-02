@@ -20,7 +20,7 @@ namespace PersonApi.Tests.V1.Infrastructure
             Environment.SetEnvironmentVariable("DynamoDb_LocalMode", localModeEnvVar);
 
             ServiceCollection services = new ServiceCollection();
-            services.ConfigureDynamoDB();
+            services.ConfigureAws();
 
             services.Any(x => x.ServiceType == typeof(IAmazonDynamoDB)).Should().BeTrue();
             services.Any(x => x.ServiceType == typeof(IDynamoDBContext)).Should().BeTrue();
