@@ -9,6 +9,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using PersonApi.V1.Boundary.Request;
+using PersonApi.V1.Infrastructure;
 using PersonApi.V1.Infrastructure.JWT;
 using Xunit;
 
@@ -20,6 +21,8 @@ namespace PersonApi.Tests.V1.Controllers
         private readonly Mock<IGetByIdUseCase> _mockGetByIdUseCase;
         private readonly Mock<IPostNewPersonUseCase> _mockNewPersonUseCase;
         private readonly Mock<ITokenFactory> _mockTokenFactory;
+        private readonly Mock<IHttpContextWrapper> _mockContextWrapper;
+        private readonly Mock<HttpRequest> _mockHttpRequest;
 
         private readonly PersonApiController _sut;
         private readonly Fixture _fixture = new Fixture();
@@ -29,8 +32,13 @@ namespace PersonApi.Tests.V1.Controllers
             _mockGetByIdUseCase = new Mock<IGetByIdUseCase>();
             _mockNewPersonUseCase = new Mock<IPostNewPersonUseCase>();
             _mockTokenFactory = new Mock<ITokenFactory>();
+            _mockContextWrapper = new Mock<IHttpContextWrapper>();
+            _mockHttpRequest = new Mock<HttpRequest>();
 
-            _sut = new PersonApiController(_mockGetByIdUseCase.Object, _mockNewPersonUseCase.Object, _mockTokenFactory.Object);
+            _sut = new PersonApiController(_mockGetByIdUseCase.Object, _mockNewPersonUseCase.Object, _mockTokenFactory.Object,
+                _mockContextWrapper.Object);
+
+            _mockContextWrapper.Setup(x => x.GetContextRequestHeaders(It.IsAny<HttpContext>())).Returns(new HeaderDictionary());
         }
 
         [Fact]

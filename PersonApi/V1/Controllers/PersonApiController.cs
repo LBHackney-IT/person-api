@@ -24,13 +24,15 @@ namespace PersonApi.V1.Controllers
         private readonly IGetByIdUseCase _getByIdUseCase;
         private readonly IPostNewPersonUseCase _newPersonUseCase;
         private readonly ITokenFactory _tokenFactory;
+        private readonly IHttpContextWrapper _contextWrapper;
 
         public PersonApiController(IGetByIdUseCase getByIdUseCase, IPostNewPersonUseCase newPersonUseCase,
-            ITokenFactory tokenFactory)
+            ITokenFactory tokenFactory, IHttpContextWrapper contextWrapper)
         {
             _getByIdUseCase = getByIdUseCase;
             _newPersonUseCase = newPersonUseCase;
             _tokenFactory = tokenFactory;
+            _contextWrapper = contextWrapper;
         }
 
         /// <summary>
@@ -51,7 +53,7 @@ namespace PersonApi.V1.Controllers
         {
             var person = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
             if (null == person) return NotFound(id);
-
+            
             return Ok(person);
         }
 
@@ -60,7 +62,7 @@ namespace PersonApi.V1.Controllers
         [HttpPost]
         public async Task<IActionResult> PostNewPerson([FromBody] PersonRequestObject personRequestObject)
         {
-            var token = _tokenFactory.Create(HttpContext.Request.Headers);
+            var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
 
             var person = await _newPersonUseCase.ExecuteAsync(personRequestObject, token)
                 .ConfigureAwait(false);
