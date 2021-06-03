@@ -40,5 +40,9 @@
   <ItemGroup>
     <ProjectReference Include="..\PersonApi\PersonApi.csproj" />
   </ItemGroup>
+    
+  <ItemGroup>
+    <Folder Include="V1\Infrastructure\" />
+  </ItemGroup>
 
 </Project>
