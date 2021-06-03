@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace PersonApi.V1.Infrastructure
 {
-    public static class DynamoDbInitilisationExtensions
+    public static class AwsInitilisationExtensions
     {
         public static void ConfigureAws(this IServiceCollection services)
         {
