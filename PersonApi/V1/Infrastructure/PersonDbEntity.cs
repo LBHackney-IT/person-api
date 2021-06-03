@@ -14,13 +14,16 @@ namespace PersonApi.V1.Infrastructure
 
         [DynamoDBProperty(Converter = typeof(DynamoDbEnumConverter<Title>))]
         public Title Title { get; set; }
+        public Title PreferredTitle { get; set; }
         public string PreferredFirstname { get; set; }
+        public string PreferredMiddleName { get; set; }
         public string PreferredSurname { get; set; }
         public string Firstname { get; set; }
         public string MiddleName { get; set; }
         public string Surname { get; set; }
         public string Ethnicity { get; set; }
         public string Nationality { get; set; }
+        public string NationalInsuranceNo { get; set; }
         public string PlaceOfBirth { get; set; }
         public string Reason { get; set; }
 
