@@ -8,24 +8,24 @@ using Xunit;
 
 namespace PersonApi.Tests
 {
-    public class DynamoDbIntegrationTests<TStartup> : IDisposable where TStartup : class
+    public class AwsIntegrationTests<TStartup> : IDisposable where TStartup : class
     {
         public HttpClient Client { get; private set; }
         public IDynamoDBContext DynamoDbContext => _factory?.DynamoDbContext;
         public IAmazonSimpleNotificationService SimpleNotificationService => _factory?.SimpleNotificationService;
 
-        private readonly DynamoDbMockWebApplicationFactory<TStartup> _factory;
+        private readonly AwsMockWebApplicationFactory<TStartup> _factory;
         private readonly List<TableDef> _tables = new List<TableDef>
         {
             new TableDef { Name = "Persons", KeyName = "id", KeyType = ScalarAttributeType.S }
         };
 
-        public DynamoDbIntegrationTests()
+        public AwsIntegrationTests()
         {
             EnsureEnvVarConfigured("DynamoDb_LocalMode", "true");
             EnsureEnvVarConfigured("DynamoDb_LocalServiceUrl", "http://localhost:8000");
             EnsureEnvVarConfigured("Localstack_SnsServiceUrl", "http://localhost:4566");
-            _factory = new DynamoDbMockWebApplicationFactory<TStartup>(_tables);
+            _factory = new AwsMockWebApplicationFactory<TStartup>(_tables);
             Client = _factory.CreateClient();
         }
 
@@ -62,7 +62,7 @@ namespace PersonApi.Tests
 
 
     [CollectionDefinition("DynamoDb collection", DisableParallelization = true)]
-    public class DynamoDbCollection : ICollectionFixture<DynamoDbIntegrationTests<Startup>>
+    public class DynamoDbCollection : ICollectionFixture<AwsIntegrationTests<Startup>>
     {
         // This class has no code, and is never created. Its purpose is simply
         // to be the place to apply [CollectionDefinition] and all the

@@ -26,7 +26,7 @@ namespace PersonApi.Tests.V1.Gateways
         private readonly IDynamoDBContext _dynamoDb;
         private readonly List<Action> _cleanup = new List<Action>();
 
-        public DynamoDbGatewayTests(DynamoDbIntegrationTests<Startup> dbTestFixture)
+        public DynamoDbGatewayTests(AwsIntegrationTests<Startup> dbTestFixture)
         {
             _dynamoDb = dbTestFixture.DynamoDbContext;
             _logger = new Mock<ILogger<DynamoDbGateway>>();

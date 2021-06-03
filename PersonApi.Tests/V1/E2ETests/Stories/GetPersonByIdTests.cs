@@ -14,11 +14,11 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
     [Collection("DynamoDb collection")]
     public class GetPersonByIdTests : IDisposable
     {
-        private readonly DynamoDbIntegrationTests<Startup> _dbFixture;
+        private readonly AwsIntegrationTests<Startup> _dbFixture;
         private readonly PersonFixture _personFixture;
         private readonly GetPersonSteps _steps;
 
-        public GetPersonByIdTests(DynamoDbIntegrationTests<Startup> dbFixture)
+        public GetPersonByIdTests(AwsIntegrationTests<Startup> dbFixture)
         {
             _dbFixture = dbFixture;
             _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, _dbFixture.SimpleNotificationService);

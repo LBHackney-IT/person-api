@@ -72,6 +72,18 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                 .Create();
 
+            CreateSnsTopic();
+
+            PersonRequest = personRequest;
+        }
+
+        public void GivenAnInvalidPersonId()
+        {
+            InvalidPersonId = "12345667890";
+        }
+
+        private void CreateSnsTopic()
+        {
             var snsAttrs = new Dictionary<string, string>();
             snsAttrs.Add("fifo_topic", "true");
             snsAttrs.Add("content_based_deduplication", "true");
@@ -83,13 +95,6 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             }).Result;
 
             Environment.SetEnvironmentVariable("PersonTopicArn", response.TopicArn);
-
-            PersonRequest = personRequest;
-        }
-
-        public void GivenAnInvalidPersonId()
-        {
-            InvalidPersonId = "12345667890";
         }
     }
 }

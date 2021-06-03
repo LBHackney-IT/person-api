@@ -12,7 +12,7 @@ using Amazon.SimpleNotificationService;
 
 namespace PersonApi.Tests
 {
-    public class DynamoDbMockWebApplicationFactory<TStartup>
+    public class AwsMockWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         private readonly List<TableDef> _tables;
@@ -21,7 +21,7 @@ namespace PersonApi.Tests
         public IDynamoDBContext DynamoDbContext { get; private set; }
         public IAmazonSimpleNotificationService SimpleNotificationService { get; private set; }
 
-        public DynamoDbMockWebApplicationFactory(List<TableDef> tables)
+        public AwsMockWebApplicationFactory(List<TableDef> tables)
         {
             _tables = tables;
         }
