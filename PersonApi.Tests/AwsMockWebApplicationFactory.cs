@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using Amazon.SimpleNotificationService;
+using PersonApi.V1.Infrastructure;
 
 namespace PersonApi.Tests
 {

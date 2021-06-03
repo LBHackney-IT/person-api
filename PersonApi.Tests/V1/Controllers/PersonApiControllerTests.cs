@@ -9,7 +9,6 @@ using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Infrastructure;
 using PersonApi.V1.Infrastructure.JWT;
 using Xunit;
