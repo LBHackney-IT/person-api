@@ -28,8 +28,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Amazon.SimpleNotificationService;
-using Microsoft.AspNetCore.Http;
 using PersonApi.V1.Domain.Configuration;
 using PersonApi.V1.Infrastructure.JWT;
 

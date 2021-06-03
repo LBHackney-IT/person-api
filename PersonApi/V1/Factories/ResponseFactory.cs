@@ -6,7 +6,7 @@ using PersonApi.V1.Infrastructure.JWT;
 
 namespace PersonApi.V1.Factories
 {
-    
+
 
     public interface ISnsFactory
     {

@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Moq;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;

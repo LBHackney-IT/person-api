@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Domain.Configuration;
-using PersonApi.V1.Logging;
 
 namespace PersonApi.V1.Gateways
 {
@@ -27,8 +26,8 @@ namespace PersonApi.V1.Gateways
         public async Task Publish(PersonSns personSns)
         {
             string message = JsonConvert.SerializeObject(personSns);
-
             var request = new PublishRequest { Message = message, TopicArn = Environment.GetEnvironmentVariable("PersonTopicArn") };
+
             await _amazonSimpleNotificationService.PublishAsync(request).ConfigureAwait(false);
         }
     }

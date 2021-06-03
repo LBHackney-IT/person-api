@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using Microsoft.EntityFrameworkCore.Internal;
 using PersonApi.V1.Boundary.Request;
 
 namespace PersonApi.Tests.V1.E2ETests.Fixtures

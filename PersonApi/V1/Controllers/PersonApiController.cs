@@ -7,9 +7,6 @@ using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
 using PersonApi.V1.Boundary.Request;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using PersonApi.V1.Infrastructure;
 using PersonApi.V1.Infrastructure.JWT;
 
