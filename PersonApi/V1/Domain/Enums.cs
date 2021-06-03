@@ -30,7 +30,6 @@ namespace PersonApi.V1.Domain
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum IdentificationType
     {
-        NI,
         Passport,
         BirthCertificate
     }

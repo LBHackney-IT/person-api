@@ -1,6 +1,7 @@
 using AutoFixture;
 using FluentAssertions;
 using Moq;
+using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
@@ -27,15 +28,20 @@ namespace PersonApi.Tests.V1.UseCase
             _classUnderTest = new GetByIdUseCase(_mockGateway.Object, _responseFactory);
         }
 
+        private PersonQueryObject ConstructQuery()
+        {
+            return new PersonQueryObject() { Id = Guid.NewGuid() };
+        }
+
         [Fact]
         public async Task GetByIdUseCaseGatewayReturnsNullReturnsNull()
         {
             // Arrange
-            var id = Guid.NewGuid();
-            _mockGateway.Setup(x => x.GetPersonByIdAsync(id)).ReturnsAsync((Person) null);
+            var query = ConstructQuery();
+            _mockGateway.Setup(x => x.GetPersonByIdAsync(query)).ReturnsAsync((Person) null);
 
             // Act
-            var response = await _classUnderTest.ExecuteAsync(id).ConfigureAwait(false);
+            var response = await _classUnderTest.ExecuteAsync(query).ConfigureAwait(false);
 
             // Assert
             response.Should().BeNull();
@@ -45,12 +51,12 @@ namespace PersonApi.Tests.V1.UseCase
         public async Task GetPersonByIdAsyncFoundReturnsResponse()
         {
             // Arrange
-            var id = Guid.NewGuid();
+            var query = ConstructQuery();
             var person = _fixture.Create<Person>();
-            _mockGateway.Setup(x => x.GetPersonByIdAsync(id)).ReturnsAsync(person);
+            _mockGateway.Setup(x => x.GetPersonByIdAsync(query)).ReturnsAsync(person);
 
             // Act
-            var response = await _classUnderTest.ExecuteAsync(id).ConfigureAwait(false);
+            var response = await _classUnderTest.ExecuteAsync(query).ConfigureAwait(false);
 
             // Assert
             response.Should().BeEquivalentTo(_responseFactory.ToResponse(person));
@@ -60,12 +66,12 @@ namespace PersonApi.Tests.V1.UseCase
         public void GetPersonByIdAsyncExceptionIsThrown()
         {
             // Arrange
-            var id = Guid.NewGuid();
+            var query = ConstructQuery();
             var exception = new ApplicationException("Test exception");
-            _mockGateway.Setup(x => x.GetPersonByIdAsync(id)).ThrowsAsync(exception);
+            _mockGateway.Setup(x => x.GetPersonByIdAsync(query)).ThrowsAsync(exception);
 
             // Act
-            Func<Task<PersonResponseObject>> func = async () => await _classUnderTest.ExecuteAsync(id).ConfigureAwait(false);
+            Func<Task<PersonResponseObject>> func = async () => await _classUnderTest.ExecuteAsync(query).ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);

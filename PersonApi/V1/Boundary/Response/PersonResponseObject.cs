@@ -10,10 +10,14 @@ namespace PersonApi.V1.Boundary.Response
 
         /// <example>Mr, Mrs, Miss</example>
         public Title Title { get; set; }
+        /// <example>Mr, Mrs, Miss</example>
+        public Title PreferredTitle { get; set; }
         /// <example>Julie</example>
         public string PreferredFirstName { get; set; }
         /// <example>Evans</example>
         public string PreferredSurname { get; set; }
+        /// <example></example>
+        public string PreferredMiddleName { get; set; }
         /// <example>Julie</example>
         public string FirstName { get; set; }
         /// <example></example>
@@ -24,6 +28,8 @@ namespace PersonApi.V1.Boundary.Response
         public string Ethnicity { get; set; }
         /// <example>British</example>
         public string Nationality { get; set; }
+        /// <example>AA123456C</example>
+        public string NationalInsuranceNo { get; set; }
         /// <example>London</example>
         public string PlaceOfBirth { get; set; }
         /// <example>1990-02-19</example>

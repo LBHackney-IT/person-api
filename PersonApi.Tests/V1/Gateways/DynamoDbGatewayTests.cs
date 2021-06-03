@@ -51,12 +51,18 @@ namespace PersonApi.Tests.V1.Gateways
             }
         }
 
+        private PersonQueryObject ConstructQuery(Guid id)
+        {
+            return new PersonQueryObject() { Id = id };
+        }
+
         [Fact]
         public async Task GetPersonByIdReturnsNullIfEntityDoesntExist()
         {
             // Act
             var id = Guid.NewGuid();
-            var response = await _classUnderTest.GetPersonByIdAsync(id).ConfigureAwait(false);
+            var query = ConstructQuery(id);
+            var response = await _classUnderTest.GetPersonByIdAsync(query).ConfigureAwait(false);
 
             // Assert
             response.Should().BeNull();
@@ -79,7 +85,8 @@ namespace PersonApi.Tests.V1.Gateways
             _cleanup.Add(async () => await _dynamoDb.DeleteAsync(dbEntity).ConfigureAwait(false));
 
             // Act
-            var response = await _classUnderTest.GetPersonByIdAsync(entity.Id).ConfigureAwait(false);
+            var query = ConstructQuery(entity.Id);
+            var response = await _classUnderTest.GetPersonByIdAsync(query).ConfigureAwait(false);
 
             // Assert
             entity.Should().BeEquivalentTo(response);
@@ -102,7 +109,8 @@ namespace PersonApi.Tests.V1.Gateways
             await _dynamoDb.SaveAsync(dbEntity).ConfigureAwait(false);
 
             // Assert
-            var response = await _classUnderTest.GetPersonByIdAsync(dbEntity.Id).ConfigureAwait(false);
+            var query = ConstructQuery(entity.Id);
+            var response = await _classUnderTest.GetPersonByIdAsync(query).ConfigureAwait(false);
             response.Should().NotBeNull();
         }
 
@@ -113,12 +121,13 @@ namespace PersonApi.Tests.V1.Gateways
             var mockDynamoDb = new Mock<IDynamoDBContext>();
             _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _logger.Object);
             var id = Guid.NewGuid();
+            var query = ConstructQuery(id);
             var exception = new ApplicationException("Test exception");
             mockDynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(id, default))
                         .ThrowsAsync(exception);
 
             // Act
-            Func<Task<Person>> func = async () => await _classUnderTest.GetPersonByIdAsync(id).ConfigureAwait(false);
+            Func<Task<Person>> func = async () => await _classUnderTest.GetPersonByIdAsync(query).ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);

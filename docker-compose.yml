@@ -4,8 +4,10 @@ services:
   person-api:
     image: person-api
     build:
-      context: PersonApi/
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: PersonApi/Dockerfile
+      args:
+      - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
     ports:
       - 3000:3000
     environment:
@@ -22,6 +24,8 @@ services:
     build:
       context: .
       dockerfile: PersonApi.Tests/Dockerfile
+      args:
+      - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
     environment:
       - DynamoDb_LocalMode=true
       - DynamoDb_LocalServiceUrl=http://dynamodb-database:8000
