@@ -54,6 +54,8 @@ namespace PersonApi.V1.Boundary.Request
             {
                 Id = Id == Guid.Empty ? Guid.NewGuid() : Id,
                 Title = Title,
+                PreferredTitle = PreferredTitle,
+                PreferredMiddleName = PreferredMiddleName,
                 PreferredFirstname = PreferredFirstname,
                 PreferredSurname = PreferredSurname,
                 Firstname = Firstname,
@@ -61,6 +63,7 @@ namespace PersonApi.V1.Boundary.Request
                 Surname = Surname,
                 Ethnicity = Ethnicity,
                 Nationality = Nationality,
+                NationalInsuranceNo = NationalInsuranceNo,
                 PlaceOfBirth = PlaceOfBirth,
                 DateOfBirth = DateOfBirth,
                 Gender = Gender,

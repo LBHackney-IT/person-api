@@ -8,9 +8,9 @@ namespace PersonApi.Tests.V1.Helper
     {
         public static Guid ID { get; } = Guid.NewGuid();
         public const Title TITLE = Title.Mr;
-        public const Title PRETITLE = Title.Mr;
-        public const string PREFIRSTNAME = "Bob";
-        public const string PREMIDDLENAME = "Tim";
+        public const Title PREFTITLE = Title.Mr;
+        public const string PREFFIRSTNAME = "Bob";
+        public const string PREFMIDDLENAME = "Tim";
         public const string PREFSURNAME = "Roberts";
         public const string FIRSTNAME = "Robert";
         public const string MIDDLENAME = "Tim";
@@ -46,9 +46,9 @@ namespace PersonApi.Tests.V1.Helper
             var entity = new Person();
             entity.Id = Constants.ID;
             entity.Title = Constants.TITLE;
-            entity.PreferredTitle = Constants.PRETITLE;
-            entity.PreferredFirstname = Constants.PREFIRSTNAME;
-            entity.PreferredMiddleName = Constants.PREMIDDLENAME;
+            entity.PreferredTitle = Constants.PREFTITLE;
+            entity.PreferredFirstname = Constants.PREFFIRSTNAME;
+            entity.PreferredMiddleName = Constants.PREFMIDDLENAME;
             entity.PreferredSurname = Constants.PREFSURNAME;
             entity.Firstname = Constants.FIRSTNAME;
             entity.MiddleName = Constants.MIDDLENAME;
