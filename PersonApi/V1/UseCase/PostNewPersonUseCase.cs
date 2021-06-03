@@ -31,7 +31,7 @@ namespace PersonApi.V1.UseCase
         {
             var person = await _gateway.PostNewPersonAsync(personRequestObject).ConfigureAwait(false);
 
-            var personSns = _snsFactory.Create(person, Guid.NewGuid().ToString());
+            var personSns = _snsFactory.Create(person, token);
             await _snsGateway.Publish(personSns).ConfigureAwait(false);
 
             return _responseFactory.ToResponse(person);

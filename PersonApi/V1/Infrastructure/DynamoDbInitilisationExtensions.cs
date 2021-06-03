@@ -3,6 +3,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Amazon.SimpleNotificationService;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace PersonApi.V1.Infrastructure
 {
@@ -31,8 +32,8 @@ namespace PersonApi.V1.Infrastructure
             }
             else
             {
-                services.AddScoped<IAmazonSimpleNotificationService, AmazonSimpleNotificationServiceClient>();
-                services.AddAWSService<IAmazonDynamoDB>();
+                services.TryAddScoped<IAmazonSimpleNotificationService, AmazonSimpleNotificationServiceClient>();
+                services.TryAddAWSService<IAmazonDynamoDB>();
             }
 
             services.AddScoped<IDynamoDBContext>(sp =>

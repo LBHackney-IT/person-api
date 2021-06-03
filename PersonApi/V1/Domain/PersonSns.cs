@@ -4,7 +4,7 @@ namespace PersonApi.V1.Domain
 {
     public class PersonSns
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         public string EventType { get; set; }
 
@@ -14,12 +14,12 @@ namespace PersonApi.V1.Domain
 
         public string Version { get; set; }
 
-        public string CorrelationId { get; set; }
+        public Guid CorrelationId { get; set; }
 
         public DateTime DateTime { get; set; }
 
         public User User { get; set; }
 
-        public string EntityId { get; set; }
+        public Guid EntityId { get; set; }
     }
 }

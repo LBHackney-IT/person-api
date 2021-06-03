@@ -2,42 +2,38 @@ using PersonApi.V1.Boundary;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
 using System;
+using PersonApi.V1.Infrastructure.JWT;
 
 namespace PersonApi.V1.Factories
 {
-    public class SnsFactory : ISnsFactory
-    {
-        public PersonSns Create(Person person, string correlationId)
-        {
-            return new PersonSns
-            {
-                CorrelationId = correlationId,
-                DateTime = DateTime.UtcNow,
-                EntityId = Guid.NewGuid().ToString(),
-                EventType = "PersonCreatedEvent",
-                Id = person.Id.ToString(),
-                SourceDomain = "Person",
-                SourceSystem = "PersonAPI",
-                Version = "v1",
-                User = new User
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = string.Join(' ', person.Firstname, person.MiddleName, person.Surname)
-                }
-            };
-        }
-    }
+    
 
     public interface ISnsFactory
     {
-        PersonSns Create(Person person, string correlationId);
+        PersonSns Create(Person person, Token token);
     }
 
     public class PersonSnsFactory : ISnsFactory
     {
-        public PersonSns Create(Person person, string correlationId)
+        public PersonSns Create(Person person, Token token)
         {
-            return new PersonSns();
+            return new PersonSns
+            {
+                CorrelationId = Guid.NewGuid(),
+                DateTime = DateTime.UtcNow,
+                EntityId = person.Id,
+                Id = Guid.NewGuid(),
+                EventType = "PersonCreatedEvent",
+                Version = "v1",
+                SourceDomain = "Person",
+                SourceSystem = "PersonAPI",
+                User = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Name = token.Name,
+                    Email = token.Email
+                }
+            };
         }
     }
 

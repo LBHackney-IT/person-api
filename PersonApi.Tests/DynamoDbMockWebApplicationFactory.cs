@@ -1,3 +1,4 @@
+using System;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
@@ -31,6 +32,19 @@ namespace PersonApi.Tests
                 .UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
+                var url = Environment.GetEnvironmentVariable("DynamoDb_LocalServiceUrl");
+                var snsUrl = Environment.GetEnvironmentVariable("Localstack_SnsServiceUrl");
+                services.AddSingleton<IAmazonDynamoDB>(sp =>
+                {
+                    var clientConfig = new AmazonDynamoDBConfig { ServiceURL = url };
+                    return new AmazonDynamoDBClient(clientConfig);
+                });
+                services.AddSingleton<IAmazonSimpleNotificationService>(sp =>
+                {
+                    var clientConfig = new AmazonSimpleNotificationServiceConfig { ServiceURL = snsUrl };
+                    return new AmazonSimpleNotificationServiceClient(clientConfig);
+                });
+
                 services.ConfigureAws();
 
                 var serviceProvider = services.BuildServiceProvider();
