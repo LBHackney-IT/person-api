@@ -148,6 +148,8 @@ namespace PersonApi
 
             RegisterGateways(services);
             RegisterUseCases(services);
+
+            services.AddSingleton<IConfiguration>(Configuration);
         }
 
         private static void RegisterGateways(IServiceCollection services)
