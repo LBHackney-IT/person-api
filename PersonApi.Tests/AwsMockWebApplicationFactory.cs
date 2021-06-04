@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using Amazon.SimpleNotificationService;
-using Amazon.SimpleNotificationService.Model;
 using PersonApi.V1.Infrastructure;
 
 namespace PersonApi.Tests
@@ -29,6 +28,8 @@ namespace PersonApi.Tests
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            builder.ConfigureAppConfiguration(b => b.AddEnvironmentVariables())
+                .UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
                 var url = Environment.GetEnvironmentVariable("DynamoDb_LocalServiceUrl");
@@ -49,16 +50,10 @@ namespace PersonApi.Tests
                 var serviceProvider = services.BuildServiceProvider();
                 DynamoDb = serviceProvider.GetRequiredService<IAmazonDynamoDB>();
                 DynamoDbContext = serviceProvider.GetRequiredService<IDynamoDBContext>();
-
                 SimpleNotificationService = serviceProvider.GetRequiredService<IAmazonSimpleNotificationService>();
 
                 EnsureTablesExist(DynamoDb, _tables);
-
-                CreateSnsTopic();
             });
-
-            builder.ConfigureAppConfiguration(b => b.AddEnvironmentVariables())
-                .UseStartup<Startup>();
         }
 
         private static void EnsureTablesExist(IAmazonDynamoDB dynamoDb, List<TableDef> tables)
@@ -78,21 +73,6 @@ namespace PersonApi.Tests
                     // It already exists :-)
                 }
             }
-        }
-
-        private void CreateSnsTopic()
-        {
-            var snsAttrs = new Dictionary<string, string>();
-            snsAttrs.Add("fifo_topic", "true");
-            snsAttrs.Add("content_based_deduplication", "true");
-
-            var response = SimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
-            {
-                Name = "personcreated",
-                Attributes = snsAttrs
-            }).Result;
-
-            Environment.SetEnvironmentVariable("NEW_PERSON_SNS_ARN", response.TopicArn);
         }
     }
 }

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
@@ -21,7 +23,7 @@ namespace PersonApi.V1.Gateways
         public async Task Publish(PersonSns personSns)
         {
             string message = JsonConvert.SerializeObject(personSns);
-            var request = new PublishRequest { Message = message, TopicArn = _configuration.GetValue<string>("NEW_PERSON_SNS_ARN") };
+            var request = new PublishRequest { Message = message, TopicArn = Environment.GetEnvironmentVariable("NEW_PERSON_SNS_ARN") };
 
             await _amazonSimpleNotificationService.PublishAsync(request).ConfigureAwait(false);
         }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
 using Xunit;
 
 namespace PersonApi.Tests
@@ -25,8 +26,11 @@ namespace PersonApi.Tests
             EnsureEnvVarConfigured("DynamoDb_LocalMode", "true");
             EnsureEnvVarConfigured("DynamoDb_LocalServiceUrl", "http://localhost:8000");
             EnsureEnvVarConfigured("Localstack_SnsServiceUrl", "http://localhost:4566");
+
             _factory = new AwsMockWebApplicationFactory<TStartup>(_tables);
             Client = _factory.CreateClient();
+
+            CreateSnsTopic();
         }
 
         public void Dispose()
@@ -50,6 +54,21 @@ namespace PersonApi.Tests
         {
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(name)))
                 Environment.SetEnvironmentVariable(name, defaultValue);
+        }
+
+        private void CreateSnsTopic()
+        {
+            var snsAttrs = new Dictionary<string, string>();
+            snsAttrs.Add("fifo_topic", "true");
+            snsAttrs.Add("content_based_deduplication", "true");
+
+            var response = SimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
+            {
+                Name = "personcreated",
+                Attributes = snsAttrs
+            }).Result;
+
+            Environment.SetEnvironmentVariable("NEW_PERSON_SNS_ARN", response.TopicArn);
         }
     }
 
