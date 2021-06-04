@@ -5,11 +5,15 @@ namespace PersonApi.V1.Domain
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Title
     {
+        Dr,
+        Master,
+        Miss,
         Mr,
         Mrs,
-        Miss,
         Ms,
-        Dr
+        Other,
+        Rabbi,
+        Reverend
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
