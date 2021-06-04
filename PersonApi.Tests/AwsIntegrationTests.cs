@@ -61,7 +61,7 @@ namespace PersonApi.Tests
     }
 
 
-    [CollectionDefinition("DynamoDb collection", DisableParallelization = true)]
+    [CollectionDefinition("Aws collection", DisableParallelization = true)]
     public class DynamoDbCollection : ICollectionFixture<AwsIntegrationTests<Startup>>
     {
         // This class has no code, and is never created. Its purpose is simply

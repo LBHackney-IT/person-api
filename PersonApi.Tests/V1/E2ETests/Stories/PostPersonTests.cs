@@ -11,7 +11,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         AsA = "Service",
         IWant = "an endpoint to create a new person",
         SoThat = "it is possible to create the details of a person")]
-    [Collection("DynamoDb collection")]
+    [Collection("Aws collection")]
     public class PostPersonTests : IDisposable
     {
         private readonly AwsIntegrationTests<Startup> _dbFixture;

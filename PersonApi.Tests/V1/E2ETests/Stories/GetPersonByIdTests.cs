@@ -11,7 +11,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         AsA = "Service",
         IWant = "an endpoint to return person details",
         SoThat = "it is possible to view the details of a person")]
-    [Collection("DynamoDb collection")]
+    [Collection("Aws collection")]
     public class GetPersonByIdTests : IDisposable
     {
         private readonly AwsIntegrationTests<Startup> _dbFixture;

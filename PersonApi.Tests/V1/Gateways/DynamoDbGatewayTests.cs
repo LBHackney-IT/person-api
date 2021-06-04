@@ -16,7 +16,7 @@ using Xunit;
 
 namespace PersonApi.Tests.V1.Gateways
 {
-    [Collection("DynamoDb collection")]
+    [Collection("Aws collection")]
     public class DynamoDbGatewayTests : IDisposable
     {
         private readonly Fixture _fixture = new Fixture();

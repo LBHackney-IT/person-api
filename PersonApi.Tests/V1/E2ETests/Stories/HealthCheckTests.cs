@@ -9,7 +9,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         AsA = "Api client",
         IWant = "to be able to validate that the service satus is healty",
         SoThat = "I can be sure that calls made to it will succeed.")]
-    [Collection("DynamoDb collection")]
+    [Collection("Aws collection")]
     public class HealthCheckTests : IDisposable
     {
         private readonly AwsIntegrationTests<Startup> _dbFixture;

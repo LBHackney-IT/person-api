@@ -57,6 +57,7 @@ namespace PersonApi.V1.Controllers
         [ProducesResponseType(typeof(PersonResponseObject), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
+        [LogCall(LogLevel.Information)]
         public async Task<IActionResult> PostNewPerson([FromBody] PersonRequestObject personRequestObject)
         {
             var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
