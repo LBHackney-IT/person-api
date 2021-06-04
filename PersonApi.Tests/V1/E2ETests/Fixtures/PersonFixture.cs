@@ -94,7 +94,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 Attributes = snsAttrs
             }).Result;
 
-            Environment.SetEnvironmentVariable("PersonTopicArn", response.TopicArn);
+            Environment.SetEnvironmentVariable("NEW_PERSON_SNS_ARN", response.TopicArn);
         }
     }
 }
