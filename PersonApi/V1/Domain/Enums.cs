@@ -31,7 +31,7 @@ namespace PersonApi.V1.Domain
     public enum IdentificationType
     {
         Passport,
-        BirthCertificate
+        DrivingLicence
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
