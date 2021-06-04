@@ -124,7 +124,7 @@ resources:
         Tags:
           - Key: Env
             Value: Development
-          - Key: Feature-Flag
+          - Key: CreatePerson
             Value: true
 
 custom:
