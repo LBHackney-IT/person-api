@@ -2,12 +2,12 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Controllers;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
-using PersonApi.V1.Boundary.Request;
 using Xunit;
 
 namespace PersonApi.Tests.V1.Controllers
@@ -30,31 +30,36 @@ namespace PersonApi.Tests.V1.Controllers
             _sut = new PersonApiController(_mockGetByIdUseCase.Object, _mockNewPersonUseCase.Object);
         }
 
+        private PersonQueryObject ConstructQuery()
+        {
+            return new PersonQueryObject() { Id = Guid.NewGuid() };
+        }
+
         [Fact]
         public async Task GetPersonByIdAsyncNotFoundReturnsNotFound()
         {
             // Arrange
-            var id = Guid.NewGuid();
-            _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(id)).ReturnsAsync((PersonResponseObject) null);
+            var query = ConstructQuery();
+            _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(query)).ReturnsAsync((PersonResponseObject) null);
 
             // Act
-            var response = await _sut.GetPersonByIdAsync(id).ConfigureAwait(false);
+            var response = await _sut.GetPersonByIdAsync(query).ConfigureAwait(false);
 
             // Assert
             response.Should().BeOfType(typeof(NotFoundObjectResult));
-            (response as NotFoundObjectResult).Value.Should().Be(id);
+            (response as NotFoundObjectResult).Value.Should().Be(query.Id);
         }
 
         [Fact]
         public async Task GetPersonByIdAsyncFoundReturnsResponse()
         {
             // Arrange
-            var id = Guid.NewGuid();
+            var query = ConstructQuery();
             var personResponse = _fixture.Create<PersonResponseObject>();
-            _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(id)).ReturnsAsync(personResponse);
+            _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(query)).ReturnsAsync(personResponse);
 
             // Act
-            var response = await _sut.GetPersonByIdAsync(id).ConfigureAwait(false);
+            var response = await _sut.GetPersonByIdAsync(query).ConfigureAwait(false);
 
             // Assert
             response.Should().BeOfType(typeof(OkObjectResult));
@@ -65,12 +70,12 @@ namespace PersonApi.Tests.V1.Controllers
         public void GetPersonByIdAsyncExceptionIsThrown()
         {
             // Arrange
-            var id = Guid.NewGuid();
+            var query = ConstructQuery();
             var exception = new ApplicationException("Test exception");
-            _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(id)).ThrowsAsync(exception);
+            _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(query)).ThrowsAsync(exception);
 
             // Act
-            Func<Task<IActionResult>> func = async () => await _sut.GetPersonByIdAsync(id).ConfigureAwait(false);
+            Func<Task<IActionResult>> func = async () => await _sut.GetPersonByIdAsync(query).ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
@@ -80,7 +85,6 @@ namespace PersonApi.Tests.V1.Controllers
         public async Task PostNewPersonIdAsyncFoundReturnsResponse()
         {
             // Arrange
-            var id = Guid.NewGuid();
             var personResponse = _fixture.Create<PersonResponseObject>();
             _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>()))
                 .ReturnsAsync(personResponse);
@@ -97,7 +101,6 @@ namespace PersonApi.Tests.V1.Controllers
         public void PostNewPersonIdAsyncExceptionIsThrown()
         {
             // Arrange
-            var id = Guid.NewGuid();
             var exception = new ApplicationException("Test exception");
             _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>())).ThrowsAsync(exception);
 

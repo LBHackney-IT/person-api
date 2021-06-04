@@ -1,12 +1,11 @@
 using Amazon.DynamoDBv2.DataModel;
+using Hackney.Core.Logging;
 using Microsoft.Extensions.Logging;
+using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
-using PersonApi.V1.Logging;
-using System;
 using System.Threading.Tasks;
-using PersonApi.V1.Boundary.Request;
 
 namespace PersonApi.V1.Gateways
 {
@@ -22,11 +21,11 @@ namespace PersonApi.V1.Gateways
         }
 
         [LogCall]
-        public async Task<Person> GetPersonByIdAsync(Guid id)
+        public async Task<Person> GetPersonByIdAsync(PersonQueryObject query)
         {
-            _logger.LogDebug($"Calling IDynamoDBContext.LoadAsync for id {id}");
+            _logger.LogDebug($"Calling IDynamoDBContext.LoadAsync for id {query.Id}");
 
-            var result = await _dynamoDbContext.LoadAsync<PersonDbEntity>(id).ConfigureAwait(false);
+            var result = await _dynamoDbContext.LoadAsync<PersonDbEntity>(query.Id).ConfigureAwait(false);
             return result?.ToDomain();
         }
 
