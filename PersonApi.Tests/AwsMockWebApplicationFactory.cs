@@ -37,12 +37,12 @@ namespace PersonApi.Tests
                 var snsUrl = Environment.GetEnvironmentVariable("Localstack_SnsServiceUrl");
                 services.AddSingleton<IAmazonDynamoDB>(sp =>
                 {
-                    var clientConfig = new AmazonDynamoDBConfig { ServiceURL = url };
+                    var clientConfig = new AmazonDynamoDBConfig {ServiceURL = url};
                     return new AmazonDynamoDBClient(clientConfig);
                 });
                 services.AddSingleton<IAmazonSimpleNotificationService>(sp =>
                 {
-                    var clientConfig = new AmazonSimpleNotificationServiceConfig { ServiceURL = snsUrl };
+                    var clientConfig = new AmazonSimpleNotificationServiceConfig {ServiceURL = snsUrl};
                     return new AmazonSimpleNotificationServiceClient(clientConfig);
                 });
 
@@ -51,14 +51,16 @@ namespace PersonApi.Tests
                 var serviceProvider = services.BuildServiceProvider();
                 DynamoDb = serviceProvider.GetRequiredService<IAmazonDynamoDB>();
                 DynamoDbContext = serviceProvider.GetRequiredService<IDynamoDBContext>();
+
                 SimpleNotificationService = serviceProvider.GetRequiredService<IAmazonSimpleNotificationService>();
 
                 EnsureTablesExist(DynamoDb, _tables);
+
+                CreateSnsTopic();
             });
 
             builder.ConfigureAppConfiguration((hostingContext, config) =>
             {
-                CreateSnsTopic();
                 config.AddEnvironmentVariables();
             });
         }

@@ -24,7 +24,7 @@ namespace PersonApi.V1.Infrastructure
                     var clientConfig = new AmazonDynamoDBConfig { ServiceURL = url };
                     return new AmazonDynamoDBClient(clientConfig);
                 });
-                services.AddSingleton<IAmazonSimpleNotificationService>(sp =>
+                services.TryAddSingleton<IAmazonSimpleNotificationService>(sp =>
                 {
                     var clientConfig = new AmazonSimpleNotificationServiceConfig { ServiceURL = snsUrl };
                     return new AmazonSimpleNotificationServiceClient(clientConfig);
