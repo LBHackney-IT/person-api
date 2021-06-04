@@ -131,14 +131,14 @@ resources:
         ApplicationId: !Ref ConfigurationApplication
         Name: "PersonConfigurationProfile"
         LocationUri: ${ssm:/person-api/${self:provider.stage}/arn}
-        Validators:
-          - Type: Feature Toggles
+        Versions:
+          - Type: JSON
             Content:
             {
               "CreatePerson": true
             }
     DeploymentStrategy:
-      Type: AWS::AppConfig::DeploymentStrategy
+      Type: AWS::AppConfig::AllAtOnce
       Properties:
         Name: "DeploymentStrategy"
         DeploymentDurationInMinutes: 3
