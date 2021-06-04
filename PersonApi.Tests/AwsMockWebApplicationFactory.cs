@@ -29,20 +29,18 @@ namespace PersonApi.Tests
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.ConfigureAppConfiguration(b => b.AddEnvironmentVariables())
-                .UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
                 var url = Environment.GetEnvironmentVariable("DynamoDb_LocalServiceUrl");
                 var snsUrl = Environment.GetEnvironmentVariable("Localstack_SnsServiceUrl");
                 services.AddSingleton<IAmazonDynamoDB>(sp =>
                 {
-                    var clientConfig = new AmazonDynamoDBConfig {ServiceURL = url};
+                    var clientConfig = new AmazonDynamoDBConfig { ServiceURL = url };
                     return new AmazonDynamoDBClient(clientConfig);
                 });
                 services.AddSingleton<IAmazonSimpleNotificationService>(sp =>
                 {
-                    var clientConfig = new AmazonSimpleNotificationServiceConfig {ServiceURL = snsUrl};
+                    var clientConfig = new AmazonSimpleNotificationServiceConfig { ServiceURL = snsUrl };
                     return new AmazonSimpleNotificationServiceClient(clientConfig);
                 });
 
@@ -59,10 +57,8 @@ namespace PersonApi.Tests
                 CreateSnsTopic();
             });
 
-            builder.ConfigureAppConfiguration((hostingContext, config) =>
-            {
-                config.AddEnvironmentVariables();
-            });
+            builder.ConfigureAppConfiguration(b => b.AddEnvironmentVariables())
+                .UseStartup<Startup>();
         }
 
         private static void EnsureTablesExist(IAmazonDynamoDB dynamoDb, List<TableDef> tables)
