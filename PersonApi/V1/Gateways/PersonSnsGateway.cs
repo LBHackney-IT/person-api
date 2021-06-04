@@ -1,13 +1,9 @@
-using System;
 using System.Threading.Tasks;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using PersonApi.V1.Domain;
-using PersonApi.V1.Domain.Configuration;
 
 namespace PersonApi.V1.Gateways
 {

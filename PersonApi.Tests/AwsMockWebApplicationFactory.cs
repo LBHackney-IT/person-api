@@ -2,13 +2,13 @@ using System;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
-using Hackney.Core.DynamoDb;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
 using PersonApi.V1.Infrastructure;
 
 namespace PersonApi.Tests
@@ -55,6 +55,12 @@ namespace PersonApi.Tests
 
                 EnsureTablesExist(DynamoDb, _tables);
             });
+
+            builder.ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                CreateSnsTopic();
+                config.AddEnvironmentVariables();
+            });
         }
 
         private static void EnsureTablesExist(IAmazonDynamoDB dynamoDb, List<TableDef> tables)
@@ -74,6 +80,21 @@ namespace PersonApi.Tests
                     // It already exists :-)
                 }
             }
+        }
+
+        private void CreateSnsTopic()
+        {
+            var snsAttrs = new Dictionary<string, string>();
+            snsAttrs.Add("fifo_topic", "true");
+            snsAttrs.Add("content_based_deduplication", "true");
+
+            var response = SimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
+            {
+                Name = "personcreated",
+                Attributes = snsAttrs
+            }).Result;
+
+            Environment.SetEnvironmentVariable("NEW_PERSON_SNS_ARN", response.TopicArn);
         }
     }
 }

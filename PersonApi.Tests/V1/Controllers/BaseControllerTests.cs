@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
 using PersonApi.V1.Controllers;
 using System.Collections.Generic;
-using PersonApi.V1;
 using Xunit;
 
 namespace PersonApi.Tests.V1.Controllers
