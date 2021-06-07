@@ -12,10 +12,10 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
     [Collection("DynamoDb collection")]
     public class HealthCheckTests : IDisposable
     {
-        private readonly DynamoDbIntegrationTests<Startup> _dbFixture;
+        private readonly AwsIntegrationTests<Startup> _dbFixture;
         private readonly HealthCheckSteps _steps;
 
-        public HealthCheckTests(DynamoDbIntegrationTests<Startup> dbFixture)
+        public HealthCheckTests(AwsIntegrationTests<Startup> dbFixture)
         {
             _dbFixture = dbFixture;
             _steps = new HealthCheckSteps(_dbFixture.Client);
