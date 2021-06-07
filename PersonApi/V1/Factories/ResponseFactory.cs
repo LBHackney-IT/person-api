@@ -5,11 +5,6 @@ using System;
 
 namespace PersonApi.V1.Factories
 {
-    public interface IResponseFactory
-    {
-        PersonResponseObject ToResponse(Person domain);
-    }
-
     public class ResponseFactory : IResponseFactory
     {
         private readonly IApiLinkGenerator _apiLinkGenerator;

@@ -11,17 +11,17 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         AsA = "Service",
         IWant = "an endpoint to return person details",
         SoThat = "it is possible to view the details of a person")]
-    [Collection("DynamoDb collection")]
+    [Collection("Aws collection")]
     public class GetPersonByIdTests : IDisposable
     {
-        private readonly DynamoDbIntegrationTests<Startup> _dbFixture;
+        private readonly AwsIntegrationTests<Startup> _dbFixture;
         private readonly PersonFixture _personFixture;
         private readonly GetPersonSteps _steps;
 
-        public GetPersonByIdTests(DynamoDbIntegrationTests<Startup> dbFixture)
+        public GetPersonByIdTests(AwsIntegrationTests<Startup> dbFixture)
         {
             _dbFixture = dbFixture;
-            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext);
+            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, _dbFixture.SimpleNotificationService);
             _steps = new GetPersonSteps(_dbFixture.Client);
         }
 

@@ -11,17 +11,17 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         AsA = "Service",
         IWant = "an endpoint to create a new person",
         SoThat = "it is possible to create the details of a person")]
-    [Collection("DynamoDb collection")]
+    [Collection("Aws collection")]
     public class PostPersonTests : IDisposable
     {
-        private readonly DynamoDbIntegrationTests<Startup> _dbFixture;
+        private readonly AwsIntegrationTests<Startup> _dbFixture;
         private readonly PersonFixture _personFixture;
         private readonly PostPersonSteps _steps;
 
-        public PostPersonTests(DynamoDbIntegrationTests<Startup> dbFixture)
+        public PostPersonTests(AwsIntegrationTests<Startup> dbFixture)
         {
             _dbFixture = dbFixture;
-            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext);
+            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, _dbFixture.SimpleNotificationService);
             _steps = new PostPersonSteps(_dbFixture.Client);
         }
 
