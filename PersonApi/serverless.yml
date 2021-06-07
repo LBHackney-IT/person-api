@@ -134,10 +134,8 @@ resources:
         LocationUri: ${ssm:/person-api/${self:provider.stage}/arn}
         Versions:
           - Type: JSON
-            Content:
-            {
-              "CreatePerson": true
-            }
+            Content:            
+              CreatePerson: true            
     DeploymentStrategy:
       Type: AWS::AppConfig::AllAtOnce
       Properties:
