@@ -131,12 +131,10 @@ resources:
         ApplicationId: !Ref ConfigurationApplication
         Name: "PersonConfigurationProfile"
         LocationUri: ${ssm:/person-api/${self:provider.stage}/arn}
-        Versions:
+        Validators:
           - Type: JSON
-            Content:
-            {
-              "CreatePerson": true
-            }
+            Content:            
+              CreatePerson: true            
     DeploymentStrategy:
       Type: AWS::AppConfig::AllAtOnce
       Properties:
@@ -152,7 +150,6 @@ resources:
         DeploymentStrategyId: !Ref DeploymentStrategy
         ConfigurationProfileId: !Ref ConfigurationApplication
         ConfigurationVersion: '1'
-
 
 custom:
   vpcId:
