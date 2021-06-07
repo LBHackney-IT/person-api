@@ -2,7 +2,6 @@ using Amazon;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using FluentValidation.AspNetCore;
-using Hackney.Core.DynamoDb;
 using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.HealthCheck;
 using Hackney.Core.Logging;
@@ -35,6 +34,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using PersonApi.V1.Domain.Configuration;
+using PersonApi.V1.Infrastructure.JWT;
 
 namespace PersonApi
 {
@@ -132,6 +133,8 @@ namespace PersonApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 if (File.Exists(xmlPath))
                     c.IncludeXmlComments(xmlPath);
+
+                services.Configure<AwsConfiguration>(options => Configuration.GetSection("AWS").Bind(options));
             });
 
             services.ConfigureLambdaLogging(Configuration);
@@ -140,15 +143,21 @@ namespace PersonApi
             AWSXRayRecorder.RegisterLogger(LoggingOptions.SystemDiagnostics);
 
             services.AddLogCallAspect();
-            services.ConfigureDynamoDB();
+            services.ConfigureAws();
 
             RegisterGateways(services);
             RegisterUseCases(services);
+
+            services.AddSingleton<IConfiguration>(Configuration);
         }
 
         private static void RegisterGateways(IServiceCollection services)
         {
             services.AddScoped<IPersonApiGateway, DynamoDbGateway>();
+            services.AddScoped<ISnsGateway, PersonSnsGateway>();
+            services.AddScoped<ISnsFactory, PersonSnsFactory>();
+            services.AddScoped<ITokenFactory, TokenFactory>();
+            services.AddScoped<IHttpContextWrapper, HttpContextWrapper>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)

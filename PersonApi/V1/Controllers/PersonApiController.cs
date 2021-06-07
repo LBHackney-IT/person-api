@@ -7,6 +7,8 @@ using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
+using PersonApi.V1.Infrastructure;
+using PersonApi.V1.Infrastructure.JWT;
 
 namespace PersonApi.V1.Controllers
 {
@@ -18,11 +20,16 @@ namespace PersonApi.V1.Controllers
     {
         private readonly IGetByIdUseCase _getByIdUseCase;
         private readonly IPostNewPersonUseCase _newPersonUseCase;
+        private readonly ITokenFactory _tokenFactory;
+        private readonly IHttpContextWrapper _contextWrapper;
 
-        public PersonApiController(IGetByIdUseCase getByIdUseCase, IPostNewPersonUseCase newPersonUseCase)
+        public PersonApiController(IGetByIdUseCase getByIdUseCase, IPostNewPersonUseCase newPersonUseCase,
+            ITokenFactory tokenFactory, IHttpContextWrapper contextWrapper)
         {
             _getByIdUseCase = getByIdUseCase;
             _newPersonUseCase = newPersonUseCase;
+            _tokenFactory = tokenFactory;
+            _contextWrapper = contextWrapper;
         }
 
         /// <summary>
@@ -50,9 +57,12 @@ namespace PersonApi.V1.Controllers
         [ProducesResponseType(typeof(PersonResponseObject), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
+        [LogCall(LogLevel.Information)]
         public async Task<IActionResult> PostNewPerson([FromBody] PersonRequestObject personRequestObject)
         {
-            var person = await _newPersonUseCase.ExecuteAsync(personRequestObject)
+            var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
+
+            var person = await _newPersonUseCase.ExecuteAsync(personRequestObject, token)
                 .ConfigureAwait(false);
 
             return Created(new Uri($"api/v1/persons/{person.Id}", UriKind.Relative), person);

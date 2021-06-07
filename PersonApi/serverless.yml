@@ -19,6 +19,7 @@ functions:
     handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
     environment:
+      NEW_PERSON_SNS_ARN: ${ssm:/sns-topic/${self:provider.stage}/person_created/arn}
       ASPNETCORE_ENVIRONMENT:  ${ssm:/housing-tl/${self:provider.stage}/aspnetcore-environment}
     events:
       - http:
@@ -59,6 +60,15 @@ resources:
           - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
           - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
         Policies:
+          - PolicyName: postToSns
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - "sns:Publish"
+                  Resource:
+                    - ${ssm:/sns-topic/${self:provider.stage}/person_created/arn}
           - PolicyName: manageLogs
             PolicyDocument:
               Version: '2012-10-17'

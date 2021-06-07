@@ -1,6 +1,5 @@
 using PersonApi.V1.Domain;
 using PersonApi.V1.Infrastructure;
-using System;
 using System.Linq;
 
 namespace PersonApi.V1.Factories
