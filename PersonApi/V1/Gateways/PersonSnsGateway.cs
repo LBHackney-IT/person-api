@@ -23,7 +23,11 @@ namespace PersonApi.V1.Gateways
         public async Task Publish(PersonSns personSns)
         {
             string message = JsonConvert.SerializeObject(personSns);
-            var request = new PublishRequest { Message = message, TopicArn = Environment.GetEnvironmentVariable("NEW_PERSON_SNS_ARN") };
+            var request = new PublishRequest
+            {
+                Message = message, TopicArn = Environment.GetEnvironmentVariable("NEW_PERSON_SNS_ARN"),
+                MessageGroupId = "SomeGroupId"
+            };
 
             await _amazonSimpleNotificationService.PublishAsync(request).ConfigureAwait(false);
         }
