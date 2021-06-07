@@ -25,7 +25,8 @@ namespace PersonApi.V1.Gateways
             string message = JsonConvert.SerializeObject(personSns);
             var request = new PublishRequest
             {
-                Message = message, TopicArn = Environment.GetEnvironmentVariable("NEW_PERSON_SNS_ARN"),
+                Message = message,
+                TopicArn = Environment.GetEnvironmentVariable("NEW_PERSON_SNS_ARN"),
                 MessageGroupId = "SomeGroupId"
             };
 
