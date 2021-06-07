@@ -11,3 +11,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>", Scope = "member", Target = "~F:PersonApi.V1.Infrastructure.Constants.V1_VERSION")]
 [assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>", Scope = "member", Target = "~F:PersonApi.V1.Infrastructure.Constants.SOURCE_DOMAIN")]
 [assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>", Scope = "member", Target = "~F:PersonApi.V1.Infrastructure.Constants.SOURCE_SYSTEM")]
+[assembly: SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>", Scope = "member", Target = "~P:PersonApi.V1.Infrastructure.JWT.Token.Groups")]

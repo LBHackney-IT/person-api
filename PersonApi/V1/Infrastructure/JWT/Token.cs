@@ -2,7 +2,7 @@ namespace PersonApi.V1.Infrastructure.JWT
 {
     public class Token
     {
-        public string Groups { get; set; }
+        public string[] Groups { get; set; }
 
         public string Email { get; set; }
 
