@@ -136,7 +136,7 @@ resources:
             Content:            
               CreatePerson: true            
     DeploymentStrategy:
-      Type: AWS::AppConfig::AllAtOnce
+      Type: AWS::AppConfig::DeploymentStrategy
       Properties:
         Name: "DeploymentStrategy"
         DeploymentDurationInMinutes: 3
