@@ -37,8 +37,8 @@ terraform {
   }
 }
 
-resource "aws_sns_topic" "person_created" {
-  name                        = "personcreated.fifo"
+resource "aws_sns_topic" "person_topic" {
+  name                        = "person.fifo"
   fifo_topic                  = true
   content_based_deduplication = true
   kms_master_key_id = "alias/aws/sns"
@@ -47,5 +47,5 @@ resource "aws_sns_topic" "person_created" {
 resource "aws_ssm_parameter" "new_person_created_sns_arn" {
   name  = "/sns-topic/development/person_created/arn"
   type  = "String"
-  value = aws_sns_topic.person_created.arn
+  value = aws_sns_topic.person_topic.arn
 }

@@ -64,7 +64,7 @@ namespace PersonApi.Tests
 
             var response = SimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
             {
-                Name = "personcreated",
+                Name = "person",
                 Attributes = snsAttrs
             }).Result;
 
