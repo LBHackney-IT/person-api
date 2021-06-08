@@ -140,11 +140,7 @@ resources:
       Properties:
         ApplicationId: "PersonAPI1"
         Name: "PersonConfigurationProfile"
-        LocationUri: ${ssm:/housing-tl/person-api/configurationData}
-        Validators:
-          - Type: JSON
-            Content:            
-              CreatePerson: true            
+        LocationUri: ${ssm:/housing-tl/person-api/configurationData}         
     DeploymentStrategy:
       Type: AWS::AppConfig::DeploymentStrategy
       Properties:
