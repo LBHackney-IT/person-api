@@ -5,11 +5,6 @@ using System;
 
 namespace PersonApi.V1.Factories
 {
-    public interface IResponseFactory
-    {
-        PersonResponseObject ToResponse(Person domain);
-    }
-
     public class ResponseFactory : IResponseFactory
     {
         private readonly IApiLinkGenerator _apiLinkGenerator;
@@ -31,13 +26,16 @@ namespace PersonApi.V1.Factories
             {
                 Id = domain.Id,
                 Title = domain.Title,
+                PreferredTitle = domain.PreferredTitle,
                 PreferredFirstName = domain.PreferredFirstname,
+                PreferredMiddleName = domain.PreferredMiddleName,
                 PreferredSurname = domain.PreferredSurname,
                 FirstName = domain.Firstname,
                 MiddleName = domain.MiddleName,
                 Surname = domain.Surname,
                 Ethnicity = domain.Ethnicity,
                 Nationality = domain.Nationality,
+                NationalInsuranceNo = domain.NationalInsuranceNo,
                 PlaceOfBirth = domain.PlaceOfBirth,
                 DateOfBirth = FormatDateOfBirth(domain.DateOfBirth),
                 Gender = domain.Gender,
