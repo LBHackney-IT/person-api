@@ -155,10 +155,10 @@ resources:
     Deployment:
       Type: AWS::AppConfig::Deployment
       Properties:
-        ApplicationId: !Ref DeploymentApplication
-        EnvironmentId: !Ref EnvironmentApplication
-        DeploymentStrategyId: !Ref DeploymentStrategy
-        ConfigurationProfileId: !Ref ConfigurationApplication
+        ApplicationId: "PersonAPI"
+        EnvironmentId: DevEnvironment
+        DeploymentStrategyId: DeploymentStrategy
+        ConfigurationProfileId: ConfigurationProfile
         ConfigurationVersion: '1'
 
 custom:
