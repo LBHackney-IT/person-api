@@ -133,12 +133,12 @@ resources:
     DevEnvironment:
       Type: AWS::AppConfig::Environment
       Properties:
-        ApplicationId: "PersonAPI1"
+        ApplicationId: !Ref AppConfig
         Name: "Development"
     ConfigurationProfile:
       Type: AWS::AppConfig::ConfigurationProfile
       Properties:
-        ApplicationId: "PersonAPI1"
+        ApplicationId: !Ref AppConfig
         Name: "PersonConfigurationProfile"
         LocationUri: ${ssm:/housing-tl/person-api/configurationData}         
     DeploymentStrategy:
@@ -151,10 +151,10 @@ resources:
     Deployment:
       Type: AWS::AppConfig::Deployment
       Properties:
-        ApplicationId: "PersonAPI"
-        EnvironmentId: DevEnvironment
-        DeploymentStrategyId: DeploymentStrategy
-        ConfigurationProfileId: ConfigurationProfile
+        ApplicationId: !Ref AppConfig
+        EnvironmentId: !Ref DevEnvironment
+        DeploymentStrategyId: !Ref DeploymentStrategy
+        ConfigurationProfileId: !Ref ConfigurationProfile
         ConfigurationVersion: '1'
 
 custom:
