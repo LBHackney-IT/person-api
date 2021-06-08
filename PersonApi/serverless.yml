@@ -140,6 +140,7 @@ resources:
       Properties:
         ApplicationId: !Ref AppConfig
         Name: "PersonConfigurationProfile"
+        RetrievalRoleArn: ${ssm:/housing-tl/${self:provider.stage}/app-config/retrieval-role-arn}
         LocationUri: ${ssm:/housing-tl/person-api/configurationData}         
     DeploymentStrategy:
       Type: AWS::AppConfig::DeploymentStrategy
