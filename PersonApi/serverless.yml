@@ -142,9 +142,6 @@ resources:
         Name: "PersonConfigurationProfile"
         RetrievalRoleArn: ${ssm:/housing-tl/${self:provider.stage}/app-config/retrieval-role-arn}
         LocationUri: ${ssm:/housing-tl/person-api/configurationData}
-        Validators:
-          - Type: JSON
-            Content: !ImportValue LocationUri
     DeploymentStrategy:
       Type: AWS::AppConfig::DeploymentStrategy
       Properties:
