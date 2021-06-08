@@ -129,7 +129,7 @@ resources:
     AppConfig:
       Type: AWS::AppConfig::Application
       Properties:
-        Name: $housing-tl/${self:provider.stage}/person-api
+        Name: housing-tl/${self:provider.stage}/person-api
     DevEnvironment:
       Type: AWS::AppConfig::Environment
       Properties:
