@@ -38,7 +38,7 @@ terraform {
 }
 
 resource "aws_sns_topic" "person_created" {
-  name                        = "personcreated.fifo"
+  name                        = "person.fifo"
   fifo_topic                  = true
   content_based_deduplication = true
   kms_master_key_id = "alias/aws/sns"
