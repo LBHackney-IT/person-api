@@ -90,7 +90,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
             var response = _amazonSimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
             {
-                Name = "personcreated",
+                Name = "person",
                 Attributes = snsAttrs
             }).Result;
 
