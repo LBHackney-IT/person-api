@@ -133,12 +133,12 @@ resources:
     DevEnvironment:
       Type: AWS::AppConfig::Environment
       Properties:
-        ApplicationId: !Ref EnvironmentApplication
+        ApplicationId: "PersonAPI1"
         Name: "Development"
     ConfigurationProfile:
       Type: AWS::AppConfig::ConfigurationProfile
       Properties:
-        ApplicationId: !Ref ConfigurationApplication
+        ApplicationId: "PersonAPI1"
         Name: "PersonConfigurationProfile"
         LocationUri: ${ssm:/person-api/${self:provider.stage}/arn}
         Validators:
