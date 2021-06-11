@@ -147,7 +147,7 @@ resources:
       Properties:
         Name: "DeploymentStrategy"
         DeploymentDurationInMinutes: 0
-        GrowthFactor: 10
+        GrowthFactor: 100
         GrowthType: LINEAR
         ReplicateTo: NONE
     Deployment:
