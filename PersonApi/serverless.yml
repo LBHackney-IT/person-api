@@ -143,11 +143,12 @@ resources:
         RetrievalRoleArn: ${ssm:/housing-tl/${self:provider.stage}/app-config/retrieval-role-arn}
         LocationUri: ssm-parameter:///housing-tl/person-api/configurationData
     DeploymentStrategy:
-      Type: AWS::AppConfig::AllAtOnce
+      Type: AWS::AppConfig::DeploymentStrategy
       Properties:
         Name: "DeploymentStrategy"
-        DeploymentDurationInMinutes: 3
-        GrowthFactor: 10
+        DeploymentDurationInMinutes: 0
+        GrowthFactor: 100
+        GrowthType: LINEAR
         ReplicateTo: NONE
     Deployment:
       Type: AWS::AppConfig::Deployment
