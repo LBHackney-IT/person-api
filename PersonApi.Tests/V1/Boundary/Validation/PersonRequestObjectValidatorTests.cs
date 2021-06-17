@@ -383,5 +383,40 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.PersonTypes);
         }
+
+        [Fact]
+        public void CommunicationRequirementsShouldNotErrorWhenNull()
+        {
+            var model = new PersonRequestObject() { CommunicationRequirements = null };
+            var result = _sut.TestValidate(model);
+            result.ShouldNotHaveValidationErrorFor(x => x.CommunicationRequirements);
+        }
+
+        [Fact]
+        public void CommunicationRequirementsShouldNotErrorWhenEmpty()
+        {
+            var model = new PersonRequestObject() { CommunicationRequirements = Enumerable.Empty<CommunicationRequirement>() };
+            var result = _sut.TestValidate(model);
+            result.ShouldNotHaveValidationErrorFor(x => x.CommunicationRequirements);
+        }
+
+        [Fact]
+        public void CommunicationRequirementsShouldErrorWithInvalidValue()
+        {
+            var model = new PersonRequestObject() { CommunicationRequirements = new[] { (CommunicationRequirement) 100 } };
+            var result = _sut.TestValidate(model);
+            result.ShouldHaveValidationErrorFor(x => x.CommunicationRequirements);
+        }
+
+        [Theory]
+        [InlineData(CommunicationRequirement.InterpreterRequired)]
+        [InlineData(CommunicationRequirement.SignLanguage)]
+        [InlineData(CommunicationRequirement.InterpreterRequired, CommunicationRequirement.SignLanguage)]
+        public void CommunicationRequirementsShouldNotErrorWithValidValue(params CommunicationRequirement[] crs)
+        {
+            var model = new PersonRequestObject() { CommunicationRequirements = crs };
+            var result = _sut.TestValidate(model);
+            result.ShouldNotHaveValidationErrorFor(x => x.CommunicationRequirements);
+        }
     }
 }
