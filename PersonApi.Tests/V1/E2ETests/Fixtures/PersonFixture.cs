@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using PersonApi.V1.Boundary.Request;
+using PersonApi.V1.Domain;
+using System.Linq;
 
 namespace PersonApi.Tests.V1.E2ETests.Fixtures
 {
@@ -54,6 +56,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             {
                 var person = _fixture.Build<PersonDbEntity>()
                                      .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                                     .With(x => x.NationalInsuranceNo, "NZ223344E")
                                      .Create();
                 _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
                 Person = person;
@@ -70,6 +73,12 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         {
             var personRequest = _fixture.Build<PersonRequestObject>()
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                .With(x => x.NationalInsuranceNo, "NZ223344D")
+                .With(x => x.Tenures, _fixture.Build<Tenure>()
+                                              .With(y => y.StartDate, "")
+                                              .With(y => y.EndDate, "")
+                                              .CreateMany(2))
+                .With(x => x.Languages, Enumerable.Empty<Language>())
                 .Create();
 
             CreateSnsTopic();

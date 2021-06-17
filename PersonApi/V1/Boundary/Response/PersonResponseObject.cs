@@ -11,7 +11,7 @@ namespace PersonApi.V1.Boundary.Response
         /// <example>Mr, Mrs, Miss</example>
         public Title Title { get; set; }
         /// <example>Mr, Mrs, Miss</example>
-        public Title PreferredTitle { get; set; }
+        public Title? PreferredTitle { get; set; }
         /// <example>Julie</example>
         public string PreferredFirstName { get; set; }
         /// <example>Evans</example>
