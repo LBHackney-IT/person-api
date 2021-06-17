@@ -69,7 +69,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             PersonId = Guid.NewGuid();
         }
 
-        public void GivenANewPersonIsCreated()
+        public void GivenANewPersonRequest()
         {
             var personRequest = _fixture.Build<PersonRequestObject>()
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
@@ -79,6 +79,26 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                                               .With(y => y.EndDate, "")
                                               .CreateMany(2))
                 .With(x => x.Languages, Enumerable.Empty<Language>())
+                .Create();
+
+            CreateSnsTopic();
+
+            PersonRequest = personRequest;
+        }
+
+        public void GivenANewPersonRequestWithValidationErrors()
+        {
+            var personRequest = _fixture.Build<PersonRequestObject>()
+                .With(x => x.Firstname, string.Empty)
+                .With(x => x.Surname, string.Empty)
+                .With(x => x.PersonTypes, Enumerable.Empty<PersonType>())
+                .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(1))
+                .With(x => x.NationalInsuranceNo, "p;idfjgdfosigj")
+                .With(x => x.Tenures, _fixture.Build<Tenure>()
+                                              .With(y => y.StartDate, "asdwsad")
+                                              .With(y => y.EndDate, "asdsad")
+                                              .CreateMany(1))
+                .With(x => x.Languages, new[] { new Language() })
                 .Create();
 
             CreateSnsTopic();
