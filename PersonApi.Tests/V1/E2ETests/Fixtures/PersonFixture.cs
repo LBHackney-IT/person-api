@@ -57,7 +57,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 var person = _fixture.Build<PersonDbEntity>()
                                      .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                                      .Create();
-                foreach(var tenure in person.Tenures)
+                foreach (var tenure in person.Tenures)
                 {
                     tenure.EndDate = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture);
                 }
