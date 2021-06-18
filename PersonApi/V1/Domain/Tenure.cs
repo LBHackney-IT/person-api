@@ -18,6 +18,6 @@ namespace PersonApi.V1.Domain
 
         public string Uprn { get; set; }
 
-        public bool IsActive => false;
+        public bool IsActive => EndDate != null && DateTime.UtcNow < DateTime.Parse(EndDate);
     }
 }
