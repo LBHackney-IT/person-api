@@ -78,6 +78,11 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                 .Create();
 
+            foreach (var tenure in personRequest.Tenures)
+            {
+                tenure.EndDate = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture);
+            }
+
             CreateSnsTopic();
 
             PersonRequest = personRequest;
