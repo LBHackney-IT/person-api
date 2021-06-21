@@ -1,4 +1,5 @@
 using System;
+using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
 
 namespace PersonApi.V1.Domain
@@ -19,6 +20,7 @@ namespace PersonApi.V1.Domain
 
         public string Uprn { get; set; }
 
+        [DynamoDBIgnore]
         public bool IsActive
         {
             get
