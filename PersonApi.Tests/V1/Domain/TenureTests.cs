@@ -14,43 +14,43 @@ namespace PersonApi.Tests.V1.Domain
             _classUnderTest = new Tenure();
         }
 
-        //[Fact]
-        //public void GivenATenureWhenEndDateIsNullThenIsActiveShouldBeTrue()
-        //{
-        //    // given + when + then
-        //    _classUnderTest.IsActive().Should().BeTrue();
-        //}
+        [Fact]
+        public void GivenATenureWhenEndDateIsNullThenIsActiveShouldBeTrue()
+        {
+            // given + when + then
+            _classUnderTest.IsActive().Should().BeTrue();
+        }
 
-        //[Fact]
-        //public void GivenATenureWhenEndDateIsGreaterThanCurrentDateThenIsActiveShouldBeTrue()
-        //{
-        //    // given
-        //    _classUnderTest.EndDate = DateTime.Now.AddDays(1).ToShortDateString();
+        [Fact]
+        public void GivenATenureWhenEndDateIsGreaterThanCurrentDateThenIsActiveShouldBeTrue()
+        {
+            // given
+            _classUnderTest.EndDate = DateTime.Now.AddDays(1).ToShortDateString();
 
-        //    // when + then
-        //    _classUnderTest.IsActive().Should().BeTrue();
-        //}
+            // when + then
+            _classUnderTest.IsActive().Should().BeTrue();
+        }
 
-        //[Fact]
-        //public void GivenATenureWhenEndDateIsMinimumDateThanCurrentDateThenIsActiveShouldBeTrue()
-        //{
-        //    // given
-        //    _classUnderTest.EndDate = "1900-01-01";
+        [Fact]
+        public void GivenATenureWhenEndDateIsMinimumDateThanCurrentDateThenIsActiveShouldBeTrue()
+        {
+            // given
+            _classUnderTest.EndDate = "1900-01-01";
 
-        //    // when + then
-        //    _classUnderTest.IsActive().Should().BeTrue();
-        //}
+            // when + then
+            _classUnderTest.IsActive().Should().BeTrue();
+        }
 
-        //[Theory]
-        //[InlineData(0)]
-        //[InlineData(-1)]
-        //public void GivenATenureWhenEndDateIsLessThanCurrentDateThenIsActiveShouldBeFalse(int daysToAdd)
-        //{
-        //    // given
-        //    _classUnderTest.EndDate = DateTime.Now.AddDays(daysToAdd).ToShortDateString();
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void GivenATenureWhenEndDateIsLessThanCurrentDateThenIsActiveShouldBeFalse(int daysToAdd)
+        {
+            // given
+            _classUnderTest.EndDate = DateTime.Now.AddDays(daysToAdd).ToShortDateString();
 
-        //    // when + then
-        //    _classUnderTest.IsActive().Should().BeFalse();
-        //}
+            // when + then
+            _classUnderTest.IsActive().Should().BeFalse();
+        }
     }
 }
