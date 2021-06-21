@@ -20,6 +20,10 @@ namespace PersonApi.V1.Domain
 
         public bool IsActive()
         {
+            var isValidDate = DateTime.TryParse(EndDate, out DateTime dt);
+            if (!isValidDate)
+                return false;
+
             return string.IsNullOrEmpty(EndDate) || EndDate == "1900-01-01" ||
                    DateTime.UtcNow <= DateTime.Parse(EndDate);
         }
