@@ -18,7 +18,7 @@ namespace PersonApi.Tests.V1.Domain
         public void GivenATenureWhenEndDateIsNullThenIsActiveShouldBeTrue()
         {
             // given + when + then
-            _classUnderTest.IsActive.Should().BeTrue();
+            _classUnderTest.IsActive().Should().BeTrue();
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace PersonApi.Tests.V1.Domain
             _classUnderTest.EndDate = DateTime.Now.AddDays(1).ToShortDateString();
 
             // when + then
-            _classUnderTest.IsActive.Should().BeTrue();
+            _classUnderTest.IsActive().Should().BeTrue();
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace PersonApi.Tests.V1.Domain
             _classUnderTest.EndDate = "1900-01-01";
 
             // when + then
-            _classUnderTest.IsActive.Should().BeTrue();
+            _classUnderTest.IsActive().Should().BeTrue();
         }
 
         [Theory]
@@ -50,7 +50,7 @@ namespace PersonApi.Tests.V1.Domain
             _classUnderTest.EndDate = DateTime.Now.AddDays(daysToAdd).ToShortDateString();
 
             // when + then
-            _classUnderTest.IsActive.Should().BeFalse();
+            _classUnderTest.IsActive().Should().BeFalse();
         }
     }
 }
