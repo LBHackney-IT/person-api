@@ -72,7 +72,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
 
             JObject jo = JObject.Parse(responseContent);
             var errorProperties = jo["errors"].Children().Select(x => x.Path.Split('.').Last().Trim('\'', ']')).ToList();
-            errorProperties.Should().Contain(responseContent);
+            
             errorProperties.Should().Contain("Firstname");
             errorProperties.Should().Contain("Surname");
             errorProperties.Should().Contain("PersonTypes");
