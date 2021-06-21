@@ -12,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using PersonApi.V1.Domain;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace PersonApi.Tests.V1.E2ETests.Steps
@@ -33,6 +34,17 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             var uri = new Uri($"api/v1/persons", UriKind.Relative);
 
             var message = new HttpRequestMessage(HttpMethod.Post, uri);
+            requestObject.Tenures = requestObject.Tenures.Select(x => new Tenure
+            {
+                StartDate = x.StartDate,
+                Id = x.Id,
+                AssetId = x.AssetId,
+                Type = x.Type,
+                Uprn = x.Uprn,
+                AssetFullAddress = x.AssetFullAddress,
+                EndDate = "abc"
+            });
+
             message.Content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json");
             message.Method = HttpMethod.Post;
             message.Headers.Add("Authorization", token);
