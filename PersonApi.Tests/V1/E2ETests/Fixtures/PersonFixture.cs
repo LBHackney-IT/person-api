@@ -106,11 +106,6 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 .With(x => x.Languages, new[] { new Language() })
                 .Create();
 
-            foreach (var tenure in personRequest.Tenures)
-            {
-                tenure.EndDate = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture);
-            }
-
             CreateSnsTopic();
 
             PersonRequest = personRequest;
