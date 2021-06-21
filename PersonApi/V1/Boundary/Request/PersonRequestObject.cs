@@ -12,7 +12,7 @@ namespace PersonApi.V1.Boundary.Request
 
         public Title Title { get; set; }
 
-        public Title PreferredTitle { get; set; }
+        public Title? PreferredTitle { get; set; }
 
         public string PreferredFirstname { get; set; }
 
@@ -36,7 +36,7 @@ namespace PersonApi.V1.Boundary.Request
 
         public DateTime DateOfBirth { get; set; }
 
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
 
         public string Reason { get; set; }
 
@@ -63,7 +63,7 @@ namespace PersonApi.V1.Boundary.Request
                 Surname = Surname,
                 Ethnicity = Ethnicity,
                 Nationality = Nationality,
-                NationalInsuranceNo = NationalInsuranceNo,
+                NationalInsuranceNo = NationalInsuranceNo?.ToUpper(),
                 PlaceOfBirth = PlaceOfBirth,
                 DateOfBirth = DateOfBirth,
                 Gender = Gender,

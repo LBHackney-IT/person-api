@@ -7,7 +7,7 @@ namespace PersonApi.V1.Domain
     {
         public Guid Id { get; set; }
         public Title Title { get; set; }
-        public Title PreferredTitle { get; set; }
+        public Title? PreferredTitle { get; set; }
         public string PreferredFirstname { get; set; }
         public string PreferredMiddleName { get; set; }
         public string PreferredSurname { get; set; }
@@ -20,7 +20,7 @@ namespace PersonApi.V1.Domain
         public string PlaceOfBirth { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Reason { get; set; }
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
         public IEnumerable<Identification> Identifications { get; set; }
         public IEnumerable<Language> Languages { get; set; }
         public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }

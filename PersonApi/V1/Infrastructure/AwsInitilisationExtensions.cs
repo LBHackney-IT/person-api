@@ -1,12 +1,14 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 using Amazon.SimpleNotificationService;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PersonApi.V1.Infrastructure
 {
+    [ExcludeFromCodeCoverage]
     public static class AwsInitilisationExtensions
     {
         public static void ConfigureAws(this IServiceCollection services)
