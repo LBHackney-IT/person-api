@@ -19,7 +19,8 @@ namespace PersonApi.V1.Domain
 
         public string Uprn { get; set; }
 
-        public bool IsActive {
+        public bool IsActive
+        {
             get
             {
                 if (!string.IsNullOrEmpty(EndDate))
@@ -33,5 +34,5 @@ namespace PersonApi.V1.Domain
                        DateTime.UtcNow <= DateTime.Parse(EndDate);
             }
         }
-}
+    }
 }
