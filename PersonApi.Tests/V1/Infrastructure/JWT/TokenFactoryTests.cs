@@ -7,7 +7,7 @@ namespace PersonApi.Tests.V1.Infrastructure.JWT
 {
     public class TokenFactoryTests
     {
-        private TokenFactory _sut;
+        private readonly TokenFactory _sut;
 
         public TokenFactoryTests()
         {
@@ -22,7 +22,15 @@ namespace PersonApi.Tests.V1.Infrastructure.JWT
         public void GivenAnAuthorizationTokenWhenProcessingShouldReturnCorrectEmailInformation()
         {
             // Arrange
-            var expectedEmail = "e2e-testing-development@hackney.gov.uk";
+            var expected = new Token()
+            {
+                Email = "e2e-testing-development@hackney.gov.uk",
+                Exp = 0,
+                Groups = new[] { "saml-aws-console-mtfh-developer" },
+                Iat = 1623058232,
+                Name = "Tester",
+                Nbf = 0
+            };
             var token =
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nLWR" +
                 "ldmVsb3BtZW50QGhhY2tuZXkuZ292LnVrIiwiaXNzIjoiSGFja25leSIsIm5hbWUiOiJUZXN0ZXIiLCJncm91cHMiOlsic2FtbC1hd3MtY29u" +
@@ -35,7 +43,7 @@ namespace PersonApi.Tests.V1.Infrastructure.JWT
             var result = _sut.Create(headerDictionary);
 
             // Assert
-            result.Email.Should().Be(expectedEmail);
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }
