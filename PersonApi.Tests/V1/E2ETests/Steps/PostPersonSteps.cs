@@ -66,7 +66,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             errorProperties.Should().Contain("DateOfBirth");
             errorProperties.Should().Contain("NationalInsuranceNo");
             errorProperties.Should().Contain("StartDate"); // Tenure
-            //errorProperties.Should().Contain("EndDate"); // Tenure
+            errorProperties.Should().Contain("EndDate"); // Tenure
             errorProperties.Should().Contain("Languages");
             errorProperties.Should().Contain("Name"); // Language
         }
