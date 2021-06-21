@@ -32,7 +32,7 @@ namespace PersonApi.V1.Infrastructure
         public DateTime DateOfBirth { get; set; }
 
         [DynamoDBProperty(Converter = typeof(DynamoDbEnumConverter<Gender>))]
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
 
         [DynamoDBProperty(Converter = typeof(DynamoDbObjectListConverter<Identification>))]
         public List<Identification> Identifications { get; set; } = new List<Identification>();
