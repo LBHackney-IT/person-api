@@ -35,7 +35,7 @@ namespace PersonApi.V1.Factories
                 Surname = domain.Surname,
                 Ethnicity = domain.Ethnicity,
                 Nationality = domain.Nationality,
-                NationalInsuranceNo = domain.NationalInsuranceNo,
+                NationalInsuranceNo = domain.NationalInsuranceNo?.ToUpper(),
                 PlaceOfBirth = domain.PlaceOfBirth,
                 DateOfBirth = FormatDateOfBirth(domain.DateOfBirth),
                 Gender = domain.Gender,

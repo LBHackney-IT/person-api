@@ -14,7 +14,8 @@ namespace PersonApi.V1.Infrastructure
 
         [DynamoDBProperty(Converter = typeof(DynamoDbEnumConverter<Title>))]
         public Title Title { get; set; }
-        public Title PreferredTitle { get; set; }
+        [DynamoDBProperty(Converter = typeof(DynamoDbEnumConverter<Title>))]
+        public Title? PreferredTitle { get; set; }
         public string PreferredFirstname { get; set; }
         public string PreferredMiddleName { get; set; }
         public string PreferredSurname { get; set; }
@@ -31,7 +32,7 @@ namespace PersonApi.V1.Infrastructure
         public DateTime DateOfBirth { get; set; }
 
         [DynamoDBProperty(Converter = typeof(DynamoDbEnumConverter<Gender>))]
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
 
         [DynamoDBProperty(Converter = typeof(DynamoDbObjectListConverter<Identification>))]
         public List<Identification> Identifications { get; set; } = new List<Identification>();

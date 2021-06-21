@@ -56,6 +56,21 @@ namespace PersonApi.Tests.V1.Gateways
             return new PersonQueryObject() { Id = id };
         }
 
+        private PersonRequestObject ConstructPerson(bool nullOptionalEnums = false)
+        {
+            var person = _fixture.Build<PersonRequestObject>()
+                            .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                            .With(x => x.NationalInsuranceNo, "NZ223344E")
+                            .Create();
+            if (nullOptionalEnums)
+            {
+                person.Gender = null;
+                person.PreferredTitle = null;
+            }
+
+            return person;
+        }
+
         [Fact]
         public async Task GetPersonByIdReturnsNullIfEntityDoesntExist()
         {
@@ -69,13 +84,13 @@ namespace PersonApi.Tests.V1.Gateways
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {id}", Times.Once());
         }
 
-        [Fact]
-        public async Task GetPersonByIdReturnsThePersonIfItExists()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task GetPersonByIdReturnsThePersonIfItExists(bool nullOptionalEnums)
         {
             // Arrange
-            var entity = _fixture.Build<Person>()
-                                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                                 .Create();
+            var entity = ConstructPerson(nullOptionalEnums);
             entity.Tenures = new[] { entity.Tenures.First() };
             entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
 
@@ -93,13 +108,13 @@ namespace PersonApi.Tests.V1.Gateways
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {entity.Id}", Times.Once());
         }
 
-        [Fact]
-        public async Task PostNewPersonSuccessfulSaves()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task PostNewPersonSuccessfulSaves(bool nullOptionalEnums)
         {
             // Arrange
-            var entity = _fixture.Build<PersonRequestObject>()
-                .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                .Create();
+            var entity = ConstructPerson(nullOptionalEnums);
             entity.Tenures = new[] { entity.Tenures.First() };
             entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
 
