@@ -17,11 +17,5 @@ namespace PersonApi.V1.Domain
         public string Type { get; set; }
 
         public string Uprn { get; set; }
-
-        public bool IsActive()
-        {
-            return string.IsNullOrEmpty(EndDate) || EndDate == "1900-01-01" ||
-                   DateTime.UtcNow <= DateTime.Parse(EndDate);
-        }
     }
 }
