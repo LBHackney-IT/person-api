@@ -36,7 +36,7 @@ namespace PersonApi.V1.Boundary.Request
 
         public DateTime DateOfBirth { get; set; }
 
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
 
         public string Reason { get; set; }
 

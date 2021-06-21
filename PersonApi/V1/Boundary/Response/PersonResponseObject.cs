@@ -36,7 +36,7 @@ namespace PersonApi.V1.Boundary.Response
         public string DateOfBirth { get; set; }
         /// <example>M, F</example>
         public string Reason { get; set; }
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
         public IEnumerable<Identification> Identifications { get; set; }
         public IEnumerable<Language> Languages { get; set; }
         public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }
