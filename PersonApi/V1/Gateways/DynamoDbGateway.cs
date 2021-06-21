@@ -37,7 +37,7 @@ namespace PersonApi.V1.Gateways
 
             await _dynamoDbContext.SaveAsync(personDbEntity).ConfigureAwait(false);
 
-            return personDbEntity?.ToDomain();
+            return personDbEntity.ToDomain();
         }
 
         [LogCall]
