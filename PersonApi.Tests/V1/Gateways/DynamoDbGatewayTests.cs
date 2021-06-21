@@ -56,6 +56,14 @@ namespace PersonApi.Tests.V1.Gateways
             return new PersonQueryObject() { Id = id };
         }
 
+        private PersonRequestObject ConstructPerson()
+        {
+            return _fixture.Build<PersonRequestObject>()
+                            .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                            .With(x => x.NationalInsuranceNo, "NZ223344E")
+                            .Create();
+        }
+
         [Fact]
         public async Task GetPersonByIdReturnsNullIfEntityDoesntExist()
         {
@@ -73,9 +81,7 @@ namespace PersonApi.Tests.V1.Gateways
         public async Task GetPersonByIdReturnsThePersonIfItExists()
         {
             // Arrange
-            var entity = _fixture.Build<Person>()
-                                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                                 .Create();
+            var entity = ConstructPerson();
             entity.Tenures = new[] { entity.Tenures.First() };
             entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
 
@@ -97,9 +103,7 @@ namespace PersonApi.Tests.V1.Gateways
         public async Task PostNewPersonSuccessfulSaves()
         {
             // Arrange
-            var entity = _fixture.Build<PersonRequestObject>()
-                .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                .Create();
+            var entity = ConstructPerson();
             entity.Tenures = new[] { entity.Tenures.First() };
             entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
 

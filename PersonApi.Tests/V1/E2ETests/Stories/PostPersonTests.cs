@@ -44,12 +44,21 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         }
 
         [Fact]
-        [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "BDDfy")]
         public void ServiceReturnsTheRequestedPerson()
         {
-            this.Given(g => _personFixture.GivenANewPersonIsCreated())
-                .When(w => _steps.WhenAPersonIsCreated(_personFixture.PersonRequest))
+            this.Given(g => _personFixture.GivenANewPersonRequest())
+                .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.PersonRequest))
                 .Then(t => _steps.ThenThePersonDetailsAreReturnedAndIdIsNotEmpty())
+                .BDDfy();
+        }
+
+        [Fact]
+        public void ServiceReturnsBadRequestWhenThereAreValidationErrors()
+        {
+            this.Given(g => _personFixture.GivenANewPersonRequestWithValidationErrors())
+                .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.PersonRequest))
+                .Then(r => _steps.ThenBadRequestIsReturned())
+                .And(t => _steps.ThenTheValidationErrorsAreReturned())
                 .BDDfy();
         }
     }
