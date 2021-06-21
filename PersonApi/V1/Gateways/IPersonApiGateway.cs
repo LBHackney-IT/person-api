@@ -9,5 +9,7 @@ namespace PersonApi.V1.Gateways
         Task<Person> GetPersonByIdAsync(PersonQueryObject query);
 
         Task<Person> PostNewPersonAsync(PersonRequestObject requestObject);
+
+        Task<Person> UpdatePersonByIdAsync(PersonRequestObject requestObject);
     }
 }

@@ -22,12 +22,14 @@ namespace PersonApi.V1.Controllers
         private readonly IPostNewPersonUseCase _newPersonUseCase;
         private readonly ITokenFactory _tokenFactory;
         private readonly IHttpContextWrapper _contextWrapper;
+        private readonly IUpdatePersonUseCase _updatePersonUseCase;
 
         public PersonApiController(IGetByIdUseCase getByIdUseCase, IPostNewPersonUseCase newPersonUseCase,
-            ITokenFactory tokenFactory, IHttpContextWrapper contextWrapper)
+            IUpdatePersonUseCase updatePersonUseCase, ITokenFactory tokenFactory, IHttpContextWrapper contextWrapper)
         {
             _getByIdUseCase = getByIdUseCase;
             _newPersonUseCase = newPersonUseCase;
+            _updatePersonUseCase = updatePersonUseCase;
             _tokenFactory = tokenFactory;
             _contextWrapper = contextWrapper;
         }
@@ -66,6 +68,28 @@ namespace PersonApi.V1.Controllers
                 .ConfigureAwait(false);
 
             return Created(new Uri($"api/v1/persons/{person.Id}", UriKind.Relative), person);
+        }
+
+        /// <summary>
+        /// Updates the person record corresponding to the supplied id
+        /// </summary>
+        /// <response code="204">Successfully updated person record</response>
+        /// <response code="400">Invalid id value supplied</response>
+        /// <response code="404">No person found for the specified id</response>
+        /// <response code="500">Something went wrong</response>
+        [ProducesResponseType(typeof(PersonResponseObject), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPatch]
+        [Route("{id}")]
+        [LogCall(LogLevel.Information)]
+        public async Task<IActionResult> UpdatePersonByIdAsync([FromBody] PersonRequestObject personRequestObject)
+        {
+            var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject).ConfigureAwait(false);
+            if (person == null) return NotFound(personRequestObject.Id);
+
+            return NoContent();
         }
     }
 }

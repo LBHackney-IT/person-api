@@ -39,5 +39,16 @@ namespace PersonApi.V1.Gateways
 
             return personDbEntity?.ToDomain();
         }
+
+        [LogCall]
+        public async Task<Person> UpdatePersonByIdAsync(PersonRequestObject requestObject)
+        {
+            _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync to update id {requestObject.Id}");
+            var personDbEntity = requestObject.ToDatabase();
+
+            await _dynamoDbContext.SaveAsync(personDbEntity).ConfigureAwait(false);
+
+            return personDbEntity?.ToDomain();
+        }
     }
 }
