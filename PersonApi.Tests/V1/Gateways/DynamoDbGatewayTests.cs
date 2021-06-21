@@ -56,6 +56,11 @@ namespace PersonApi.Tests.V1.Gateways
             return new PersonQueryObject() { Id = id };
         }
 
+        private PersonRequestObject ConstructRequest(Guid id)
+        {
+            return new PersonRequestObject() { Id = id };
+        }
+
         private PersonRequestObject ConstructPerson()
         {
             return _fixture.Build<PersonRequestObject>()
@@ -137,6 +142,24 @@ namespace PersonApi.Tests.V1.Gateways
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
             mockDynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(id, default), Times.Once);
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {id}", Times.Once());
+        }
+
+        [Fact]
+        public async Task UpdatePersonSuccessfulUpdates()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var constructRequest = ConstructRequest(id);
+
+            var dbEntity = constructRequest.ToDatabase();
+
+            // Act
+            await _dynamoDb.SaveAsync(dbEntity).ConfigureAwait(false);
+
+            // Assert
+            var request = ConstructRequest(constructRequest.Id);
+            var response = await _classUnderTest.UpdatePersonByIdAsync(request).ConfigureAwait(false);
+            response.Should().NotBeNull();
         }
     }
 }
