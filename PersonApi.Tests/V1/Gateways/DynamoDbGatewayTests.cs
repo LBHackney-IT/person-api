@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PersonApi.V1.Boundary.Request;
 using Xunit;
+using Amazon.DynamoDBv2;
 
 namespace PersonApi.Tests.V1.Gateways
 {
@@ -24,6 +25,7 @@ namespace PersonApi.Tests.V1.Gateways
         private DynamoDbGateway _classUnderTest;
 
         private readonly IDynamoDBContext _dynamoDb;
+
         private readonly List<Action> _cleanup = new List<Action>();
 
         public DynamoDbGatewayTests(AwsIntegrationTests<Startup> dbTestFixture)
