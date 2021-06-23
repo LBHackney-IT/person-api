@@ -1,3 +1,5 @@
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
 using AutoFixture;
 using Bogus.Extensions;
 using FluentAssertions;
@@ -26,10 +28,11 @@ namespace PersonApi.Tests.V1.E2ETests
         public PersonDbEntity Person { get; private set; }
         private readonly AwsIntegrationTests<Startup> _dbFixture;
         private readonly List<Action> _cleanupActions = new List<Action>();
-
-        public UpdatePersonByIdE2ETests(AwsIntegrationTests<Startup> dbFixture)
+        private readonly IAmazonSimpleNotificationService _amazonSimpleNotificationService;
+        public UpdatePersonByIdE2ETests(AwsIntegrationTests<Startup> dbFixture, IAmazonSimpleNotificationService amazonSimpleNotificationService)
         {
             _dbFixture = dbFixture;
+            _amazonSimpleNotificationService = amazonSimpleNotificationService;
         }
         private PersonRequestObject ConstructTestEntity()
         {
@@ -45,7 +48,20 @@ namespace PersonApi.Tests.V1.E2ETests
             return entity;
         }
 
+        private void UpdateSnsTopic()
+        {
+            var snsAttrs = new Dictionary<string, string>();
+            snsAttrs.Add("fifo_topic", "true");
+            snsAttrs.Add("content_based_deduplication", "true");
 
+            var response = _amazonSimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
+            {
+                Name = "personupdated",
+                Attributes = snsAttrs
+            }).Result;
+
+            Environment.SetEnvironmentVariable("UPDATED_PERSON_SNS_ARN", response.TopicArn);
+        }
 
         /// <summary>
         /// Method to add an entity instance to the database so that it can be used in a test.
@@ -90,11 +106,24 @@ namespace PersonApi.Tests.V1.E2ETests
         public async Task UpdatedPersonByIdFoundSuccessfullyUpdates()
         {
             var entity = ConstructTestEntity();
+            UpdateSnsTopic();
+            var token =
+                "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJncm91cHMiOiJlMmUtdGVzdGluZy1kZXZlbG9wbWVudCIsImVtYWlsIjoiZTJlLXRlc3RpbmctZGV2ZWxvcG1lbnRAaGFja25leS5nb3YudWsiLCJuYW1lIjoiZTJlLXRlc3RpbmctZGV2ZWxvcG1lbnQiLCJuYmYiOjE2MjIwMTk4NTgsImV4cCI6MTkzNzU1MjY1OCwiaWF0IjoxNjIyMDE5ODU4fQ.SoUUGRHkHxSqEfS0gXu2CT_lZtK2IwKLEJc2QfKWA4qGq9LmjnGbanM-5H-J9Xz-";
             await SetupTestData(entity).ConfigureAwait(false);
             entity.Surname = "Update";
             var uri = new Uri($"api/v1/persons/{entity.Id}", UriKind.Relative);
-            var content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
-            var response = await _dbFixture.Client.PatchAsync(uri, content).ConfigureAwait(false);
+            var message = new HttpRequestMessage(HttpMethod.Patch, uri);
+            message.Content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
+            message.Method = HttpMethod.Patch;
+            message.Headers.Add("Authorization", token);
+            //var content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, "application/json");
+            //var response = await _dbFixture.Client.PatchAsync(uri, content).ConfigureAwait(false);
+
+            _dbFixture.Client.DefaultRequestHeaders
+                .Accept
+                .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await _dbFixture.Client.SendAsync(message).ConfigureAwait(false);
 
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 

@@ -135,7 +135,7 @@ namespace PersonApi.Tests.V1.Controllers
         {
             // Arrange
             var request = ConstructRequest();
-            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request)).ReturnsAsync((PersonResponseObject) null);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request, It.IsAny<Token>())).ReturnsAsync((PersonResponseObject) null);
 
             // Act
             var response = await _sut.UpdatePersonByIdAsync(request).ConfigureAwait(false);
@@ -151,7 +151,7 @@ namespace PersonApi.Tests.V1.Controllers
             // Arrange
             var request = ConstructRequest();
             var personResponse = _fixture.Create<PersonResponseObject>();
-            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request)).ReturnsAsync(personResponse);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request, It.IsAny<Token>())).ReturnsAsync(personResponse);
 
             // Act
             var response = await _sut.UpdatePersonByIdAsync(request).ConfigureAwait(false);
@@ -165,7 +165,7 @@ namespace PersonApi.Tests.V1.Controllers
         {
             // Arrange
             var exception = new ApplicationException("Test exception");
-            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>())).ThrowsAsync(exception);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>(), It.IsAny<Token>())).ThrowsAsync(exception);
 
             // Act
             Func<Task<IActionResult>> func = async () => await _sut.UpdatePersonByIdAsync(new PersonRequestObject())

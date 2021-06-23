@@ -15,10 +15,31 @@ namespace PersonApi.V1.Factories
                 DateTime = DateTime.UtcNow,
                 EntityId = person.Id,
                 Id = Guid.NewGuid(),
-                EventType = Constants.EVENTTYPE,
-                Version = Constants.V1_VERSION,
-                SourceDomain = Constants.SOURCE_DOMAIN,
-                SourceSystem = Constants.SOURCE_SYSTEM,
+                EventType = CreateEventConstants.EVENTTYPE,
+                Version = CreateEventConstants.V1VERSION,
+                SourceDomain = CreateEventConstants.SOURCEDOMAIN,
+                SourceSystem = CreateEventConstants.SOURCESYSTEM,
+                User = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Name = token.Name,
+                    Email = token.Email
+                }
+            };
+        }
+
+        public PersonSns Update(Person person, Token token)
+        {
+            return new PersonSns
+            {
+                CorrelationId = Guid.NewGuid(),
+                DateTime = DateTime.UtcNow,
+                EntityId = person.Id,
+                Id = Guid.NewGuid(),
+                EventType = UpdatePersonConstants.EVENTTYPE,
+                Version = UpdatePersonConstants.V1VERSION,
+                SourceDomain = UpdatePersonConstants.SOURCEDOMAIN,
+                SourceSystem = UpdatePersonConstants.SOURCESYSTEM,
                 User = new User
                 {
                     Id = Guid.NewGuid(),

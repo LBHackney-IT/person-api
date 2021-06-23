@@ -49,3 +49,9 @@ resource "aws_ssm_parameter" "new_person_created_sns_arn" {
   type  = "String"
   value = aws_sns_topic.person_topic.arn
 }
+
+resource "aws_ssm_parameter" "person_updated_sns_arn" {
+  name  = "/sns-topic/development/person_updated/arn"
+  type  = "String"
+  value = aws_sns_topic.person_topic.arn
+}

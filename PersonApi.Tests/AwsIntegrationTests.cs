@@ -31,6 +31,7 @@ namespace PersonApi.Tests
             Client = _factory.CreateClient();
 
             CreateSnsTopic();
+            UpdateSnsTopic();
         }
 
         public void Dispose()
@@ -69,6 +70,21 @@ namespace PersonApi.Tests
             }).Result;
 
             Environment.SetEnvironmentVariable("NEW_PERSON_SNS_ARN", response.TopicArn);
+        }
+
+        private void UpdateSnsTopic()
+        {
+            var snsAttrs = new Dictionary<string, string>();
+            snsAttrs.Add("fifo_topic", "true");
+            snsAttrs.Add("content_based_deduplication", "true");
+
+            var response = SimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
+            {
+                Name = "person",
+                Attributes = snsAttrs
+            }).Result;
+
+            Environment.SetEnvironmentVariable("UPDATE_PERSON_SNS_ARN", response.TopicArn);
         }
     }
 

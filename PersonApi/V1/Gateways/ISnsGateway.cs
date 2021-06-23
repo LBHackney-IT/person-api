@@ -5,6 +5,8 @@ namespace PersonApi.V1.Gateways
 {
     public interface ISnsGateway
     {
-        Task Publish(PersonSns personSns);
+        Task NewPersonPublish(PersonSns personSns);
+
+        Task UpdatePersonPublish(PersonSns personSns);
     }
 }

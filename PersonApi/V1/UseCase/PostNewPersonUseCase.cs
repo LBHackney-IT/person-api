@@ -29,7 +29,7 @@ namespace PersonApi.V1.UseCase
             var person = await _gateway.PostNewPersonAsync(personRequestObject).ConfigureAwait(false);
 
             var personSnsMessage = _snsFactory.Create(person, token);
-            await _snsGateway.Publish(personSnsMessage).ConfigureAwait(false);
+            await _snsGateway.NewPersonPublish(personSnsMessage).ConfigureAwait(false);
 
             return _responseFactory.ToResponse(person);
         }
