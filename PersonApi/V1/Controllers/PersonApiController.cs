@@ -9,6 +9,7 @@ using System;
 using System.Threading.Tasks;
 using PersonApi.V1.Infrastructure;
 using PersonApi.V1.Infrastructure.JWT;
+using Amazon.DynamoDBv2.Model;
 
 namespace PersonApi.V1.Controllers
 {
@@ -84,8 +85,10 @@ namespace PersonApi.V1.Controllers
         [HttpPatch]
         [Route("{id}")]
         [LogCall(LogLevel.Information)]
-        public async Task<IActionResult> UpdatePersonByIdAsync([FromBody] PersonRequestObject personRequestObject)
+        public async Task<IActionResult> UpdatePersonByIdAsync([FromBody] PersonRequestObject personRequestObject, [FromRoute] PersonQueryObject query)
         {
+            if (query.Id == null) return BadRequest(query.Id);
+            query.Id = personRequestObject.Id;
             var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject).ConfigureAwait(false);
             if (person == null) return NotFound(personRequestObject.Id);
 

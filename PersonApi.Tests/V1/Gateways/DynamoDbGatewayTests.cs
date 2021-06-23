@@ -164,7 +164,6 @@ namespace PersonApi.Tests.V1.Gateways
             // Arrange
             var id = Guid.NewGuid();
             var constructRequest = ConstructRequest(id);
-
             var dbEntity = constructRequest.ToDatabase();
 
             // Act
@@ -172,8 +171,10 @@ namespace PersonApi.Tests.V1.Gateways
 
             // Assert
             var request = ConstructRequest(constructRequest.Id);
-            var response = await _classUnderTest.UpdatePersonByIdAsync(request).ConfigureAwait(false);
-            response.Should().NotBeNull();
+            request.Surname = "Update";
+            var response = await _classUnderTest.UpdatePersonByIdAsync(constructRequest).ConfigureAwait(false);
+            response.Surname.Should().Be(constructRequest.Surname);
         }
+
     }
 }
