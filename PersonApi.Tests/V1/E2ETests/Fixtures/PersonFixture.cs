@@ -3,6 +3,7 @@ using AutoFixture;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using PersonApi.V1.Boundary.Request;
@@ -58,6 +59,10 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                                      .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                                      .With(x => x.NationalInsuranceNo, "NZ223344E")
                                      .Create();
+                foreach (var tenure in person.Tenures)
+                {
+                    tenure.EndDate = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture);
+                }
                 _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
                 Person = person;
                 PersonId = person.Id;
