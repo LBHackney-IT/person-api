@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PersonApi.V1.Boundary.Request;
 using Xunit;
+using Amazon.DynamoDBv2;
 
 namespace PersonApi.Tests.V1.Gateways
 {
@@ -24,6 +25,7 @@ namespace PersonApi.Tests.V1.Gateways
         private DynamoDbGateway _classUnderTest;
 
         private readonly IDynamoDBContext _dynamoDb;
+
         private readonly List<Action> _cleanup = new List<Action>();
 
         public DynamoDbGatewayTests(AwsIntegrationTests<Startup> dbTestFixture)
@@ -56,7 +58,13 @@ namespace PersonApi.Tests.V1.Gateways
             return new PersonQueryObject() { Id = id };
         }
 
+        private PersonRequestObject ConstructRequest(Guid id)
+        {
+            return new PersonRequestObject() { Id = id };
+        }
+
         private PersonRequestObject ConstructPerson(bool nullOptionalEnums = false)
+
         {
             var person = _fixture.Build<PersonRequestObject>()
                             .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
@@ -149,5 +157,22 @@ namespace PersonApi.Tests.V1.Gateways
             mockDynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(id, default), Times.Once);
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {id}", Times.Once());
         }
+
+        [Fact]
+        public async Task UpdatePersonSuccessfulUpdates()
+        {
+            // Arrange
+            var constructRequest = ConstructPerson();
+            await _dynamoDb.SaveAsync(constructRequest.ToDatabase()).ConfigureAwait(false);
+            constructRequest.Surname = "Update";
+
+            //Act
+            await _classUnderTest.UpdatePersonByIdAsync(constructRequest).ConfigureAwait(false);
+
+            //Assert
+            var load = await _dynamoDb.LoadAsync<PersonDbEntity>(constructRequest.Id).ConfigureAwait(false);
+            load.Surname.Should().Be(constructRequest.Surname);
+        }
+
     }
 }
