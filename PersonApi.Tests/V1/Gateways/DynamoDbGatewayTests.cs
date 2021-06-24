@@ -162,18 +162,16 @@ namespace PersonApi.Tests.V1.Gateways
         public async Task UpdatePersonSuccessfulUpdates()
         {
             // Arrange
-            var id = Guid.NewGuid();
-            var constructRequest = ConstructRequest(id);
-            var dbEntity = constructRequest.ToDatabase();
+            var constructRequest = ConstructPerson();
+            await _dynamoDb.SaveAsync(constructRequest.ToDatabase()).ConfigureAwait(false);
+            constructRequest.Surname = "Update";
 
-            // Act
-            await _dynamoDb.SaveAsync(dbEntity).ConfigureAwait(false);
+            //Act
+            await _classUnderTest.UpdatePersonByIdAsync(constructRequest).ConfigureAwait(false);
 
-            // Assert
-            var request = ConstructRequest(constructRequest.Id);
-            request.Surname = "Update";
-            var response = await _classUnderTest.UpdatePersonByIdAsync(constructRequest).ConfigureAwait(false);
-            response.Surname.Should().Be(constructRequest.Surname);
+            //Assert
+            var load = await _dynamoDb.LoadAsync<PersonDbEntity>(constructRequest.Id).ConfigureAwait(false);
+            load.Surname.Should().Be(constructRequest.Surname);
         }
 
     }
