@@ -27,7 +27,7 @@ namespace PersonApi.V1.Factories
                 Id = domain.Id,
                 Title = domain.Title,
                 PreferredTitle = domain.PreferredTitle,
-                PreferredFirstName = domain.PreferredFirstname,
+                PreferredFirstname = domain.PreferredFirstname,
                 PreferredMiddleName = domain.PreferredMiddleName,
                 PreferredSurname = domain.PreferredSurname,
                 FirstName = domain.Firstname,
