@@ -42,7 +42,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             apiPerson.Nationality.Should().Be(expectedPerson.Nationality);
             apiPerson.PersonTypes.Should().BeEquivalentTo(expectedPerson.PersonTypes);
             apiPerson.PlaceOfBirth.Should().Be(expectedPerson.PlaceOfBirth);
-            apiPerson.PreferredFirstName.Should().Be(expectedPerson.PreferredFirstname);
+            apiPerson.PreferredFirstname.Should().Be(expectedPerson.PreferredFirstname);
             apiPerson.PreferredSurname.Should().Be(expectedPerson.PreferredSurname);
             apiPerson.Surname.Should().Be(expectedPerson.Surname);
             apiPerson.Title.Should().Be(expectedPerson.Title);

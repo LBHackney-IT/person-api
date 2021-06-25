@@ -165,6 +165,7 @@ namespace PersonApi
         {
             services.AddScoped<IGetByIdUseCase, GetByIdUseCase>();
             services.AddScoped<IPostNewPersonUseCase, PostNewPersonUseCase>();
+            services.AddScoped<IUpdatePersonUseCase, UpdatePersonUseCase>();
 
             // Used by the Use cases to add api links to any response object
             services.AddScoped<IResponseFactory, ResponseFactory>();
