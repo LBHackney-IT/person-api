@@ -30,30 +30,15 @@ namespace PersonApi.Tests.V1.UseCase
         {
             _mockGateway = new Mock<IPersonApiGateway>();
             _responseFactory = new ResponseFactory(null);
-            _classUnderTest = new UpdatePersonUseCase(_mockGateway.Object, _responseFactory, _personSnsGateway.Object, _personSnsFactory);
             _personSnsGateway = new Mock<ISnsGateway>();
             _personSnsFactory = new PersonSnsFactory();
+            _classUnderTest = new UpdatePersonUseCase(_mockGateway.Object, _responseFactory, _personSnsGateway.Object, _personSnsFactory);
             _personSnsGateway.Setup(x => x.UpdatePersonPublish(It.IsAny<PersonSns>()));
         }
 
         private PersonRequestObject ConstructRequest()
         {
             return new PersonRequestObject() { Id = Guid.NewGuid() };
-        }
-
-        [Fact]
-        public async Task UpdatePersonByIdUseCaseGatewayReturnsNullReturnsNull()
-        {
-            // Arrange
-            var request = ConstructRequest();
-            var token = new Token();
-            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request)).ReturnsAsync((Person) null);
-
-            // Act
-            var response = await _classUnderTest.ExecuteAsync(request, token).ConfigureAwait(false);
-
-            // Assert
-            response.Should().BeNull();
         }
 
         [Fact]

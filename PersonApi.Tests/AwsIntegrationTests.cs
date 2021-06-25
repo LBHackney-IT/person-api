@@ -72,7 +72,7 @@ namespace PersonApi.Tests
             Environment.SetEnvironmentVariable("NEW_PERSON_SNS_ARN", response.TopicArn);
         }
 
-        private void UpdateSnsTopic()
+        public void UpdateSnsTopic()
         {
             var snsAttrs = new Dictionary<string, string>();
             snsAttrs.Add("fifo_topic", "true");

@@ -89,7 +89,8 @@ namespace PersonApi.V1.Controllers
         {
             if (query.Id == null) return BadRequest(query.Id);
             query.Id = personRequestObject.Id;
-            var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject).ConfigureAwait(false);
+            var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
+            var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject, token).ConfigureAwait(false);
             if (person == null) return NotFound(personRequestObject.Id);
 
             return NoContent();
