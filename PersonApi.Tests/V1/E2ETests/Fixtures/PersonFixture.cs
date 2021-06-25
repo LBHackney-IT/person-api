@@ -95,10 +95,6 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             {
                 var person = _fixture.Build<PersonDbEntity>()
                                     .Create();
-                //foreach (var tenure in person.Tenures)
-                //{
-                //    tenure.EndDate = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture);
-                //}
                 _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
                 Person = person;
                 PersonId = person.Id;
