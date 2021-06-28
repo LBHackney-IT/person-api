@@ -33,7 +33,7 @@ namespace PersonApi.Tests.V1.UseCase
             _personSnsGateway = new Mock<ISnsGateway>();
             _personSnsFactory = new PersonSnsFactory();
             _classUnderTest = new UpdatePersonUseCase(_mockGateway.Object, _responseFactory, _personSnsGateway.Object, _personSnsFactory);
-            _personSnsGateway.Setup(x => x.UpdatePersonPublish(It.IsAny<PersonSns>()));
+            _personSnsGateway.Setup(x => x.Publish(It.IsAny<PersonSns>()));
         }
 
         private PersonRequestObject ConstructRequest()

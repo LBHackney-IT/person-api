@@ -31,7 +31,7 @@ namespace PersonApi.V1.UseCase
             var person = await _gateway.UpdatePersonByIdAsync(personRequestObject).ConfigureAwait(false);
 
             var personSnsMessage = _snsFactory.Update(person, token);
-            await _snsGateway.UpdatePersonPublish(personSnsMessage).ConfigureAwait(false);
+            await _snsGateway.Publish(personSnsMessage).ConfigureAwait(false);
 
             return _responseFactory.ToResponse(person);
         }

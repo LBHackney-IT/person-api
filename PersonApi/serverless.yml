@@ -19,8 +19,7 @@ functions:
     handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
     environment:
-      UPDATE_PERSON_SNS_ARN: ${ssm:/sns-topic/${self:provider.stage}/person_updated/arn}
-      NEW_PERSON_SNS_ARN: ${ssm:/sns-topic/${self:provider.stage}/person_created/arn}
+      PERSON_SNS_ARN: ${ssm:/sns-topic/${self:provider.stage}/person/arn}
       ASPNETCORE_ENVIRONMENT:  ${ssm:/housing-tl/${self:provider.stage}/aspnetcore-environment}
     events:
       - http:

@@ -20,26 +20,13 @@ namespace PersonApi.V1.Gateways
             _configuration = configuration;
         }
 
-        public async Task NewPersonPublish(PersonSns personSns)
+        public async Task Publish(PersonSns personSns)
         {
             string message = JsonConvert.SerializeObject(personSns);
             var request = new PublishRequest
             {
                 Message = message,
-                TopicArn = Environment.GetEnvironmentVariable("NEW_PERSON_SNS_ARN"),
-                MessageGroupId = "SomeGroupId"
-            };
-
-            await _amazonSimpleNotificationService.PublishAsync(request).ConfigureAwait(false);
-        }
-
-        public async Task UpdatePersonPublish(PersonSns personSns)
-        {
-            string message = JsonConvert.SerializeObject(personSns);
-            var request = new PublishRequest
-            {
-                Message = message,
-                TopicArn = Environment.GetEnvironmentVariable("UPDATE_PERSON_SNS_ARN"),
+                TopicArn = Environment.GetEnvironmentVariable("PERSON_SNS_ARN"),
                 MessageGroupId = "SomeGroupId"
             };
 
