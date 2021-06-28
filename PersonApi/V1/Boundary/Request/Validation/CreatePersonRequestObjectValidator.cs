@@ -6,12 +6,12 @@ using System.Text.RegularExpressions;
 
 namespace PersonApi.V1.Boundary.Request.Validation
 {
-    public class PersonRequestObjectValidator : AbstractValidator<PersonRequestObject>
+    public class CreatePersonRequestObjectValidator : AbstractValidator<CreatePersonRequestObject>
     {
         private const string NiRegEx
             = @"^(?!BG)(?!GB)(?!NK)(?!KN)(?!TN)(?!NT)(?!ZZ)(?:[A-CEGHJ-PR-TW-Z][A-CEGHJ-NPR-TW-Z])(?:\s*\d\s*){6}([A-D]|\s)$";
 
-        public PersonRequestObjectValidator()
+        public CreatePersonRequestObjectValidator()
         {
             // Not needed for create person, but will be needed for edit person
             //RuleFor(x => x.Id).NotNull()

@@ -6,7 +6,7 @@ using PersonApi.V1.Infrastructure;
 
 namespace PersonApi.V1.Boundary.Request
 {
-    public class PersonRequestObject
+    public class CreatePersonRequestObject
     {
         public Guid Id { get; set; }
 

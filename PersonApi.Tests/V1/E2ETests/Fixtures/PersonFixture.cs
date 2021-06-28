@@ -20,7 +20,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
         public PersonDbEntity Person { get; private set; }
 
-        public PersonRequestObject PersonRequest { get; private set; }
+        public CreatePersonRequestObject PersonRequest { get; private set; }
 
         public Guid PersonId { get; private set; }
 
@@ -71,7 +71,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
         public void GivenANewPersonRequest()
         {
-            var personRequest = _fixture.Build<PersonRequestObject>()
+            var personRequest = _fixture.Build<CreatePersonRequestObject>()
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                 .With(x => x.NationalInsuranceNo, "NZ223344D")
                 .With(x => x.Tenures, _fixture.Build<Tenure>()
@@ -88,7 +88,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
         public void GivenANewPersonRequestWithValidationErrors()
         {
-            var personRequest = _fixture.Build<PersonRequestObject>()
+            var personRequest = _fixture.Build<CreatePersonRequestObject>()
                 .With(x => x.Firstname, string.Empty)
                 .With(x => x.Surname, string.Empty)
                 .With(x => x.PersonTypes, Enumerable.Empty<PersonType>())
