@@ -45,7 +45,7 @@ resource "aws_sns_topic" "person_topic" {
 }
 
 resource "aws_ssm_parameter" "person_sns_arn" {
-  name  = "/sns-topic/staging/person_created/arn"
+  name  = "/sns-topic/staging/person/arn"
   type  = "String"
   value = aws_sns_topic.person_topic.arn
 }
