@@ -22,6 +22,7 @@ namespace PersonApi.V1.UseCase
             _responseFactory = responseFactory;
             _snsGateway = snsGateway;
             _snsFactory = snsFactory;
+
         }
 
         public async Task<PersonResponseObject> ExecuteAsync(CreatePersonRequestObject personRequestObject, Token token)
