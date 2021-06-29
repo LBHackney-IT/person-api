@@ -36,9 +36,9 @@ namespace PersonApi.Tests.V1.UseCase
             _personSnsGateway.Setup(x => x.Publish(It.IsAny<PersonSns>()));
         }
 
-        private PersonRequestObject ConstructRequest()
+        private UpdatePersonRequestObject ConstructRequest()
         {
-            return new PersonRequestObject() { Id = Guid.NewGuid() };
+            return new UpdatePersonRequestObject() { Id = Guid.NewGuid() };
         }
 
         [Fact]
@@ -61,8 +61,7 @@ namespace PersonApi.Tests.V1.UseCase
         public void UpdatePersonByIdAsyncExceptionIsThrown()
         {
             // Arrange
-            var personRequest = new PersonRequestObject();
-            var token = new Token();
+            var personRequest = new UpdatePersonRequestObject();
             var exception = new ApplicationException("Test exception");
             _mockGateway.Setup(x => x.UpdatePersonByIdAsync(personRequest)).ThrowsAsync(exception);
 

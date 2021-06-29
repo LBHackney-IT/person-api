@@ -26,7 +26,7 @@ namespace PersonApi.V1.UseCase
         }
 
         [LogCall]
-        public async Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject, Token token)
+        public async Task<PersonResponseObject> ExecuteAsync(UpdatePersonRequestObject personRequestObject)
         {
             var person = await _gateway.UpdatePersonByIdAsync(personRequestObject).ConfigureAwait(false);
 

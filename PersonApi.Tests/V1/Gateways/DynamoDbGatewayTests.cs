@@ -58,15 +58,31 @@ namespace PersonApi.Tests.V1.Gateways
             return new PersonQueryObject() { Id = id };
         }
 
-        private PersonRequestObject ConstructRequest(Guid id)
+        private UpdatePersonRequestObject ConstructRequest(Guid id)
         {
-            return new PersonRequestObject() { Id = id };
+            return new UpdatePersonRequestObject() { Id = id };
         }
 
-        private PersonRequestObject ConstructPerson(bool nullOptionalEnums = false)
+        private CreatePersonRequestObject ConstructCreatePerson(bool nullOptionalEnums = false)
 
         {
-            var person = _fixture.Build<PersonRequestObject>()
+            var person = _fixture.Build<CreatePersonRequestObject>()
+                            .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                            .With(x => x.NationalInsuranceNo, "NZ223344E")
+                            .Create();
+            if (nullOptionalEnums)
+            {
+                person.Gender = null;
+                person.PreferredTitle = null;
+            }
+
+            return person;
+        }
+
+        private UpdatePersonRequestObject ConstructUpdatePerson(bool nullOptionalEnums = false)
+
+        {
+            var person = _fixture.Build<UpdatePersonRequestObject>()
                             .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                             .With(x => x.NationalInsuranceNo, "NZ223344E")
                             .Create();
@@ -98,7 +114,7 @@ namespace PersonApi.Tests.V1.Gateways
         public async Task GetPersonByIdReturnsThePersonIfItExists(bool nullOptionalEnums)
         {
             // Arrange
-            var entity = ConstructPerson(nullOptionalEnums);
+            var entity = ConstructCreatePerson(nullOptionalEnums);
             entity.Tenures = new[] { entity.Tenures.First() };
             entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
 
@@ -122,7 +138,7 @@ namespace PersonApi.Tests.V1.Gateways
         public async Task PostNewPersonSuccessfulSaves(bool nullOptionalEnums)
         {
             // Arrange
-            var entity = ConstructPerson(nullOptionalEnums);
+            var entity = ConstructCreatePerson(nullOptionalEnums);
             entity.Tenures = new[] { entity.Tenures.First() };
             entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
 
@@ -162,7 +178,7 @@ namespace PersonApi.Tests.V1.Gateways
         public async Task UpdatePersonSuccessfulUpdates()
         {
             // Arrange
-            var constructRequest = ConstructPerson();
+            var constructRequest = ConstructUpdatePerson();
             await _dynamoDb.SaveAsync(constructRequest.ToDatabase()).ConfigureAwait(false);
             constructRequest.Surname = "Update";
 

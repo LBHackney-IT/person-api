@@ -10,6 +10,6 @@ namespace PersonApi.V1.UseCase.Interfaces
 {
     public interface IUpdatePersonUseCase
     {
-        Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject, Token token);
+        Task<PersonResponseObject> ExecuteAsync(UpdatePersonRequestObject personRequestObject);
     }
 }

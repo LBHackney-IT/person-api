@@ -35,10 +35,10 @@ namespace PersonApi.Tests.V1.UseCase
         }
 
         [Fact]
-        public async Task GetPersonByIdAsyncFoundReturnsResponse()
+        public async Task CreatePersonByIdAsyncFoundReturnsResponse()
         {
             // Arrange
-            var personRequest = new PersonRequestObject();
+            var personRequest = new CreatePersonRequestObject();
             var token = new Token();
 
             var person = _fixture.Create<Person>();
@@ -54,10 +54,10 @@ namespace PersonApi.Tests.V1.UseCase
         }
 
         [Fact]
-        public void GetPersonByIdAsyncExceptionIsThrown()
+        public void CreatePersonByIdAsyncExceptionIsThrown()
         {
             // Arrange
-            var personRequest = new PersonRequestObject();
+            var personRequest = new CreatePersonRequestObject();
             var token = new Token();
             var exception = new ApplicationException("Test exception");
             _mockGateway.Setup(x => x.PostNewPersonAsync(personRequest)).ThrowsAsync(exception);
