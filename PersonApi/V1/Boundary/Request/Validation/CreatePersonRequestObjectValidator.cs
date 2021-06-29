@@ -29,8 +29,6 @@ namespace PersonApi.V1.Boundary.Request.Validation
             RuleFor(x => x.Surname).NotNull()
                                    .NotEmpty()
                                    .NotXssString();
-            RuleFor(x => x.Gender).NotNull()
-                                  .IsInEnum();
             RuleFor(x => x.NationalInsuranceNo)
                                  .Matches(NiRegEx, RegexOptions.IgnoreCase)
                                  .When(x => !string.IsNullOrEmpty(x.NationalInsuranceNo));
@@ -53,6 +51,8 @@ namespace PersonApi.V1.Boundary.Request.Validation
             // Others
             RuleFor(x => x.MiddleName).NotXssString()
                 .When(y => !string.IsNullOrEmpty(y.MiddleName));
+            RuleFor(x => x.Gender).IsInEnum()
+                .When(y => y.Gender != null);
             RuleFor(x => x.PreferredTitle).IsInEnum()
                 .When(y => y.PreferredTitle != null);
             RuleFor(x => x.PreferredFirstname).NotXssString()

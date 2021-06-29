@@ -1,4 +1,6 @@
 using System;
+using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model;
 
 namespace PersonApi.V1.Domain
 {
@@ -18,6 +20,21 @@ namespace PersonApi.V1.Domain
 
         public string Uprn { get; set; }
 
-        public bool IsActive => false;
+        [DynamoDBIgnore]
+        public bool IsActive
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(EndDate))
+                {
+                    var result = DateTime.TryParse(EndDate, out DateTime dt);
+                    if (result == false)
+                        return false;
+                }
+
+                return string.IsNullOrEmpty(EndDate) || EndDate == "1900-01-01" ||
+                       DateTime.UtcNow <= DateTime.Parse(EndDate);
+            }
+        }
     }
 }

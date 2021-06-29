@@ -12,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using PersonApi.V1.Domain;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace PersonApi.Tests.V1.E2ETests.Steps
@@ -33,6 +34,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             var uri = new Uri($"api/v1/persons", UriKind.Relative);
 
             var message = new HttpRequestMessage(HttpMethod.Post, uri);
+
             message.Content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json");
             message.Method = HttpMethod.Post;
             message.Headers.Add("Authorization", token);
@@ -60,6 +62,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
 
             JObject jo = JObject.Parse(responseContent);
             var errorProperties = jo["errors"].Children().Select(x => x.Path.Split('.').Last().Trim('\'', ']')).ToList();
+
             errorProperties.Should().Contain("Firstname");
             errorProperties.Should().Contain("Surname");
             errorProperties.Should().Contain("PersonTypes");
