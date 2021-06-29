@@ -68,7 +68,7 @@ resources:
                   Action:
                     - "sns:Publish"
                   Resource:
-                    - ${ssm:/sns-topic/${self:provider.stage}/person_created/arn}
+                    - ${ssm:/sns-topic/${self:provider.stage}/person/arn}
           - PolicyName: manageLogs
             PolicyDocument:
               Version: '2012-10-17'
