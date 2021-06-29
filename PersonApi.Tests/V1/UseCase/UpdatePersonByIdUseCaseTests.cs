@@ -62,6 +62,7 @@ namespace PersonApi.Tests.V1.UseCase
         {
             // Arrange
             var personRequest = new UpdatePersonRequestObject();
+            var token = new Token();
             var exception = new ApplicationException("Test exception");
             _mockGateway.Setup(x => x.UpdatePersonByIdAsync(personRequest)).ThrowsAsync(exception);
 

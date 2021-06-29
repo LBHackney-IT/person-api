@@ -58,8 +58,8 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
 
         public async Task ThenThePersonDetailsAreUpdated(PersonFixture personFixture)
         {
-            var result = await personFixture._dbContext.LoadAsync<PersonDbEntity>(personFixture.PersonRequest.Id).ConfigureAwait(false);
-            result.Surname.Should().Be(personFixture.PersonRequest.Surname);
+            var result = await personFixture._dbContext.LoadAsync<PersonDbEntity>(personFixture.UpdatePersonRequest.Id).ConfigureAwait(false);
+            result.Surname.Should().Be(personFixture.UpdatePersonRequest.Surname);
         }
 
 

@@ -21,7 +21,8 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
         public PersonDbEntity Person { get; private set; }
 
-        public CreatePersonRequestObject PersonRequest { get; private set; }
+        public CreatePersonRequestObject CreatePersonRequest { get; private set; }
+        public UpdatePersonRequestObject UpdatePersonRequest { get; private set; }
 
         public Guid PersonId { get; private set; }
 
@@ -119,7 +120,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 .Create();
             CreateSnsTopic();
 
-            PersonRequest = personRequest;
+            CreatePersonRequest = personRequest;
         }
 
         public void GivenAUpdatePersonRequest(PersonDbEntity person)
@@ -135,7 +136,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
             UpdateSnsTopic();
 
-            PersonRequest = personRequest;
+            UpdatePersonRequest = personRequest;
         }
 
         public void GivenANewPersonRequestWithValidationErrors()
@@ -155,7 +156,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
             CreateSnsTopic();
 
-            PersonRequest = personRequest;
+            CreatePersonRequest = personRequest;
         }
 
         public void GivenAnInvalidPersonId()
@@ -193,11 +194,11 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             Environment.SetEnvironmentVariable("UPDATED_PERSON_SNS_ARN", response.TopicArn);
         }
 
-        private PersonRequestObject ToRequest(PersonDbEntity entity)
+        private UpdatePersonRequestObject ToRequest(PersonDbEntity entity)
         {
             if (entity == null) return null;
 
-            return new PersonRequestObject
+            return new UpdatePersonRequestObject
             {
                 Id = entity.Id,
                 Title = entity.Title,
@@ -214,7 +215,6 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 PlaceOfBirth = entity.PlaceOfBirth,
                 DateOfBirth = entity.DateOfBirth,
                 Gender = entity.Gender,
-                Reason = entity.Reason,
                 Identifications = entity.Identifications.ToList(),
                 Languages = entity.Languages.ToList(),
                 CommunicationRequirements = entity.CommunicationRequirements.ToList(),

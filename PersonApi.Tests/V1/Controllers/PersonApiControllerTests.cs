@@ -168,7 +168,7 @@ namespace PersonApi.Tests.V1.Controllers
             // Arrange
             var query = ConstructQuery();
             var exception = new ApplicationException("Test exception");
-            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<UpdatePersonRequestObject>())).ThrowsAsync(exception);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<UpdatePersonRequestObject>(), It.IsAny<Token>())).ThrowsAsync(exception);
 
             // Act
             Func<Task<IActionResult>> func = async () => await _sut.UpdatePersonByIdAsync(new UpdatePersonRequestObject(), query)

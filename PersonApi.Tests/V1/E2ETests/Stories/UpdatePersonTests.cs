@@ -50,7 +50,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         {
             this.Given(g => _personFixture.GivenAPersonAlreadyExistsAndUpdateRequested())
                 .And(g => _personFixture.GivenAUpdatePersonRequest(_personFixture.Person))
-                .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.PersonRequest))
+                .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest))
                 .Then(t => _steps.ThenThePersonDetailsAreUpdated(_personFixture))
                 .BDDfy();
         }
@@ -60,7 +60,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         {
             this.Given(g => _personFixture.GivenAPersonIdDoesNotExist())
                 .And(g => _personFixture.GivenAUpdatePersonRequest(_personFixture.Person))
-                .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.PersonRequest))
+                .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest))
                 .Then(r => _steps.ThenBadRequestIsReturned())
                 .BDDfy();
         }
