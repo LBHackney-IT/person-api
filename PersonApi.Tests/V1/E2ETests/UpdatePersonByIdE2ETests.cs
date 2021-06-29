@@ -31,9 +31,9 @@ namespace PersonApi.Tests.V1.E2ETests
         {
             _dbFixture = dbFixture;
         }
-        private PersonRequestObject ConstructTestEntity()
+        private UpdatePersonRequestObject ConstructTestEntity()
         {
-            var entity = _fixture.Build<PersonRequestObject>()
+            var entity = _fixture.Build<UpdatePersonRequestObject>()
                                  .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                                  .With(x => x.NationalInsuranceNo, "NZ223344D")
                                  .With(x => x.Tenures, _fixture.Build<Tenure>()
@@ -53,7 +53,7 @@ namespace PersonApi.Tests.V1.E2ETests
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        private async Task SetupTestData(PersonRequestObject entity)
+        private async Task SetupTestData(UpdatePersonRequestObject entity)
         {
             await _dbFixture.DynamoDbContext.SaveAsync(entity.ToDatabase()).ConfigureAwait(false);
             _cleanupActions.Add(async () => await _dbFixture.DynamoDbContext.DeleteAsync<PersonDbEntity>(entity.Id).ConfigureAwait(false));

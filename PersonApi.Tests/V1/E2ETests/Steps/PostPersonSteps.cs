@@ -27,7 +27,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
         /// </summary>
         /// <param name="requestObject"></param>
         /// <returns></returns>
-        public async Task WhenTheCreatePersonApiIsCalled(PersonRequestObject requestObject)
+        public async Task WhenTheCreatePersonApiIsCalled(CreatePersonRequestObject requestObject)
         {
             var token =
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nLWRldmVsb3BtZW50QGhhY2tuZXkuZ292LnVrIiwiaXNzIjoiSGFja25leSIsIm5hbWUiOiJUZXN0ZXIiLCJncm91cHMiOlsic2FtbC1hd3MtY29uc29sZS1tdGZoLWRldmVsb3BlciJdLCJpYXQiOjE2MjMwNTgyMzJ9.WffAEwWJlQorHGf-rIwxET8cJFK2yZg-kxNbtFctav4";

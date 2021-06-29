@@ -7,6 +7,6 @@ namespace PersonApi.V1.UseCase.Interfaces
 {
     public interface IPostNewPersonUseCase
     {
-        Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject, Token token);
+        Task<PersonResponseObject> ExecuteAsync(CreatePersonRequestObject personRequestObject, Token token);
     }
 }

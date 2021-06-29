@@ -61,7 +61,7 @@ namespace PersonApi.V1.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         [LogCall(LogLevel.Information)]
-        public async Task<IActionResult> PostNewPerson([FromBody] PersonRequestObject personRequestObject)
+        public async Task<IActionResult> PostNewPerson([FromBody] CreatePersonRequestObject personRequestObject)
         {
             var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
 
@@ -85,7 +85,7 @@ namespace PersonApi.V1.Controllers
         [HttpPatch]
         [Route("{id}")]
         [LogCall(LogLevel.Information)]
-        public async Task<IActionResult> UpdatePersonByIdAsync([FromBody] PersonRequestObject personRequestObject, [FromRoute] PersonQueryObject query)
+        public async Task<IActionResult> UpdatePersonByIdAsync([FromBody] UpdatePersonRequestObject personRequestObject, [FromRoute] PersonQueryObject query)
         {
             if (query.Id == null) return BadRequest(query.Id);
             query.Id = personRequestObject.Id;
