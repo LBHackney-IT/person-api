@@ -94,7 +94,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         public void GivenANewPersonRequestWithValidationErrors()
         {
             var personRequest = _fixture.Build<CreatePersonRequestObject>()
-                .With(x => x.Firstname, string.Empty)
+                .With(x => x.FirstName, string.Empty)
                 .With(x => x.Surname, string.Empty)
                 .With(x => x.PersonTypes, Enumerable.Empty<PersonType>())
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(1))

@@ -60,7 +60,11 @@ namespace PersonApi.Tests.V1.Gateways
 
         private UpdatePersonRequestObject ConstructRequest(Guid id)
         {
-            return new UpdatePersonRequestObject() { Id = id };
+            return new UpdatePersonRequestObject()
+            {
+                Id = id,
+                Surname = "Update"
+            };
         }
 
         private CreatePersonRequestObject ConstructCreatePerson(bool nullOptionalEnums = false)
@@ -178,10 +182,9 @@ namespace PersonApi.Tests.V1.Gateways
         public async Task UpdatePersonSuccessfulUpdates()
         {
             // Arrange
-            var constructRequest = ConstructUpdatePerson();
-            await _dynamoDb.SaveAsync(constructRequest.ToDatabase()).ConfigureAwait(false);
-            constructRequest.Surname = "Update";
-
+            var constructPerson = ConstructUpdatePerson();
+            await _dynamoDb.SaveAsync(constructPerson.ToDatabase()).ConfigureAwait(false);
+            var constructRequest = ConstructRequest(constructPerson.Id);
             //Act
             await _classUnderTest.UpdatePersonByIdAsync(constructRequest).ConfigureAwait(false);
 

@@ -23,7 +23,7 @@ namespace PersonApi.V1.Boundary.Request.Validation
             RuleFor(x => x.DateOfBirth).NotNull()
                                        .NotEqual(default(DateTime))
                                        .LessThan(DateTime.UtcNow);
-            RuleFor(x => x.Firstname).NotNull()
+            RuleFor(x => x.FirstName).NotNull()
                                      .NotEmpty()
                                      .NotXssString();
             RuleFor(x => x.Surname).NotNull()
@@ -52,8 +52,8 @@ namespace PersonApi.V1.Boundary.Request.Validation
                 .When(y => !string.IsNullOrEmpty(y.MiddleName));
             RuleFor(x => x.PreferredTitle).IsInEnum()
                 .When(y => y.PreferredTitle != null);
-            RuleFor(x => x.PreferredFirstname).NotXssString()
-                .When(y => !string.IsNullOrEmpty(y.PreferredFirstname));
+            RuleFor(x => x.PreferredFirstName).NotXssString()
+                .When(y => !string.IsNullOrEmpty(y.PreferredFirstName));
             RuleFor(x => x.PreferredMiddleName).NotXssString()
                 .When(y => !string.IsNullOrEmpty(y.PreferredMiddleName));
             RuleFor(x => x.PreferredSurname).NotXssString()

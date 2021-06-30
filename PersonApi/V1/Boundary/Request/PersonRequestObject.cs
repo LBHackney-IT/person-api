@@ -6,7 +6,7 @@ using PersonApi.V1.Infrastructure;
 
 namespace PersonApi.V1.Boundary.Request
 {
-    public class UpdatePersonRequestObject
+    public class PersonRequestObject
     {
         public Guid Id { get; set; }
 
@@ -38,6 +38,8 @@ namespace PersonApi.V1.Boundary.Request
 
         public Gender? Gender { get; set; }
 
+        public string Reason { get; set; }
+
         public IEnumerable<Identification> Identifications { get; set; }
 
         public IEnumerable<Language> Languages { get; set; }
@@ -46,7 +48,7 @@ namespace PersonApi.V1.Boundary.Request
         public IEnumerable<PersonType> PersonTypes { get; set; }
         public IEnumerable<Tenure> Tenures { get; set; }
 
-        public PersonDbEntity ToDatabase()
+        public virtual PersonDbEntity ToDatabase()
         {
             return new PersonDbEntity()
             {
@@ -65,6 +67,7 @@ namespace PersonApi.V1.Boundary.Request
                 PlaceOfBirth = PlaceOfBirth,
                 DateOfBirth = DateOfBirth,
                 Gender = Gender,
+                Reason = Reason,
                 Identifications = Identifications == null ? new List<Identification>() : Identifications.Select(x => x).ToList(),
                 Languages = Languages == null ? new List<Language>() : Languages.Select(x => x).ToList(),
                 CommunicationRequirements = CommunicationRequirements == null ? new List<CommunicationRequirement>() : CommunicationRequirements.Select(x => x).ToList(),

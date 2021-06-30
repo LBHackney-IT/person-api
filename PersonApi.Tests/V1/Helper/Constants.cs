@@ -47,10 +47,10 @@ namespace PersonApi.Tests.V1.Helper
             entity.Id = Constants.ID;
             entity.Title = Constants.TITLE;
             entity.PreferredTitle = Constants.PREFTITLE;
-            entity.PreferredFirstname = Constants.PREFFIRSTNAME;
+            entity.PreferredFirstName = Constants.PREFFIRSTNAME;
             entity.PreferredMiddleName = Constants.PREFMIDDLENAME;
             entity.PreferredSurname = Constants.PREFSURNAME;
-            entity.Firstname = Constants.FIRSTNAME;
+            entity.FirstName = Constants.FIRSTNAME;
             entity.MiddleName = Constants.MIDDLENAME;
             entity.Surname = Constants.SURNAME;
             entity.Ethnicity = Constants.ETHNICITY;

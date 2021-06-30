@@ -1,17 +1,10 @@
-using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.Model;
-using Amazon.Runtime.Internal.Transform;
 using Hackney.Core.Logging;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace PersonApi.V1.Gateways
@@ -56,7 +49,8 @@ namespace PersonApi.V1.Gateways
 
             if (load == null) return null;
 
-            await _dynamoDbContext.SaveAsync(personDbEntity).ConfigureAwait(false);
+
+            await _dynamoDbContext.SaveAsync(personDbEntity, new DynamoDBOperationConfig { IgnoreNullValues = true }).ConfigureAwait(false);
 
             return personDbEntity?.ToDomain();
         }

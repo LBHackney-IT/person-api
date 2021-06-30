@@ -16,10 +16,10 @@ namespace PersonApi.Tests.V1.Domain
             person.Id.Should().Be(Constants.ID);
             person.Title.Should().Be(Constants.TITLE);
             person.PreferredTitle.Should().Be(Constants.PREFTITLE);
-            person.PreferredFirstname.Should().Be(Constants.PREFFIRSTNAME);
+            person.PreferredFirstName.Should().Be(Constants.PREFFIRSTNAME);
             person.PreferredMiddleName.Should().Be(Constants.PREFMIDDLENAME);
             person.PreferredSurname.Should().Be(Constants.PREFSURNAME);
-            person.Firstname.Should().Be(Constants.FIRSTNAME);
+            person.FirstName.Should().Be(Constants.FIRSTNAME);
             person.MiddleName.Should().Be(Constants.MIDDLENAME);
             person.Surname.Should().Be(Constants.SURNAME);
             person.Ethnicity.Should().Be(Constants.ETHNICITY);

@@ -14,13 +14,13 @@ namespace PersonApi.V1.Boundary.Request
 
         public Title? PreferredTitle { get; set; }
 
-        public string PreferredFirstname { get; set; }
+        public string PreferredFirstName { get; set; }
 
         public string PreferredMiddleName { get; set; }
 
         public string PreferredSurname { get; set; }
 
-        public string Firstname { get; set; }
+        public string FirstName { get; set; }
 
         public string MiddleName { get; set; }
 
@@ -56,9 +56,9 @@ namespace PersonApi.V1.Boundary.Request
                 Title = Title,
                 PreferredTitle = PreferredTitle,
                 PreferredMiddleName = PreferredMiddleName,
-                PreferredFirstname = PreferredFirstname,
+                PreferredFirstName = PreferredFirstName,
                 PreferredSurname = PreferredSurname,
-                Firstname = Firstname,
+                FirstName = FirstName,
                 MiddleName = MiddleName,
                 Surname = Surname,
                 Ethnicity = Ethnicity,

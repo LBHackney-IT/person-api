@@ -8,10 +8,10 @@ namespace PersonApi.V1.Domain
         public Guid Id { get; set; }
         public Title Title { get; set; }
         public Title? PreferredTitle { get; set; }
-        public string PreferredFirstname { get; set; }
+        public string PreferredFirstName { get; set; }
         public string PreferredMiddleName { get; set; }
         public string PreferredSurname { get; set; }
-        public string Firstname { get; set; }
+        public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string Surname { get; set; }
         public string Ethnicity { get; set; }
