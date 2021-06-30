@@ -10,7 +10,7 @@ namespace PersonApi.V1.Boundary.Request
     {
         public Guid Id { get; set; }
 
-        public Title Title { get; set; }
+        public Title? Title { get; set; }
 
         public Title? PreferredTitle { get; set; }
 
@@ -34,9 +34,11 @@ namespace PersonApi.V1.Boundary.Request
 
         public string PlaceOfBirth { get; set; }
 
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         public Gender? Gender { get; set; }
+
+        public string Reason { get; set; }
 
         public IEnumerable<Identification> Identifications { get; set; }
 
@@ -65,6 +67,7 @@ namespace PersonApi.V1.Boundary.Request
                 PlaceOfBirth = PlaceOfBirth,
                 DateOfBirth = DateOfBirth,
                 Gender = Gender,
+                Reason = Reason,
                 Identifications = Identifications == null ? new List<Identification>() : Identifications.Select(x => x).ToList(),
                 Languages = Languages == null ? new List<Language>() : Languages.Select(x => x).ToList(),
                 CommunicationRequirements = CommunicationRequirements == null ? new List<CommunicationRequirement>() : CommunicationRequirements.Select(x => x).ToList(),

@@ -9,7 +9,7 @@ namespace PersonApi.V1.Boundary.Response
         public Guid Id { get; set; }
 
         /// <example>Mr, Mrs, Miss</example>
-        public Title Title { get; set; }
+        public Title? Title { get; set; }
         /// <example>Mr, Mrs, Miss</example>
         public Title? PreferredTitle { get; set; }
         /// <example>Julie</example>

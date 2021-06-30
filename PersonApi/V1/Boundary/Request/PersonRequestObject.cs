@@ -10,7 +10,7 @@ namespace PersonApi.V1.Boundary.Request
     {
         public Guid Id { get; set; }
 
-        public Title Title { get; set; }
+        public Title? Title { get; set; }
 
         public Title? PreferredTitle { get; set; }
 
@@ -34,7 +34,7 @@ namespace PersonApi.V1.Boundary.Request
 
         public string PlaceOfBirth { get; set; }
 
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         public Gender? Gender { get; set; }
 

@@ -13,9 +13,9 @@ namespace PersonApi.V1.Factories
             _apiLinkGenerator = apiLinkGenerator;
         }
 
-        public static string FormatDateOfBirth(DateTime dob)
+        public static string FormatDateOfBirth(DateTime? dob)
         {
-            return dob.ToString("yyyy-MM-dd");
+            return dob?.ToString("yyyy-MM-dd");
         }
 
         public PersonResponseObject ToResponse(Person domain)
