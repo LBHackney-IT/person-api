@@ -47,7 +47,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         public void ServiceReturnsTheRequestedPerson()
         {
             this.Given(g => _personFixture.GivenANewPersonRequest())
-                .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.PersonRequest))
+                .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.CreatePersonRequest))
                 .Then(t => _steps.ThenThePersonDetailsAreReturnedAndIdIsNotEmpty())
                 .BDDfy();
         }
@@ -56,7 +56,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         public void ServiceReturnsBadRequestWhenThereAreValidationErrors()
         {
             this.Given(g => _personFixture.GivenANewPersonRequestWithValidationErrors())
-                .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.PersonRequest))
+                .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.CreatePersonRequest))
                 .Then(r => _steps.ThenBadRequestIsReturned())
                 .And(t => _steps.ThenTheValidationErrorsAreReturned())
                 .BDDfy();

@@ -16,12 +16,13 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
     {
         private readonly Fixture _fixture = new Fixture();
 
-        private readonly IDynamoDBContext _dbContext;
-        private readonly IAmazonSimpleNotificationService _amazonSimpleNotificationService;
+        public readonly IDynamoDBContext _dbContext;
+        public readonly IAmazonSimpleNotificationService _amazonSimpleNotificationService;
 
         public PersonDbEntity Person { get; private set; }
 
-        public CreatePersonRequestObject PersonRequest { get; private set; }
+        public CreatePersonRequestObject CreatePersonRequest { get; private set; }
+        public UpdatePersonRequestObject UpdatePersonRequest { get; private set; }
 
         public Guid PersonId { get; private set; }
 
@@ -57,12 +58,44 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             {
                 var person = _fixture.Build<PersonDbEntity>()
                                      .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                                     .With(x => x.NationalInsuranceNo, "NZ223344E")
-                                     .Create();
+                                     .With(x => x.NationalInsuranceNo, "AA123456C")
+                                    .Create();
                 foreach (var tenure in person.Tenures)
                 {
                     tenure.EndDate = DateTime.UtcNow.AddDays(1).ToString(CultureInfo.InvariantCulture);
                 }
+                _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
+                Person = person;
+                PersonId = person.Id;
+            }
+        }
+
+        public void GivenAPersonAlreadyExistsAndUpdateRequested()
+        {
+            if (null == Person)
+            {
+                var person = _fixture.Build<PersonDbEntity>()
+                                     .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                                     .With(x => x.NationalInsuranceNo, "AA123456C")
+                                     .With(x => x.Tenures, _fixture.Build<Tenure>()
+                                              .With(y => y.StartDate, "")
+                                              .With(y => y.EndDate, "")
+                                              .CreateMany(2).ToList())
+                                    .With(x => x.Languages, Enumerable.Empty<Language>().ToList())
+                                    .Create();
+                _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
+                Person = person;
+                PersonId = person.Id;
+            }
+        }
+
+
+        public void GivenAPersonIdDoesNotExist()
+        {
+            if (null == Person)
+            {
+                var person = _fixture.Build<PersonDbEntity>()
+                                    .Create();
                 _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
                 Person = person;
                 PersonId = person.Id;
@@ -85,10 +118,25 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                                               .CreateMany(2))
                 .With(x => x.Languages, Enumerable.Empty<Language>())
                 .Create();
-
             CreateSnsTopic();
 
-            PersonRequest = personRequest;
+            CreatePersonRequest = personRequest;
+        }
+
+        public void GivenAUpdatePersonRequest(PersonDbEntity person)
+        {
+
+            var personRequest = ToRequest(person);
+
+            if (personRequest != null)
+            {
+                personRequest.Firstname = "Update";
+                personRequest.Surname = "Updating";
+            }
+
+            UpdateSnsTopic();
+
+            UpdatePersonRequest = personRequest;
         }
 
         public void GivenANewPersonRequestWithValidationErrors()
@@ -108,7 +156,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
             CreateSnsTopic();
 
-            PersonRequest = personRequest;
+            CreatePersonRequest = personRequest;
         }
 
         public void GivenAnInvalidPersonId()
@@ -128,7 +176,51 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 Attributes = snsAttrs
             }).Result;
 
-            Environment.SetEnvironmentVariable("NEW_PERSON_SNS_ARN", response.TopicArn);
+            Environment.SetEnvironmentVariable("PERSON_SNS_ARN", response.TopicArn);
+        }
+
+        private void UpdateSnsTopic()
+        {
+            var snsAttrs = new Dictionary<string, string>();
+            snsAttrs.Add("fifo_topic", "true");
+            snsAttrs.Add("content_based_deduplication", "true");
+
+            var response = _amazonSimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
+            {
+                Name = "personupdated",
+                Attributes = snsAttrs
+            }).Result;
+
+            Environment.SetEnvironmentVariable("UPDATED_PERSON_SNS_ARN", response.TopicArn);
+        }
+
+        private UpdatePersonRequestObject ToRequest(PersonDbEntity entity)
+        {
+            if (entity == null) return null;
+
+            return new UpdatePersonRequestObject
+            {
+                Id = entity.Id,
+                Title = entity.Title,
+                PreferredTitle = entity.PreferredTitle,
+                PreferredFirstname = entity.PreferredFirstname,
+                PreferredMiddleName = entity.PreferredMiddleName,
+                PreferredSurname = entity.PreferredSurname,
+                Firstname = entity.Firstname,
+                MiddleName = entity.MiddleName,
+                Surname = entity.Surname,
+                Ethnicity = entity.Ethnicity,
+                Nationality = entity.Nationality,
+                NationalInsuranceNo = entity.NationalInsuranceNo?.ToUpper(),
+                PlaceOfBirth = entity.PlaceOfBirth,
+                DateOfBirth = entity.DateOfBirth,
+                Gender = entity.Gender,
+                Identifications = entity.Identifications.ToList(),
+                Languages = entity.Languages.ToList(),
+                CommunicationRequirements = entity.CommunicationRequirements.ToList(),
+                PersonTypes = entity.PersonTypes.ToList(),
+                Tenures = entity.Tenures.ToList()
+            };
         }
     }
 }
