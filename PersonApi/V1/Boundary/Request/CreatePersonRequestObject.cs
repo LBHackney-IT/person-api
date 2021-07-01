@@ -65,7 +65,7 @@ namespace PersonApi.V1.Boundary.Request
                 Nationality = Nationality,
                 NationalInsuranceNo = NationalInsuranceNo?.ToUpper(),
                 PlaceOfBirth = PlaceOfBirth,
-                DateOfBirth = DateOfBirth,
+                DateOfBirth = DateOfBirth == null ? DateTime.MinValue : DateOfBirth,
                 Gender = Gender,
                 Reason = Reason,
                 Identifications = Identifications == null ? new List<Identification>() : Identifications.Select(x => x).ToList(),

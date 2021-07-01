@@ -38,8 +38,6 @@ namespace PersonApi.V1.Boundary.Request
 
         public Gender? Gender { get; set; }
 
-        public string Reason { get; set; }
-
         public IEnumerable<Identification> Identifications { get; set; }
 
         public IEnumerable<Language> Languages { get; set; }
@@ -67,12 +65,11 @@ namespace PersonApi.V1.Boundary.Request
                 PlaceOfBirth = PlaceOfBirth,
                 DateOfBirth = DateOfBirth,
                 Gender = Gender,
-                Reason = Reason,
-                Identifications = Identifications == null ? new List<Identification>() : Identifications.Select(x => x).ToList(),
-                Languages = Languages == null ? new List<Language>() : Languages.Select(x => x).ToList(),
-                CommunicationRequirements = CommunicationRequirements == null ? new List<CommunicationRequirement>() : CommunicationRequirements.Select(x => x).ToList(),
-                PersonTypes = PersonTypes == null ? new List<PersonType>() : PersonTypes.Select(x => x).ToList(),
-                Tenures = Tenures == null ? new List<Tenure>() : Tenures.Select(x => x).ToList()
+                Identifications = Identifications == null ? null : Identifications.Select(x => x).ToList(),
+                Languages = Languages == null ? null : Languages.Select(x => x).ToList(),
+                CommunicationRequirements = CommunicationRequirements == null ? null : CommunicationRequirements.Select(x => x).ToList(),
+                PersonTypes = PersonTypes == null ? null : PersonTypes.Select(x => x).ToList(),
+                Tenures = Tenures == null ? null : Tenures.Select(x => x).ToList()
             };
         }
     }

@@ -45,10 +45,9 @@ namespace PersonApi.V1.Gateways
             _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync to update id {requestObject.Id}");
 
             var personDbEntity = requestObject.ToDatabase();
-            var load = await _dynamoDbContext.LoadAsync(personDbEntity).ConfigureAwait(false);
+            var load = await _dynamoDbContext.LoadAsync<PersonDbEntity>(requestObject.Id).ConfigureAwait(false);
 
             if (load == null) return null;
-
 
             await _dynamoDbContext.SaveAsync(personDbEntity, new DynamoDBOperationConfig { IgnoreNullValues = true }).ConfigureAwait(false);
 

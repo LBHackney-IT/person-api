@@ -189,8 +189,27 @@ namespace PersonApi.Tests.V1.Gateways
             await _classUnderTest.UpdatePersonByIdAsync(constructRequest).ConfigureAwait(false);
 
             //Assert
-            var load = await _dynamoDb.LoadAsync<PersonDbEntity>(constructRequest.Id).ConfigureAwait(false);
+            var load = await _dynamoDb.LoadAsync<PersonDbEntity>(constructPerson.Id).ConfigureAwait(false);
             load.Surname.Should().Be(constructRequest.Surname);
+            load.FirstName.Should().Be(constructPerson.FirstName);
+            load.CommunicationRequirements.Should().BeEquivalentTo(constructPerson.CommunicationRequirements);
+            load.DateOfBirth.Should().Be(constructPerson.DateOfBirth);
+            load.Ethnicity.Should().Be(constructPerson.Ethnicity);
+            load.Gender.Should().Be(constructPerson.Gender);
+            load.Id.Should().Be(constructPerson.Id);
+            load.Identifications.Should().BeEquivalentTo(constructPerson.Identifications);
+            load.Languages.Should().BeEquivalentTo(constructPerson.Languages);
+            load.MiddleName.Should().Be(constructPerson.MiddleName);
+            load.NationalInsuranceNo.Should().Be(constructPerson.NationalInsuranceNo);
+            load.Nationality.Should().Be(constructPerson.Nationality);
+            load.PersonTypes.Should().BeEquivalentTo(constructPerson.PersonTypes);
+            load.PlaceOfBirth.Should().Be(constructPerson.PlaceOfBirth);
+            load.PreferredFirstName.Should().Be(constructPerson.PreferredFirstName);
+            load.PreferredMiddleName.Should().Be(constructPerson.PreferredMiddleName);
+            load.PreferredSurname.Should().Be(constructPerson.PreferredSurname);
+            load.PreferredTitle.Should().Be(constructPerson.PreferredTitle);
+            load.Tenures.Should().BeEquivalentTo(constructPerson.Tenures);
+            load.Title.Should().Be(constructPerson.Title);
         }
 
     }

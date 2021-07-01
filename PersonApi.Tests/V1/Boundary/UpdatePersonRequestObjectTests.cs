@@ -16,22 +16,6 @@ namespace PersonApi.Tests.V1.Boundary
         }
 
         [Fact]
-        public void ToDatabaseTestNullSubObjectsCreatesDefaults()
-        {
-            var result = (new UpdatePersonRequestObject()).ToDatabase();
-            result.Identifications.Should().NotBeNull()
-                                       .And.BeEmpty();
-            result.Languages.Should().NotBeNull()
-                                 .And.BeEmpty();
-            result.CommunicationRequirements.Should().NotBeNull()
-                                        .And.BeEmpty();
-            result.PersonTypes.Should().NotBeNull()
-                                   .And.BeEmpty();
-            result.Tenures.Should().NotBeNull()
-                               .And.BeEmpty();
-        }
-
-        [Fact]
         public void ToDatabaseTestSubObjectsAreEqual()
         {
             var request = new Fixture().Create<UpdatePersonRequestObject>();
