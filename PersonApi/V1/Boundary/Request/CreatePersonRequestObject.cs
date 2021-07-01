@@ -6,7 +6,7 @@ using PersonApi.V1.Infrastructure;
 
 namespace PersonApi.V1.Boundary.Request
 {
-    public class CreatePersonRequestObject
+    public class CreatePersonRequestObject : PersonRequestObject
     {
         public Guid Id { get; set; }
 
@@ -39,14 +39,6 @@ namespace PersonApi.V1.Boundary.Request
         public Gender? Gender { get; set; }
 
         public string Reason { get; set; }
-
-        public IEnumerable<Identification> Identifications { get; set; }
-
-        public IEnumerable<Language> Languages { get; set; }
-
-        public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }
-        public IEnumerable<PersonType> PersonTypes { get; set; }
-        public IEnumerable<Tenure> Tenures { get; set; }
 
         public PersonDbEntity ToDatabase()
         {

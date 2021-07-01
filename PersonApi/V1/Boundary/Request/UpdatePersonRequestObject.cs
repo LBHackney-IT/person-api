@@ -6,9 +6,8 @@ using PersonApi.V1.Infrastructure;
 
 namespace PersonApi.V1.Boundary.Request
 {
-    public class UpdatePersonRequestObject
+    public class UpdatePersonRequestObject : PersonRequestObject
     {
-        public Guid Id { get; set; }
 
         public Title? Title { get; set; }
 

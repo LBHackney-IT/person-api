@@ -7,7 +7,7 @@
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-    <NoWarn>CA1305;CA1051;CA1822;CA1001;CA1062;S2699</NoWarn>
+    <NoWarn>CA1305;CA1051;CA1822;CA1001;CA1062;S2699;CA2000</NoWarn>
   </PropertyGroup>
     
   <ItemGroup>
