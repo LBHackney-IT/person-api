@@ -130,7 +130,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
             if (personRequest != null)
             {
-                personRequest.Firstname = "Update";
+                personRequest.FirstName = "Update";
                 personRequest.Surname = "Updating";
             }
 
@@ -203,10 +203,10 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 Id = entity.Id,
                 Title = entity.Title,
                 PreferredTitle = entity.PreferredTitle,
-                PreferredFirstname = entity.PreferredFirstname,
+                PreferredFirstName = entity.PreferredFirstName,
                 PreferredMiddleName = entity.PreferredMiddleName,
                 PreferredSurname = entity.PreferredSurname,
-                Firstname = entity.Firstname,
+                FirstName = entity.FirstName,
                 MiddleName = entity.MiddleName,
                 Surname = entity.Surname,
                 Ethnicity = entity.Ethnicity,
