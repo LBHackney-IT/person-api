@@ -29,8 +29,7 @@ namespace PersonApi.V1.Boundary.Request.Validation
             RuleFor(x => x.Surname).NotNull()
                                    .NotEmpty()
                                    .NotXssString();
-            RuleFor(x => x.Gender).NotNull()
-                                  .IsInEnum();
+            
             RuleFor(x => x.NationalInsuranceNo)
                                  .Matches(NiRegEx, RegexOptions.IgnoreCase)
                                  .When(x => !string.IsNullOrEmpty(x.NationalInsuranceNo));
