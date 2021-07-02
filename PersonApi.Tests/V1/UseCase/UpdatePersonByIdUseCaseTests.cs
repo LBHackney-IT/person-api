@@ -36,9 +36,13 @@ namespace PersonApi.Tests.V1.UseCase
             _personSnsGateway.Setup(x => x.Publish(It.IsAny<PersonSns>()));
         }
 
+        private PersonQueryObject ConstructQuery(Guid id)
+        {
+            return new PersonQueryObject() { Id = id };
+        }
         private UpdatePersonRequestObject ConstructRequest()
         {
-            return new UpdatePersonRequestObject() { Id = Guid.NewGuid() };
+            return new UpdatePersonRequestObject();
         }
 
         [Fact]
@@ -46,12 +50,13 @@ namespace PersonApi.Tests.V1.UseCase
         {
             // Arrange
             var request = ConstructRequest();
+            var query = ConstructQuery(Guid.NewGuid());
             var token = new Token();
             var person = _fixture.Create<Person>();
-            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request)).ReturnsAsync(person);
+            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, query)).ReturnsAsync(person);
 
             // Act
-            var response = await _classUnderTest.ExecuteAsync(request, token).ConfigureAwait(false);
+            var response = await _classUnderTest.ExecuteAsync(request, token, query).ConfigureAwait(false);
 
             // Assert
             response.Should().BeEquivalentTo(_responseFactory.ToResponse(person));
@@ -63,11 +68,12 @@ namespace PersonApi.Tests.V1.UseCase
             // Arrange
             var personRequest = new UpdatePersonRequestObject();
             var token = new Token();
+            var query = ConstructQuery(Guid.NewGuid());
             var exception = new ApplicationException("Test exception");
-            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(personRequest)).ThrowsAsync(exception);
+            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(personRequest, query)).ThrowsAsync(exception);
 
             // Act
-            Func<Task<PersonResponseObject>> func = async () => await _classUnderTest.ExecuteAsync(personRequest, token).ConfigureAwait(false);
+            Func<Task<PersonResponseObject>> func = async () => await _classUnderTest.ExecuteAsync(personRequest, token, query).ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);

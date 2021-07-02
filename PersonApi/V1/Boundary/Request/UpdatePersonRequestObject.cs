@@ -8,7 +8,6 @@ namespace PersonApi.V1.Boundary.Request
 {
     public class UpdatePersonRequestObject
     {
-        public Guid Id { get; set; }
         public Title? Title { get; set; }
 
         public Title? PreferredTitle { get; set; }
@@ -44,32 +43,5 @@ namespace PersonApi.V1.Boundary.Request
         public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }
         public IEnumerable<PersonType> PersonTypes { get; set; }
         public IEnumerable<Tenure> Tenures { get; set; }
-
-        public PersonDbEntity ToDatabase()
-        {
-            return new PersonDbEntity()
-            {
-                Id = Id == Guid.Empty ? Guid.NewGuid() : Id,
-                Title = Title,
-                PreferredTitle = PreferredTitle,
-                PreferredMiddleName = PreferredMiddleName,
-                PreferredFirstName = PreferredFirstName,
-                PreferredSurname = PreferredSurname,
-                FirstName = FirstName,
-                MiddleName = MiddleName,
-                Surname = Surname,
-                Ethnicity = Ethnicity,
-                Nationality = Nationality,
-                NationalInsuranceNo = NationalInsuranceNo?.ToUpper(),
-                PlaceOfBirth = PlaceOfBirth,
-                DateOfBirth = DateOfBirth,
-                Gender = Gender,
-                Identifications = Identifications == null ? null : Identifications.Select(x => x).ToList(),
-                Languages = Languages == null ? null : Languages.Select(x => x).ToList(),
-                CommunicationRequirements = CommunicationRequirements == null ? null : CommunicationRequirements.Select(x => x).ToList(),
-                PersonTypes = PersonTypes == null ? null : PersonTypes.Select(x => x).ToList(),
-                Tenures = Tenures == null ? null : Tenures.Select(x => x).ToList()
-            };
-        }
     }
 }

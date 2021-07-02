@@ -24,6 +24,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         public CreatePersonRequestObject CreatePersonRequest { get; private set; }
         public UpdatePersonRequestObject UpdatePersonRequest { get; private set; }
 
+
         public Guid PersonId { get; private set; }
 
         public string InvalidPersonId { get; private set; }
@@ -200,7 +201,6 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
             return new UpdatePersonRequestObject
             {
-                Id = entity.Id,
                 Title = entity.Title,
                 PreferredTitle = entity.PreferredTitle,
                 PreferredFirstName = entity.PreferredFirstName,

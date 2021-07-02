@@ -6,6 +6,6 @@ namespace PersonApi.V1.Boundary.Request
     public class PersonQueryObject
     {
         [FromRoute(Name = "id")]
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

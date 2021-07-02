@@ -11,6 +11,6 @@ namespace PersonApi.V1.Gateways
 
         Task<Person> PostNewPersonAsync(CreatePersonRequestObject requestObject);
 
-        Task<Person> UpdatePersonByIdAsync(UpdatePersonRequestObject requestObject);
+        Task<Person> UpdatePersonByIdAsync(UpdatePersonRequestObject requestObject, PersonQueryObject query);
     }
 }
