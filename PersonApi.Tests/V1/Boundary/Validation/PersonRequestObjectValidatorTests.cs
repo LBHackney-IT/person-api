@@ -280,15 +280,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         }
 
         [Theory]
-        [InlineData(100)]
-        public void GenderShouldErrorWithInvalidValue(int? val)
-        {
-            var model = new PersonRequestObject() { Gender = (Gender) val };
-            var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.Gender);
-        }
-
-        [Theory]
         [InlineData(null)]
         [InlineData("")]
         [InlineData("Some string with <tag> in it.")]
