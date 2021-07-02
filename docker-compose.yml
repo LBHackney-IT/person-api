@@ -1,23 +1,23 @@
 version: "3.2"
 
 services:
-  # person-api:
-    # image: person-api
-    # build:
-      # context: .
-      # dockerfile: PersonApi/Dockerfile
-      # args:
-      # - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
-    # ports:
-      # - 3000:3000
-    # environment:
-      # - DynamoDb_LocalMode=true
-      # - DynamoDb_LocalServiceUrl=http://dynamodb-database:8000
-      # - AWS_REGION=eu-west-2
-      # - AWS_ACCESS_KEY_ID=local
-      # - AWS_SECRET_ACCESS_KEY=local
-    # links:
-      # - dynamodb-database
+  person-api:
+    image: person-api
+    build:
+      context: .
+      dockerfile: PersonApi/Dockerfile
+      args:
+      - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+    ports:
+      - 3000:3000
+    environment:
+      - DynamoDb_LocalMode=true
+      - DynamoDb_LocalServiceUrl=http://dynamodb-database:8000
+      - AWS_REGION=eu-west-2
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+    links:
+      - dynamodb-database
 
   person-api-test:
     image: person-api-test

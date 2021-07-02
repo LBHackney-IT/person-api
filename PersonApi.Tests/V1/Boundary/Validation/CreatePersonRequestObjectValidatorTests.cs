@@ -10,14 +10,14 @@ using Xunit;
 
 namespace PersonApi.Tests.V1.Boundary.Request.Validation
 {
-    public class PersonRequestObjectValidatorTests
+    public class CreatePersonRequestObjectValidatorTests
     {
         private readonly Fixture _fixture = new Fixture();
-        private readonly PersonRequestObjectValidator _sut;
+        private readonly CreatePersonRequestObjectValidator _sut;
 
-        public PersonRequestObjectValidatorTests()
+        public CreatePersonRequestObjectValidatorTests()
         {
-            _sut = new PersonRequestObjectValidator();
+            _sut = new CreatePersonRequestObjectValidator();
         }
 
         private static IEnumerable<object[]> GetEnumValues<T>() where T : Enum
@@ -43,7 +43,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [MemberData(nameof(Titles))]
         public void TitleShouldNotErrorWithValidValue(Title valid)
         {
-            var model = new PersonRequestObject() { Title = valid };
+            var model = new CreatePersonRequestObject() { Title = valid };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.Title);
         }
@@ -52,7 +52,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData(100)]
         public void TitleShouldErrorWithInvalidValue(int? val)
         {
-            var model = new PersonRequestObject() { Title = (Title) val };
+            var model = new CreatePersonRequestObject() { Title = (Title) val };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Title);
         }
@@ -62,7 +62,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData(null)]
         public void PreferredTitleShouldNotErrorWithValidValue(Title? valid)
         {
-            var model = new PersonRequestObject() { PreferredTitle = valid };
+            var model = new CreatePersonRequestObject() { PreferredTitle = valid };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.PreferredTitle);
         }
@@ -71,7 +71,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData(100)]
         public void PreferredTitleShouldErrorWithInvalidValue(int? val)
         {
-            var model = new PersonRequestObject() { PreferredTitle = (Title) val };
+            var model = new CreatePersonRequestObject() { PreferredTitle = (Title) val };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.PreferredTitle);
         }
@@ -81,7 +81,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("")]
         public void PreferredFirstnameShouldNotErrorWithNoValue(string value)
         {
-            var model = new PersonRequestObject() { PreferredFirstname = value };
+            var model = new CreatePersonRequestObject() { PreferredFirstname = value };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.PreferredFirstname);
         }
@@ -90,7 +90,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void PreferredFirstnameShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { PreferredFirstname = invalid };
+            var model = new CreatePersonRequestObject() { PreferredFirstname = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.PreferredFirstname);
         }
@@ -100,7 +100,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("")]
         public void PreferredMiddleNameShouldNotErrorWithNoValue(string value)
         {
-            var model = new PersonRequestObject() { PreferredMiddleName = value };
+            var model = new CreatePersonRequestObject() { PreferredMiddleName = value };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.PreferredMiddleName);
         }
@@ -109,7 +109,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void PreferredMiddleNameShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { PreferredMiddleName = invalid };
+            var model = new CreatePersonRequestObject() { PreferredMiddleName = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.PreferredMiddleName);
         }
@@ -119,7 +119,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("")]
         public void PreferredSurnameShouldNotErrorWithNoValue(string value)
         {
-            var model = new PersonRequestObject() { PreferredSurname = value };
+            var model = new CreatePersonRequestObject() { PreferredSurname = value };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.PreferredSurname);
         }
@@ -128,7 +128,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void PreferredSurnameShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { PreferredSurname = invalid };
+            var model = new CreatePersonRequestObject() { PreferredSurname = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.PreferredSurname);
         }
@@ -139,7 +139,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void FirstnameShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { Firstname = invalid };
+            var model = new CreatePersonRequestObject() { Firstname = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Firstname);
         }
@@ -149,7 +149,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("")]
         public void MiddleNameShouldNotErrorWithNoValue(string value)
         {
-            var model = new PersonRequestObject() { MiddleName = value };
+            var model = new CreatePersonRequestObject() { MiddleName = value };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.MiddleName);
         }
@@ -158,7 +158,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void MiddleNameShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { MiddleName = invalid };
+            var model = new CreatePersonRequestObject() { MiddleName = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.MiddleName);
         }
@@ -169,7 +169,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void SurnameShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { Surname = invalid };
+            var model = new CreatePersonRequestObject() { Surname = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Surname);
         }
@@ -179,7 +179,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("")]
         public void EthnicityShouldNotErrorWithNoValue(string value)
         {
-            var model = new PersonRequestObject() { Ethnicity = value };
+            var model = new CreatePersonRequestObject() { Ethnicity = value };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.Ethnicity);
         }
@@ -188,7 +188,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void EthnicityShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { Ethnicity = invalid };
+            var model = new CreatePersonRequestObject() { Ethnicity = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Ethnicity);
         }
@@ -198,7 +198,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("")]
         public void NationalityShouldNotErrorWithNoValue(string value)
         {
-            var model = new PersonRequestObject() { Nationality = value };
+            var model = new CreatePersonRequestObject() { Nationality = value };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.Nationality);
         }
@@ -207,7 +207,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void NationalityShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { Nationality = invalid };
+            var model = new CreatePersonRequestObject() { Nationality = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Nationality);
         }
@@ -219,7 +219,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("nz335598d")]
         public void NationalInsuranceNoShouldNotErrorWithValidValue(string value)
         {
-            var model = new PersonRequestObject() { NationalInsuranceNo = value };
+            var model = new CreatePersonRequestObject() { NationalInsuranceNo = value };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.NationalInsuranceNo);
         }
@@ -230,7 +230,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("fghdfhfgh")]
         public void NationalInsuranceNoShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { NationalInsuranceNo = invalid };
+            var model = new CreatePersonRequestObject() { NationalInsuranceNo = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.NationalInsuranceNo);
         }
@@ -240,7 +240,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("")]
         public void PlaceOfBirthShouldNotErrorWithNoValue(string value)
         {
-            var model = new PersonRequestObject() { PlaceOfBirth = value };
+            var model = new CreatePersonRequestObject() { PlaceOfBirth = value };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.PlaceOfBirth);
         }
@@ -249,7 +249,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void PlaceOfBirthShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { PlaceOfBirth = invalid };
+            var model = new CreatePersonRequestObject() { PlaceOfBirth = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.PlaceOfBirth);
         }
@@ -257,7 +257,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Fact]
         public void DateOfBirthShouldErrorWithEmptyValue()
         {
-            var model = new PersonRequestObject() { DateOfBirth = default };
+            var model = new CreatePersonRequestObject() { DateOfBirth = default };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.DateOfBirth);
         }
@@ -265,7 +265,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Fact]
         public void DateOfBirthShouldErrorWithFutureValue()
         {
-            var model = new PersonRequestObject() { DateOfBirth = DateTime.UtcNow.AddDays(1) };
+            var model = new CreatePersonRequestObject() { DateOfBirth = DateTime.UtcNow.AddDays(1) };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.DateOfBirth);
         }
@@ -274,9 +274,26 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [MemberData(nameof(Genders))]
         public void GenderShouldNotErrorWithValidValue(Gender valid)
         {
-            var model = new PersonRequestObject() { Gender = valid };
+            var model = new CreatePersonRequestObject() { Gender = valid };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.Gender);
+        }
+
+        [Fact]
+        public void GenderShouldNotErrorWithNull()
+        {
+            var model = new CreatePersonRequestObject() { Gender = null };
+            var result = _sut.TestValidate(model);
+            result.ShouldNotHaveValidationErrorFor(x => x.Gender);
+        }
+
+        [Theory]
+        [InlineData(100)]
+        public void GenderShouldErrorWithInvalidValue(int? val)
+        {
+            var model = new CreatePersonRequestObject() { Gender = (Gender) val };
+            var result = _sut.TestValidate(model);
+            result.ShouldHaveValidationErrorFor(x => x.Gender);
         }
 
         [Theory]
@@ -285,7 +302,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void ReasonShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new PersonRequestObject() { Reason = invalid };
+            var model = new CreatePersonRequestObject() { Reason = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Reason);
         }
@@ -297,7 +314,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
                                     .With(x => x.IsPrimary, false)
                                     .CreateMany(10).ToList();
             languages.Add(new Language() { Name = "Primary", IsPrimary = true });
-            var model = new PersonRequestObject() { Languages = languages };
+            var model = new CreatePersonRequestObject() { Languages = languages };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Languages);
         }
@@ -308,7 +325,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             var languages = _fixture.Build<Language>()
                                     .With(x => x.IsPrimary, false)
                                     .CreateMany(5).ToList();
-            var model = new PersonRequestObject() { Languages = languages };
+            var model = new CreatePersonRequestObject() { Languages = languages };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Languages);
         }
@@ -319,7 +336,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             var languages = _fixture.Build<Language>()
                                     .With(x => x.IsPrimary, true)
                                     .CreateMany(5).ToList();
-            var model = new PersonRequestObject() { Languages = languages };
+            var model = new CreatePersonRequestObject() { Languages = languages };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Languages);
         }
@@ -327,7 +344,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Fact]
         public void LanguagesShouldNotErrorWhenNull()
         {
-            var model = new PersonRequestObject() { Languages = null };
+            var model = new CreatePersonRequestObject() { Languages = null };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.Languages);
         }
@@ -335,7 +352,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Fact]
         public void LanguagesShouldNotErrorWhenEmpty()
         {
-            var model = new PersonRequestObject() { Languages = Enumerable.Empty<Language>() };
+            var model = new CreatePersonRequestObject() { Languages = Enumerable.Empty<Language>() };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.Languages);
         }
@@ -343,7 +360,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Fact]
         public void PersonTypesShouldErrorWhenNull()
         {
-            var model = new PersonRequestObject() { PersonTypes = null };
+            var model = new CreatePersonRequestObject() { PersonTypes = null };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.PersonTypes);
         }
@@ -351,7 +368,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Fact]
         public void PersonTypesShouldErrorWhenEmpty()
         {
-            var model = new PersonRequestObject() { PersonTypes = Enumerable.Empty<PersonType>() };
+            var model = new CreatePersonRequestObject() { PersonTypes = Enumerable.Empty<PersonType>() };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.PersonTypes);
         }
@@ -359,7 +376,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Fact]
         public void PersonTypesShouldErrorWithInvalidValue()
         {
-            var model = new PersonRequestObject() { PersonTypes = new PersonType[] { (PersonType) 100 } };
+            var model = new CreatePersonRequestObject() { PersonTypes = new PersonType[] { (PersonType) 100 } };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.PersonTypes);
         }
@@ -370,7 +387,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData(PersonType.Tenant, PersonType.HouseholdMember)]
         public void PersonTypesShouldNotErrorWithValidValue(params PersonType[] types)
         {
-            var model = new PersonRequestObject() { PersonTypes = types };
+            var model = new CreatePersonRequestObject() { PersonTypes = types };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.PersonTypes);
         }
@@ -378,7 +395,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Fact]
         public void CommunicationRequirementsShouldNotErrorWhenNull()
         {
-            var model = new PersonRequestObject() { CommunicationRequirements = null };
+            var model = new CreatePersonRequestObject() { CommunicationRequirements = null };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.CommunicationRequirements);
         }
@@ -386,7 +403,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Fact]
         public void CommunicationRequirementsShouldNotErrorWhenEmpty()
         {
-            var model = new PersonRequestObject() { CommunicationRequirements = Enumerable.Empty<CommunicationRequirement>() };
+            var model = new CreatePersonRequestObject() { CommunicationRequirements = Enumerable.Empty<CommunicationRequirement>() };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.CommunicationRequirements);
         }
@@ -394,7 +411,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Fact]
         public void CommunicationRequirementsShouldErrorWithInvalidValue()
         {
-            var model = new PersonRequestObject() { CommunicationRequirements = new[] { (CommunicationRequirement) 100 } };
+            var model = new CreatePersonRequestObject() { CommunicationRequirements = new[] { (CommunicationRequirement) 100 } };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.CommunicationRequirements);
         }
@@ -405,7 +422,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData(CommunicationRequirement.InterpreterRequired, CommunicationRequirement.SignLanguage)]
         public void CommunicationRequirementsShouldNotErrorWithValidValue(params CommunicationRequirement[] crs)
         {
-            var model = new PersonRequestObject() { CommunicationRequirements = crs };
+            var model = new CreatePersonRequestObject() { CommunicationRequirements = crs };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.CommunicationRequirements);
         }

@@ -36,7 +36,7 @@ namespace PersonApi.V1.Gateways
         }
 
         [LogCall]
-        public async Task<Person> PostNewPersonAsync(PersonRequestObject requestObject)
+        public async Task<Person> PostNewPersonAsync(CreatePersonRequestObject requestObject)
         {
             _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync");
             var personDbEntity = requestObject.ToDatabase();
@@ -47,15 +47,15 @@ namespace PersonApi.V1.Gateways
         }
 
         [LogCall]
-        public async Task<Person> UpdatePersonByIdAsync(PersonRequestObject requestObject)
+        public async Task<Person> UpdatePersonByIdAsync(UpdatePersonRequestObject requestObject)
         {
             _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync to update id {requestObject.Id}");
 
-            var personDbEntity = requestObject.ToDatabase();
-            var load = await _dynamoDbContext.LoadAsync(personDbEntity).ConfigureAwait(false);
+            var load = await _dynamoDbContext.LoadAsync<PersonDbEntity>(requestObject.Id).ConfigureAwait(false);
 
             if (load == null) return null;
 
+            var personDbEntity = requestObject.ToDatabase();
             await _dynamoDbContext.SaveAsync(personDbEntity).ConfigureAwait(false);
 
             return personDbEntity?.ToDomain();

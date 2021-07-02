@@ -1,5 +1,6 @@
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Infrastructure.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace PersonApi.V1.UseCase.Interfaces
 {
     public interface IUpdatePersonUseCase
     {
-        Task<PersonResponseObject> ExecuteAsync(PersonRequestObject personRequestObject);
+        Task<PersonResponseObject> ExecuteAsync(UpdatePersonRequestObject personRequestObject, Token token);
     }
 }

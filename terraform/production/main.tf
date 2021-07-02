@@ -44,8 +44,8 @@ resource "aws_sns_topic" "person_topic" {
   kms_master_key_id = "alias/aws/sns"
 }
 
-resource "aws_ssm_parameter" "new_person_sns_arn" {
-  name  = "/sns-topic/production/person_created/arn"
+resource "aws_ssm_parameter" "person_sns_arn" {
+  name  = "/sns-topic/production/person/arn"
   type  = "String"
   value = aws_sns_topic.person_topic.arn
 }

@@ -68,7 +68,7 @@ namespace PersonApi.Tests
                 Attributes = snsAttrs
             }).Result;
 
-            Environment.SetEnvironmentVariable("NEW_PERSON_SNS_ARN", response.TopicArn);
+            Environment.SetEnvironmentVariable("PERSON_SNS_ARN", response.TopicArn);
         }
     }
 
