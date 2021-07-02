@@ -279,16 +279,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             result.ShouldNotHaveValidationErrorFor(x => x.Gender);
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("Some string with <tag> in it.")]
-        public void ReasonShouldErrorWithInvalidValue(string invalid)
-        {
-            var model = new PersonRequestObject() { Reason = invalid };
-            var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.Reason);
-        }
 
         [Fact]
         public void LanguagesShouldErrorWithTooMany()
