@@ -18,24 +18,15 @@ namespace PersonApi.V1.Boundary.Request.Validation
             //                  .NotEqual(Guid.Empty);
 
             // Mandatory fields
-            RuleFor(x => x.Title).NotNull()
-                                 .IsInEnum();
-            RuleFor(x => x.DateOfBirth).NotNull()
-                                       .NotEqual(default(DateTime))
+            RuleFor(x => x.Title).IsInEnum();
+            RuleFor(x => x.DateOfBirth).NotEqual(default(DateTime))
                                        .LessThan(DateTime.UtcNow);
-            RuleFor(x => x.FirstName).NotNull()
-                                     .NotEmpty()
-                                     .NotXssString();
-            RuleFor(x => x.Surname).NotNull()
-                                   .NotEmpty()
-                                   .NotXssString();
-            RuleFor(x => x.Gender).NotNull()
-                                  .IsInEnum();
+            RuleFor(x => x.FirstName).NotXssString();
+            RuleFor(x => x.Surname).NotXssString();
+            RuleFor(x => x.Gender).IsInEnum();
             RuleFor(x => x.NationalInsuranceNo)
                                  .Matches(NiRegEx, RegexOptions.IgnoreCase)
                                  .When(x => !string.IsNullOrEmpty(x.NationalInsuranceNo));
-            RuleFor(x => x.PersonTypes).NotNull()
-                                       .NotEmpty();
             RuleForEach(x => x.PersonTypes)
                 .ChildRules(x => x.RuleFor(y => y).IsInEnum());
 
