@@ -6,12 +6,12 @@ using System.Text.RegularExpressions;
 
 namespace PersonApi.V1.Boundary.Request.Validation
 {
-    public class PersonRequestObjectValidator : AbstractValidator<PersonRequestObject>
+    public class CreatePersonRequestObjectValidator : AbstractValidator<CreatePersonRequestObject>
     {
         private const string NiRegEx
             = @"^(?!BG)(?!GB)(?!NK)(?!KN)(?!TN)(?!NT)(?!ZZ)(?:[A-CEGHJ-PR-TW-Z][A-CEGHJ-NPR-TW-Z])(?:\s*\d\s*){6}([A-D]|\s)$";
 
-        public PersonRequestObjectValidator()
+        public CreatePersonRequestObjectValidator()
         {
             // Not needed for create person, but will be needed for edit person
             //RuleFor(x => x.Id).NotNull()
@@ -23,7 +23,7 @@ namespace PersonApi.V1.Boundary.Request.Validation
             RuleFor(x => x.DateOfBirth).NotNull()
                                        .NotEqual(default(DateTime))
                                        .LessThan(DateTime.UtcNow);
-            RuleFor(x => x.Firstname).NotNull()
+            RuleFor(x => x.FirstName).NotNull()
                                      .NotEmpty()
                                      .NotXssString();
             RuleFor(x => x.Surname).NotNull()
@@ -55,8 +55,8 @@ namespace PersonApi.V1.Boundary.Request.Validation
                 .When(y => y.Gender != null);
             RuleFor(x => x.PreferredTitle).IsInEnum()
                 .When(y => y.PreferredTitle != null);
-            RuleFor(x => x.PreferredFirstname).NotXssString()
-                .When(y => !string.IsNullOrEmpty(y.PreferredFirstname));
+            RuleFor(x => x.PreferredFirstName).NotXssString()
+                .When(y => !string.IsNullOrEmpty(y.PreferredFirstName));
             RuleFor(x => x.PreferredMiddleName).NotXssString()
                 .When(y => !string.IsNullOrEmpty(y.PreferredMiddleName));
             RuleFor(x => x.PreferredSurname).NotXssString()

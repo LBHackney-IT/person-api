@@ -49,9 +49,9 @@ namespace PersonApi.Tests.V1.Controllers
             return new PersonQueryObject() { Id = Guid.NewGuid() };
         }
 
-        private PersonRequestObject ConstructRequest()
+        private UpdatePersonRequestObject ConstructRequest()
         {
-            return new PersonRequestObject() { Id = Guid.NewGuid() };
+            return new UpdatePersonRequestObject();
         }
 
         [Fact]
@@ -105,11 +105,11 @@ namespace PersonApi.Tests.V1.Controllers
         {
             // Arrange
             var personResponse = _fixture.Create<PersonResponseObject>();
-            _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>(), It.IsAny<Token>()))
+            _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<CreatePersonRequestObject>(), It.IsAny<Token>()))
                 .ReturnsAsync(personResponse);
 
             // Act
-            var response = await _sut.PostNewPerson(new PersonRequestObject()).ConfigureAwait(false);
+            var response = await _sut.PostNewPerson(new CreatePersonRequestObject()).ConfigureAwait(false);
 
             // Assert
             response.Should().BeOfType(typeof(CreatedResult));
@@ -121,10 +121,10 @@ namespace PersonApi.Tests.V1.Controllers
         {
             // Arrange
             var exception = new ApplicationException("Test exception");
-            _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>(), It.IsAny<Token>())).ThrowsAsync(exception);
+            _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<CreatePersonRequestObject>(), It.IsAny<Token>())).ThrowsAsync(exception);
 
             // Act
-            Func<Task<IActionResult>> func = async () => await _sut.PostNewPerson(new PersonRequestObject())
+            Func<Task<IActionResult>> func = async () => await _sut.PostNewPerson(new CreatePersonRequestObject())
                 .ConfigureAwait(false);
 
             // Assert
@@ -136,14 +136,14 @@ namespace PersonApi.Tests.V1.Controllers
             // Arrange
             var query = ConstructQuery();
             var request = ConstructRequest();
-            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request)).ReturnsAsync((PersonResponseObject) null);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request, It.IsAny<Token>(), query)).ReturnsAsync((PersonResponseObject) null);
 
             // Act
             var response = await _sut.UpdatePersonByIdAsync(request, query).ConfigureAwait(false);
 
             // Assert
             response.Should().BeOfType(typeof(NotFoundObjectResult));
-            (response as NotFoundObjectResult).Value.Should().Be(request.Id);
+            (response as NotFoundObjectResult).Value.Should().Be(query.Id);
         }
 
         [Fact]
@@ -153,7 +153,7 @@ namespace PersonApi.Tests.V1.Controllers
             var query = ConstructQuery();
             var request = ConstructRequest();
             var personResponse = _fixture.Create<PersonResponseObject>();
-            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request)).ReturnsAsync(personResponse);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request, It.IsAny<Token>(), query)).ReturnsAsync(personResponse);
 
             // Act
             var response = await _sut.UpdatePersonByIdAsync(request, query).ConfigureAwait(false);
@@ -168,10 +168,10 @@ namespace PersonApi.Tests.V1.Controllers
             // Arrange
             var query = ConstructQuery();
             var exception = new ApplicationException("Test exception");
-            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>())).ThrowsAsync(exception);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<UpdatePersonRequestObject>(), It.IsAny<Token>(), query)).ThrowsAsync(exception);
 
             // Act
-            Func<Task<IActionResult>> func = async () => await _sut.UpdatePersonByIdAsync(new PersonRequestObject(), query)
+            Func<Task<IActionResult>> func = async () => await _sut.UpdatePersonByIdAsync(new UpdatePersonRequestObject(), query)
                 .ConfigureAwait(false);
 
             // Assert

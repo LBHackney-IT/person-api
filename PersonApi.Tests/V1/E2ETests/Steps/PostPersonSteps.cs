@@ -27,10 +27,10 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
         /// </summary>
         /// <param name="requestObject"></param>
         /// <returns></returns>
-        public async Task WhenTheCreatePersonApiIsCalled(PersonRequestObject requestObject)
+        public async Task WhenTheCreatePersonApiIsCalled(CreatePersonRequestObject requestObject)
         {
             var token =
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nLWRldmVsb3BtZW50QGhhY2tuZXkuZ292LnVrIiwiaXNzIjoiSGFja25leSIsIm5hbWUiOiJUZXN0ZXIiLCJncm91cHMiOlsic2FtbC1hd3MtY29uc29sZS1tdGZoLWRldmVsb3BlciJdLCJpYXQiOjE2MjMwNTgyMzJ9.WffAEwWJlQorHGf-rIwxET8cJFK2yZg-kxNbtFctav4";
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nQGRldmVsb3BtZW50LmNvbSIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiVGVzdGVyIiwiZ3JvdXBzIjpbImUyZS10ZXN0aW5nIl0sImlhdCI6MTYyMzA1ODIzMn0.SooWAr-NUZLwW8brgiGpi2jZdWjyZBwp4GJikn0PvEw";
             var uri = new Uri($"api/v1/persons", UriKind.Relative);
 
             var message = new HttpRequestMessage(HttpMethod.Post, uri);
@@ -63,7 +63,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             JObject jo = JObject.Parse(responseContent);
             var errorProperties = jo["errors"].Children().Select(x => x.Path.Split('.').Last().Trim('\'', ']')).ToList();
 
-            errorProperties.Should().Contain("Firstname");
+            errorProperties.Should().Contain("FirstName");
             errorProperties.Should().Contain("Surname");
             errorProperties.Should().Contain("PersonTypes");
             errorProperties.Should().Contain("DateOfBirth");

@@ -13,13 +13,13 @@ namespace PersonApi.V1.Infrastructure
         public Guid Id { get; set; }
 
         [DynamoDBProperty(Converter = typeof(DynamoDbEnumConverter<Title>))]
-        public Title Title { get; set; }
+        public Title? Title { get; set; }
         [DynamoDBProperty(Converter = typeof(DynamoDbEnumConverter<Title>))]
         public Title? PreferredTitle { get; set; }
-        public string PreferredFirstname { get; set; }
+        public string PreferredFirstName { get; set; }
         public string PreferredMiddleName { get; set; }
         public string PreferredSurname { get; set; }
-        public string Firstname { get; set; }
+        public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string Surname { get; set; }
         public string Ethnicity { get; set; }
@@ -29,7 +29,7 @@ namespace PersonApi.V1.Infrastructure
         public string Reason { get; set; }
 
         [DynamoDBProperty(Converter = typeof(DynamoDbDateTimeConverter))]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         [DynamoDBProperty(Converter = typeof(DynamoDbEnumConverter<Gender>))]
         public Gender? Gender { get; set; }

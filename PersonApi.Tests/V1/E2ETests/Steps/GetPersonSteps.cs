@@ -31,7 +31,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             apiPerson.CommunicationRequirements.Should().BeEquivalentTo(expectedPerson.CommunicationRequirements);
             apiPerson.DateOfBirth.Should().Be(ResponseFactory.FormatDateOfBirth(expectedPerson.DateOfBirth));
             apiPerson.Ethnicity.Should().Be(expectedPerson.Ethnicity);
-            apiPerson.FirstName.Should().Be(expectedPerson.Firstname);
+            apiPerson.FirstName.Should().Be(expectedPerson.FirstName);
             apiPerson.Gender.Should().Be(expectedPerson.Gender);
             apiPerson.Id.Should().Be(expectedPerson.Id);
             apiPerson.Identifications.Should().BeEquivalentTo(expectedPerson.Identifications);
@@ -42,7 +42,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             apiPerson.Nationality.Should().Be(expectedPerson.Nationality);
             apiPerson.PersonTypes.Should().BeEquivalentTo(expectedPerson.PersonTypes);
             apiPerson.PlaceOfBirth.Should().Be(expectedPerson.PlaceOfBirth);
-            apiPerson.PreferredFirstname.Should().Be(expectedPerson.PreferredFirstname);
+            apiPerson.PreferredFirstName.Should().Be(expectedPerson.PreferredFirstName);
             apiPerson.PreferredSurname.Should().Be(expectedPerson.PreferredSurname);
             apiPerson.Surname.Should().Be(expectedPerson.Surname);
             apiPerson.Title.Should().Be(expectedPerson.Title);

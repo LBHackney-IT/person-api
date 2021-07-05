@@ -6,5 +6,7 @@ namespace PersonApi.V1.Factories
     public interface ISnsFactory
     {
         PersonSns Create(Person person, Token token);
+
+        PersonSns Update(Person person, Token token);
     }
 }
