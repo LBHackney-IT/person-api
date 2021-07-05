@@ -9,6 +9,16 @@ namespace PersonApi.Tests.V1.Boundary
 {
     public class UpdatePersonRequestObjectTests
     {
+        [Fact]
+        public void ToDatabaseTestNullSubObjectsCreatesNull()
+        {
+            var result = (new UpdatePersonRequestObject()).ToDatabase();
+            result.Identifications.Should().BeNull();
+            result.Languages.Should().BeNull();
+            result.CommunicationRequirements.Should().BeNull();
+            result.PersonTypes.Should().BeNull();
+            result.Tenures.Should().BeNull();
+        }
 
         [Fact]
         public void ToDatabaseTestSubObjectsAreEqual()
