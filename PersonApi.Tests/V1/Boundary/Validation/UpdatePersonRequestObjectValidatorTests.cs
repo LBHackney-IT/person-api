@@ -134,8 +134,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         }
 
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
         [InlineData("Some string with <tag> in it.")]
         public void FirstnameShouldErrorWithInvalidValue(string invalid)
         {
@@ -164,8 +162,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         }
 
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
         [InlineData("Some string with <tag> in it.")]
         public void SurnameShouldErrorWithInvalidValue(string invalid)
         {
@@ -254,13 +250,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             result.ShouldHaveValidationErrorFor(x => x.PlaceOfBirth);
         }
 
-        [Fact]
-        public void DateOfBirthShouldErrorWithEmptyValue()
-        {
-            var model = new UpdatePersonRequestObject() { DateOfBirth = default };
-            var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.DateOfBirth);
-        }
 
         [Fact]
         public void DateOfBirthShouldErrorWithFutureValue()
@@ -336,22 +325,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             var model = new UpdatePersonRequestObject() { Languages = Enumerable.Empty<Language>() };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.Languages);
-        }
-
-        [Fact]
-        public void PersonTypesShouldErrorWhenNull()
-        {
-            var model = new UpdatePersonRequestObject() { PersonTypes = null };
-            var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.PersonTypes);
-        }
-
-        [Fact]
-        public void PersonTypesShouldErrorWhenEmpty()
-        {
-            var model = new UpdatePersonRequestObject() { PersonTypes = Enumerable.Empty<PersonType>() };
-            var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.PersonTypes);
         }
 
         [Fact]
