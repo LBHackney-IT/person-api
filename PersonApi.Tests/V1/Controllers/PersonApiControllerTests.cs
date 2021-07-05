@@ -177,5 +177,52 @@ namespace PersonApi.Tests.V1.Controllers
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
         }
+        [Fact]
+        public async Task UpdatePersonByIdAsyncNotFoundReturnsNotFound()
+        {
+            // Arrange
+            var query = ConstructQuery();
+            var request = ConstructRequest();
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request)).ReturnsAsync((PersonResponseObject) null);
+
+            // Act
+            var response = await _sut.UpdatePersonByIdAsync(request, query).ConfigureAwait(false);
+
+            // Assert
+            response.Should().BeOfType(typeof(NotFoundObjectResult));
+            (response as NotFoundObjectResult).Value.Should().Be(request.Id);
+        }
+
+        [Fact]
+        public async Task UpdatePersonByIdAsyncFoundReturnsFound()
+        {
+            // Arrange
+            var query = ConstructQuery();
+            var request = ConstructRequest();
+            var personResponse = _fixture.Create<PersonResponseObject>();
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request)).ReturnsAsync(personResponse);
+
+            // Act
+            var response = await _sut.UpdatePersonByIdAsync(request, query).ConfigureAwait(false);
+
+            // Assert
+            response.Should().BeOfType(typeof(NoContentResult));
+        }
+
+        [Fact]
+        public void UpdatePersonByIdAsyncExceptionIsThrown()
+        {
+            // Arrange
+            var query = ConstructQuery();
+            var exception = new ApplicationException("Test exception");
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<PersonRequestObject>())).ThrowsAsync(exception);
+
+            // Act
+            Func<Task<IActionResult>> func = async () => await _sut.UpdatePersonByIdAsync(new PersonRequestObject(), query)
+                .ConfigureAwait(false);
+
+            // Assert
+            func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
+        }
     }
 }

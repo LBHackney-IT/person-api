@@ -13,7 +13,7 @@ namespace PersonApi.V1.Boundary.Response
         /// <example>Mr, Mrs, Miss</example>
         public Title? PreferredTitle { get; set; }
         /// <example>Julie</example>
-        public string PreferredFirstName { get; set; }
+        public string PreferredFirstname { get; set; }
         /// <example>Evans</example>
         public string PreferredSurname { get; set; }
         /// <example></example>
