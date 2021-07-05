@@ -1,11 +1,8 @@
 using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Domain;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace PersonApi.V1.Factories
 {
@@ -31,12 +28,17 @@ namespace PersonApi.V1.Factories
                 DateOfBirth = createPersonRequestObject.DateOfBirth,
                 Gender = createPersonRequestObject.Gender,
                 Reason = createPersonRequestObject.Reason,
-                Identifications = createPersonRequestObject.Identifications == null ? new List<Identification>() : createPersonRequestObject.Identifications.Select(x => x).ToList(),
-                Languages = createPersonRequestObject.Languages == null ? new List<Language>() : createPersonRequestObject.Languages.Select(x => x).ToList(),
-                CommunicationRequirements = createPersonRequestObject.CommunicationRequirements == null ? new List<CommunicationRequirement>() : createPersonRequestObject.CommunicationRequirements.Select(x => x).ToList(),
-                PersonTypes = createPersonRequestObject.PersonTypes == null ? new List<PersonType>() : createPersonRequestObject.PersonTypes.Select(x => x).ToList(),
-                Tenures = createPersonRequestObject.Tenures == null ? new List<Tenure>() : createPersonRequestObject.Tenures.Select(x => x).ToList()
+                Identifications = GetListOrEmpty(createPersonRequestObject.Identifications),
+                Languages = GetListOrEmpty(createPersonRequestObject.Languages),
+                CommunicationRequirements = GetListOrEmpty(createPersonRequestObject.CommunicationRequirements),
+                PersonTypes = GetListOrEmpty(createPersonRequestObject.PersonTypes),
+                Tenures = GetListOrEmpty(createPersonRequestObject.Tenures)
             };
+        }
+
+        private static List<T> GetListOrEmpty<T>(IEnumerable<T> enumerable)
+        {
+            return enumerable == null ? new List<T>() : enumerable.ToList();
         }
     }
 }
