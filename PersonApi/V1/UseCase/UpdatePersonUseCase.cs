@@ -26,9 +26,9 @@ namespace PersonApi.V1.UseCase
         }
 
         [LogCall]
-        public async Task<PersonResponseObject> ExecuteAsync(UpdatePersonRequestObject personRequestObject, Token token)
+        public async Task<PersonResponseObject> ExecuteAsync(UpdatePersonRequestObject personRequestObject, Token token, PersonQueryObject query)
         {
-            var person = await _gateway.UpdatePersonByIdAsync(personRequestObject).ConfigureAwait(false);
+            var person = await _gateway.UpdatePersonByIdAsync(personRequestObject, query).ConfigureAwait(false);
 
             var personSnsMessage = _snsFactory.Update(person, token);
             await _snsGateway.Publish(personSnsMessage).ConfigureAwait(false);

@@ -81,18 +81,18 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("")]
         public void PreferredFirstnameShouldNotErrorWithNoValue(string value)
         {
-            var model = new UpdatePersonRequestObject() { PreferredFirstname = value };
+            var model = new UpdatePersonRequestObject() { PreferredFirstName = value };
             var result = _sut.TestValidate(model);
-            result.ShouldNotHaveValidationErrorFor(x => x.PreferredFirstname);
+            result.ShouldNotHaveValidationErrorFor(x => x.PreferredFirstName);
         }
 
         [Theory]
         [InlineData("Some string with <tag> in it.")]
         public void PreferredFirstnameShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new UpdatePersonRequestObject() { PreferredFirstname = invalid };
+            var model = new UpdatePersonRequestObject() { PreferredFirstName = invalid };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.PreferredFirstname);
+            result.ShouldHaveValidationErrorFor(x => x.PreferredFirstName);
         }
 
         [Theory]
@@ -139,9 +139,9 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void FirstnameShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new UpdatePersonRequestObject() { Firstname = invalid };
+            var model = new UpdatePersonRequestObject() { FirstName = invalid };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.Firstname);
+            result.ShouldHaveValidationErrorFor(x => x.FirstName);
         }
 
         [Theory]

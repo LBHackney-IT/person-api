@@ -27,11 +27,12 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
         /// </summary>
         /// <param name="requestObject"></param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> CallApi(PersonRequestObject requestObject)
+        public async Task<HttpResponseMessage> CallApi(UpdatePersonRequestObject requestObject, Guid id)
         {
             var token =
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nLWRldmVsb3BtZW50QGhhY2tuZXkuZ292LnVrIiwiaXNzIjoiSGFja25leSIsIm5hbWUiOiJUZXN0ZXIiLCJncm91cHMiOlsic2FtbC1hd3MtY29uc29sZS1tdGZoLWRldmVsb3BlciJdLCJpYXQiOjE2MjMwNTgyMzJ9.WffAEwWJlQorHGf-rIwxET8cJFK2yZg-kxNbtFctav4";
-            var uri = new Uri($"api/v1/persons/{requestObject.Id}", UriKind.Relative);
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nQGRldmVsb3BtZW50LmNvbSIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiVGVzdGVyIiwiZ3JvdXBzIjpbImUyZS10ZXN0aW5nIl0sImlhdCI6MTYyMzA1ODIzMn0.SooWAr-NUZLwW8brgiGpi2jZdWjyZBwp4GJikn0PvEw";
+
+            var uri = new Uri($"api/v1/persons/{id}", UriKind.Relative);
 
             var message = new HttpRequestMessage(HttpMethod.Patch, uri);
 
@@ -42,23 +43,20 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             _httpClient.DefaultRequestHeaders
                 .Accept
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //var content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json");
             return await _httpClient.SendAsync(message).ConfigureAwait(false);
         }
 
-        private void ExtractResultFromHttpResponse(HttpResponseMessage response)
+        public async Task WhenTheUpdatePersonApiIsCalled(UpdatePersonRequestObject personRequestObject, Guid id)
         {
-            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
-        }
-
-        public async Task WhenTheUpdatePersonApiIsCalled(PersonRequestObject personRequestObject)
-        {
-            _lastResponse = await CallApi(personRequestObject).ConfigureAwait(false);
+            _lastResponse = await CallApi(personRequestObject, id).ConfigureAwait(false);
 
         }
 
         public async Task ThenThePersonDetailsAreUpdated(PersonFixture personFixture)
         {
-            var result = await personFixture._dbContext.LoadAsync<PersonDbEntity>(personFixture.UpdatePersonRequest.Id).ConfigureAwait(false);
+            _lastResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+            var result = await personFixture._dbContext.LoadAsync<PersonDbEntity>(personFixture.Person.Id).ConfigureAwait(false);
             result.Surname.Should().Be(personFixture.UpdatePersonRequest.Surname);
         }
 

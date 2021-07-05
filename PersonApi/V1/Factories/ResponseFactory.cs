@@ -13,9 +13,9 @@ namespace PersonApi.V1.Factories
             _apiLinkGenerator = apiLinkGenerator;
         }
 
-        public static string FormatDateOfBirth(DateTime dob)
+        public static string FormatDateOfBirth(DateTime? dob)
         {
-            return dob.ToString("yyyy-MM-dd");
+            return dob?.ToString("yyyy-MM-dd");
         }
 
         public PersonResponseObject ToResponse(Person domain)
@@ -27,10 +27,10 @@ namespace PersonApi.V1.Factories
                 Id = domain.Id,
                 Title = domain.Title,
                 PreferredTitle = domain.PreferredTitle,
-                PreferredFirstname = domain.PreferredFirstname,
+                PreferredFirstName = domain.PreferredFirstName,
                 PreferredMiddleName = domain.PreferredMiddleName,
                 PreferredSurname = domain.PreferredSurname,
-                FirstName = domain.Firstname,
+                FirstName = domain.FirstName,
                 MiddleName = domain.MiddleName,
                 Surname = domain.Surname,
                 Ethnicity = domain.Ethnicity,

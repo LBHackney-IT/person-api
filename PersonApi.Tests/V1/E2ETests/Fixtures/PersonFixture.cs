@@ -24,6 +24,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         public CreatePersonRequestObject CreatePersonRequest { get; private set; }
         public UpdatePersonRequestObject UpdatePersonRequest { get; private set; }
 
+
         public Guid PersonId { get; private set; }
 
         public string InvalidPersonId { get; private set; }
@@ -130,7 +131,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
             if (personRequest != null)
             {
-                personRequest.Firstname = "Update";
+                personRequest.FirstName = "Update";
                 personRequest.Surname = "Updating";
             }
 
@@ -142,7 +143,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         public void GivenANewPersonRequestWithValidationErrors()
         {
             var personRequest = _fixture.Build<CreatePersonRequestObject>()
-                .With(x => x.Firstname, string.Empty)
+                .With(x => x.FirstName, string.Empty)
                 .With(x => x.Surname, string.Empty)
                 .With(x => x.PersonTypes, Enumerable.Empty<PersonType>())
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(1))
@@ -200,13 +201,12 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
             return new UpdatePersonRequestObject
             {
-                Id = entity.Id,
                 Title = entity.Title,
                 PreferredTitle = entity.PreferredTitle,
-                PreferredFirstname = entity.PreferredFirstname,
+                PreferredFirstName = entity.PreferredFirstName,
                 PreferredMiddleName = entity.PreferredMiddleName,
                 PreferredSurname = entity.PreferredSurname,
-                Firstname = entity.Firstname,
+                FirstName = entity.FirstName,
                 MiddleName = entity.MiddleName,
                 Surname = entity.Surname,
                 Ethnicity = entity.Ethnicity,

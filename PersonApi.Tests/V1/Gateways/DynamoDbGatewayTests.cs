@@ -60,29 +60,17 @@ namespace PersonApi.Tests.V1.Gateways
 
         private UpdatePersonRequestObject ConstructRequest(Guid id)
         {
-            return new UpdatePersonRequestObject() { Id = id };
+            id = Guid.NewGuid();
+            return new UpdatePersonRequestObject()
+            {
+                Surname = "Update"
+            };
         }
 
         private CreatePersonRequestObject ConstructCreatePerson(bool nullOptionalEnums = false)
 
         {
             var person = _fixture.Build<CreatePersonRequestObject>()
-                            .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                            .With(x => x.NationalInsuranceNo, "NZ223344E")
-                            .Create();
-            if (nullOptionalEnums)
-            {
-                person.Gender = null;
-                person.PreferredTitle = null;
-            }
-
-            return person;
-        }
-
-        private UpdatePersonRequestObject ConstructUpdatePerson(bool nullOptionalEnums = false)
-
-        {
-            var person = _fixture.Build<UpdatePersonRequestObject>()
                             .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                             .With(x => x.NationalInsuranceNo, "NZ223344E")
                             .Create();
@@ -178,17 +166,72 @@ namespace PersonApi.Tests.V1.Gateways
         public async Task UpdatePersonSuccessfulUpdates()
         {
             // Arrange
-            var constructRequest = ConstructUpdatePerson();
-            await _dynamoDb.SaveAsync(constructRequest.ToDatabase()).ConfigureAwait(false);
-            constructRequest.Surname = "Update";
-
+            var constructPerson = ConstructCreatePerson();
+            var query = ConstructQuery(constructPerson.Id);
+            await _dynamoDb.SaveAsync(constructPerson.ToDatabase()).ConfigureAwait(false);
+            var constructRequest = ConstructRequest(constructPerson.Id);
             //Act
-            await _classUnderTest.UpdatePersonByIdAsync(constructRequest).ConfigureAwait(false);
+            await _classUnderTest.UpdatePersonByIdAsync(constructRequest, query).ConfigureAwait(false);
 
             //Assert
-            var load = await _dynamoDb.LoadAsync<PersonDbEntity>(constructRequest.Id).ConfigureAwait(false);
+            var load = await _dynamoDb.LoadAsync<PersonDbEntity>(constructPerson.Id).ConfigureAwait(false);
             load.Surname.Should().Be(constructRequest.Surname);
+            load.FirstName.Should().Be(constructPerson.FirstName);
+            load.CommunicationRequirements.Should().BeEquivalentTo(constructPerson.CommunicationRequirements);
+            load.DateOfBirth.Should().Be(constructPerson.DateOfBirth);
+            load.Ethnicity.Should().Be(constructPerson.Ethnicity);
+            load.Gender.Should().Be(constructPerson.Gender);
+            load.Id.Should().Be(constructPerson.Id);
+            load.Identifications.Should().BeEquivalentTo(constructPerson.Identifications);
+            load.Languages.Should().BeEquivalentTo(constructPerson.Languages);
+            load.MiddleName.Should().Be(constructPerson.MiddleName);
+            load.NationalInsuranceNo.Should().Be(constructPerson.NationalInsuranceNo);
+            load.Nationality.Should().Be(constructPerson.Nationality);
+            load.PersonTypes.Should().BeEquivalentTo(constructPerson.PersonTypes);
+            load.PlaceOfBirth.Should().Be(constructPerson.PlaceOfBirth);
+            load.PreferredFirstName.Should().Be(constructPerson.PreferredFirstName);
+            load.PreferredMiddleName.Should().Be(constructPerson.PreferredMiddleName);
+            load.PreferredSurname.Should().Be(constructPerson.PreferredSurname);
+            load.PreferredTitle.Should().Be(constructPerson.PreferredTitle);
+            load.Tenures.Should().BeEquivalentTo(constructPerson.Tenures);
+            load.Title.Should().Be(constructPerson.Title);
         }
 
+        [Fact]
+        public async Task UpdatePersonByIdReturnsNullIfEntityDoesntExist()
+        {
+            // Act
+            var id = Guid.NewGuid();
+            var query = ConstructQuery(id);
+            var constructRequest = ConstructRequest(query.Id);
+
+            var response = await _classUnderTest.UpdatePersonByIdAsync(constructRequest, query).ConfigureAwait(false);
+
+            // Assert
+            response.Should().BeNull();
+            _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.SaveAsync to update id {query.Id}", Times.Once());
+        }
+
+        [Fact]
+        public void UpdatePersonByIdExceptionThrow()
+        {
+            // Arrange
+            var mockDynamoDb = new Mock<IDynamoDBContext>();
+            _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _logger.Object);
+            var id = Guid.NewGuid();
+            var query = ConstructQuery(id);
+            var constructRequest = ConstructRequest(query.Id);
+            var exception = new ApplicationException("Test exception");
+            mockDynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(id, default))
+                        .ThrowsAsync(exception);
+
+            // Act
+            Func<Task<Person>> func = async () => await _classUnderTest.UpdatePersonByIdAsync(constructRequest, query).ConfigureAwait(false);
+
+            // Assert
+            func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
+            mockDynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(id, default), Times.Once);
+            _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.SaveAsync to update id {query.Id}", Times.Once());
+        }
     }
 }
