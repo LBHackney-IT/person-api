@@ -279,14 +279,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             result.ShouldNotHaveValidationErrorFor(x => x.Gender);
         }
 
-        [Fact]
-        public void GenderShouldNotErrorWithNull()
-        {
-            var model = new PersonRequestObject() { Gender = null };
-            var result = _sut.TestValidate(model);
-            result.ShouldNotHaveValidationErrorFor(x => x.Gender);
-        }
-
         [Theory]
         [InlineData(100)]
         public void GenderShouldErrorWithInvalidValue(int? val)
