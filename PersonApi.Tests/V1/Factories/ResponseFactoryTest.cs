@@ -22,7 +22,7 @@ namespace PersonApi.Tests.V1.Factories
         }
 
         [Fact]
-        public void FormatDOBTest()
+        public void FormatDOBTestReturnsFormattedValue()
         {
             var dob = DateTime.UtcNow.AddYears(-30);
             var formatted = ResponseFactory.FormatDateOfBirth(dob);
@@ -30,9 +30,24 @@ namespace PersonApi.Tests.V1.Factories
         }
 
         [Fact]
-        public void CanMapADomainPersonToAResponsePerson()
+        public void FormatDOBTestReturnsFormattedNull()
         {
-            var person = _fixture.Create<Person>();
+            var formatted = ResponseFactory.FormatDateOfBirth(null);
+            formatted.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData(true, null)]
+        [InlineData(true, "234238945")]
+        [InlineData(false, null)]
+        [InlineData(false, "234238945")]
+        public void CanMapADomainPersonToAResponsePerson(bool hasDob, string ni)
+        {
+            DateTime? dob = hasDob? DateTime.UtcNow.AddYears(-30) : default;
+            var person = _fixture.Build<Person>()
+                                 .With(x => x.DateOfBirth, dob)
+                                 .With(x => x.NationalInsuranceNo, ni)
+                                 .Create();
             var response = _sut.ToResponse(person);
 
             response.Id.Should().Be(person.Id);

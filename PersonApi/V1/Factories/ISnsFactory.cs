@@ -7,6 +7,6 @@ namespace PersonApi.V1.Factories
     {
         PersonSns Create(Person person, Token token);
 
-        PersonSns Update(Person person, Token token);
+        PersonSns Update(Person old, Person updated, Token token);
     }
 }

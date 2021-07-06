@@ -3,6 +3,7 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
@@ -11,9 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PersonApi.V1.Boundary.Request;
 using Xunit;
-using Amazon.DynamoDBv2;
 
 namespace PersonApi.Tests.V1.Gateways
 {
@@ -225,7 +224,7 @@ namespace PersonApi.Tests.V1.Gateways
                         .ThrowsAsync(exception);
 
             // Act
-            Func<Task<Person>> func = async () => await _classUnderTest.UpdatePersonByIdAsync(constructRequest, query).ConfigureAwait(false);
+            Func<Task<UpdatePersonGatewayResult>> func = async () => await _classUnderTest.UpdatePersonByIdAsync(constructRequest, query).ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);

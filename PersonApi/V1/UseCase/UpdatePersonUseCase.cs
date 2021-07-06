@@ -28,12 +28,12 @@ namespace PersonApi.V1.UseCase
         [LogCall]
         public async Task<PersonResponseObject> ExecuteAsync(UpdatePersonRequestObject personRequestObject, Token token, PersonQueryObject query)
         {
-            var person = await _gateway.UpdatePersonByIdAsync(personRequestObject, query).ConfigureAwait(false);
+            var result = await _gateway.UpdatePersonByIdAsync(personRequestObject, query).ConfigureAwait(false);
 
-            var personSnsMessage = _snsFactory.Update(person, token);
+            var personSnsMessage = _snsFactory.Update(result.OldPerson, result.UpdatedPerson, token);
             await _snsGateway.Publish(personSnsMessage).ConfigureAwait(false);
 
-            return _responseFactory.ToResponse(person);
+            return _responseFactory.ToResponse(result.UpdatedPerson);
         }
     }
 }

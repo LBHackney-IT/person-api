@@ -11,10 +11,15 @@ namespace PersonApi.Tests.V1.Factories
     {
         private readonly Fixture _fixture = new Fixture();
 
-        [Fact]
-        public void CanMapADatabaseEntityToADomainObject()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("2034732948")]
+        public void CanMapADatabaseEntityToADomainObject(string ni)
         {
-            var databaseEntity = _fixture.Create<PersonDbEntity>();
+            var databaseEntity = _fixture.Build<PersonDbEntity>()
+                                         .With(x => x.NationalInsuranceNo, ni)
+                                         .Create();
             var entity = databaseEntity.ToDomain();
 
             databaseEntity.Id.Should().Be(entity.Id);
@@ -26,6 +31,7 @@ namespace PersonApi.Tests.V1.Factories
             databaseEntity.Surname.Should().Be(entity.Surname);
             databaseEntity.Ethnicity.Should().Be(entity.Ethnicity);
             databaseEntity.Nationality.Should().Be(entity.Nationality);
+            databaseEntity.NationalInsuranceNo.Should().Be(entity.NationalInsuranceNo);
             databaseEntity.PlaceOfBirth.Should().Be(entity.PlaceOfBirth);
             databaseEntity.DateOfBirth.Should().Be(entity.DateOfBirth);
             databaseEntity.Gender.Should().Be(entity.Gender);
@@ -36,10 +42,15 @@ namespace PersonApi.Tests.V1.Factories
             databaseEntity.Tenures.Should().BeEquivalentTo(entity.Tenures);
         }
 
-        [Fact]
-        public void CanMapADomainEntityToADatabaseObject()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("2034732948")]
+        public void CanMapADomainEntityToADatabaseObject(string ni)
         {
-            var person = _fixture.Create<Person>();
+            var person = _fixture.Build<Person>()
+                                 .With(x => x.NationalInsuranceNo, ni)
+                                 .Create();
             var databaseEntity = person.ToDatabase();
 
             person.Id.Should().Be(databaseEntity.Id);
@@ -51,6 +62,7 @@ namespace PersonApi.Tests.V1.Factories
             person.Surname.Should().Be(databaseEntity.Surname);
             person.Ethnicity.Should().Be(databaseEntity.Ethnicity);
             person.Nationality.Should().Be(databaseEntity.Nationality);
+            person.NationalInsuranceNo.Should().Be(databaseEntity.NationalInsuranceNo);
             person.PlaceOfBirth.Should().Be(databaseEntity.PlaceOfBirth);
             person.DateOfBirth.Should().Be(databaseEntity.DateOfBirth);
             person.Gender.Should().Be(databaseEntity.Gender);
