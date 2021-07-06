@@ -43,7 +43,7 @@ namespace PersonApi.Tests.V1.Factories
         [InlineData(false, "234238945")]
         public void CanMapADomainPersonToAResponsePerson(bool hasDob, string ni)
         {
-            DateTime? dob = hasDob? DateTime.UtcNow.AddYears(-30) : default;
+            DateTime? dob = hasDob ? DateTime.UtcNow.AddYears(-30) : default;
             var person = _fixture.Build<Person>()
                                  .With(x => x.DateOfBirth, dob)
                                  .With(x => x.NationalInsuranceNo, ni)
