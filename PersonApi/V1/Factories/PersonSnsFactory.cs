@@ -24,17 +24,21 @@ namespace PersonApi.V1.Factories
                     Id = Guid.NewGuid(),
                     Name = token.Name,
                     Email = token.Email
+                },
+                EventData = new EventData
+                {
+                    NewData = person
                 }
             };
         }
 
-        public PersonSns Update(Person person, Token token)
+        public PersonSns Update(Person old, Person updated, Token token)
         {
             return new PersonSns
             {
                 CorrelationId = Guid.NewGuid(),
                 DateTime = DateTime.UtcNow,
-                EntityId = person.Id,
+                EntityId = old.Id,
                 Id = Guid.NewGuid(),
                 EventType = UpdatePersonConstants.EVENTTYPE,
                 Version = UpdatePersonConstants.V1VERSION,
@@ -45,6 +49,11 @@ namespace PersonApi.V1.Factories
                     Id = Guid.NewGuid(),
                     Name = token.Name,
                     Email = token.Email
+                },
+                EventData = new EventData
+                {
+                    OldData = old,
+                    NewData = updated
                 }
             };
         }

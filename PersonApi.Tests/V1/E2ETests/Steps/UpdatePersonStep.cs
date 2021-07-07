@@ -43,7 +43,6 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             _httpClient.DefaultRequestHeaders
                 .Accept
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            //var content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json");
             return await _httpClient.SendAsync(message).ConfigureAwait(false);
         }
 
