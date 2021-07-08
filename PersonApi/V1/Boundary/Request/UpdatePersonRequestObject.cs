@@ -40,6 +40,7 @@ namespace PersonApi.V1.Boundary.Request
 
         public IEnumerable<Language> Languages { get; set; }
 
+        public IEnumerable<PersonType> PersonTypes { get; set; }
         public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }
         public IEnumerable<Tenure> Tenures { get; set; }
     }

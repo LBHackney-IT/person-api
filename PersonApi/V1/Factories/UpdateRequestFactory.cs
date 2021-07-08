@@ -27,6 +27,7 @@ namespace PersonApi.V1.Factories
                 Gender = updatePersonRequestObject.Gender,
                 Identifications = GetListOrNull(updatePersonRequestObject.Identifications),
                 Languages = GetListOrNull(updatePersonRequestObject.Languages),
+                PersonTypes = null,
                 CommunicationRequirements = GetListOrNull(updatePersonRequestObject.CommunicationRequirements),
                 Tenures = GetListOrNull(updatePersonRequestObject.Tenures)
             };
