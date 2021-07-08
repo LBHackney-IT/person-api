@@ -218,7 +218,6 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 Identifications = entity.Identifications.ToList(),
                 Languages = entity.Languages.ToList(),
                 CommunicationRequirements = entity.CommunicationRequirements.ToList(),
-                PersonTypes = entity.PersonTypes.ToList(),
                 Tenures = entity.Tenures.ToList()
             };
         }

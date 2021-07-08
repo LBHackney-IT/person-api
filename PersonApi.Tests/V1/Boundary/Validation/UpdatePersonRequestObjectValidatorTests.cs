@@ -31,13 +31,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         public static IEnumerable<object[]> Titles => GetEnumValues<Title>();
         public static IEnumerable<object[]> Genders => GetEnumValues<Gender>();
 
-        //[Fact]
-        //public void ShouldErrorWithEmptyId()
-        //{
-        //    var query = new PersonRequestObject() { Id = Guid.Empty };
-        //    var result = _sut.TestValidate(query);
-        //    result.ShouldHaveValidationErrorFor(x => x.Id);
-        //}
 
         [Theory]
         [MemberData(nameof(Titles))]
@@ -325,25 +318,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             var model = new UpdatePersonRequestObject() { Languages = Enumerable.Empty<Language>() };
             var result = _sut.TestValidate(model);
             result.ShouldNotHaveValidationErrorFor(x => x.Languages);
-        }
-
-        [Fact]
-        public void PersonTypesShouldErrorWithInvalidValue()
-        {
-            var model = new UpdatePersonRequestObject() { PersonTypes = new PersonType[] { (PersonType) 100 } };
-            var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.PersonTypes);
-        }
-
-        [Theory]
-        [InlineData(PersonType.HouseholdMember)]
-        [InlineData(PersonType.Tenant)]
-        [InlineData(PersonType.Tenant, PersonType.HouseholdMember)]
-        public void PersonTypesShouldNotErrorWithValidValue(params PersonType[] types)
-        {
-            var model = new UpdatePersonRequestObject() { PersonTypes = types };
-            var result = _sut.TestValidate(model);
-            result.ShouldNotHaveValidationErrorFor(x => x.PersonTypes);
         }
 
         [Fact]
