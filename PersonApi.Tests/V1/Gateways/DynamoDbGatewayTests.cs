@@ -23,9 +23,6 @@ namespace PersonApi.Tests.V1.Gateways
         private readonly Mock<ILogger<DynamoDbGateway>> _logger;
         private DynamoDbGateway _classUnderTest;
 
-        public static IEnumerable<PersonType> PERSONTYPES { get; }
-                    = new List<PersonType> { PersonType.HouseholdMember };
-
         private readonly IDynamoDBContext _dynamoDb;
 
         private readonly List<Action> _cleanup = new List<Action>();
