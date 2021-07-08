@@ -185,7 +185,6 @@ namespace PersonApi.Tests.V1.Gateways
             load.MiddleName.Should().Be(constructPerson.MiddleName);
             load.NationalInsuranceNo.Should().Be(constructPerson.NationalInsuranceNo);
             load.Nationality.Should().Be(constructPerson.Nationality);
-            load.PersonTypes.Should().BeEquivalentTo(constructPerson.PersonTypes);
             load.PlaceOfBirth.Should().Be(constructPerson.PlaceOfBirth);
             load.PreferredFirstName.Should().Be(constructPerson.PreferredFirstName);
             load.PreferredMiddleName.Should().Be(constructPerson.PreferredMiddleName);
