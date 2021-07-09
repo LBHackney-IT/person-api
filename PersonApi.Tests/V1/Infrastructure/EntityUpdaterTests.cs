@@ -171,8 +171,8 @@ namespace PersonApi.Tests.V1.Infrastructure
                                         .With(x => x.SomeDate, DateTime.UtcNow)
                                         .With(x => x.ASubEntity, entity.ASubEntity.DeepClone())
                                         // The same
-                                        .With(x => x.SomeEnum, (EnumExample?)null)
-                                        .With(x => x.SomeInt, (int?)null)
+                                        .With(x => x.SomeEnum, (EnumExample?) null)
+                                        .With(x => x.SomeInt, (int?) null)
                                         .Create();
             requestObject.ASubEntity.AString = "Some sub object string";
             var inputJson = JsonSerializer.Serialize(requestObject, CreateJsonOptions(true));

@@ -123,9 +123,9 @@ namespace PersonApi.Tests.V1.UseCase
             var request = ConstructRequest();
             var query = ConstructQuery(Guid.NewGuid());
             var token = new Token();
-            
+
             _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, It.IsAny<string>(), query))
-                        .ReturnsAsync((UpdateEntityResult<PersonDbEntity>)null);
+                        .ReturnsAsync((UpdateEntityResult<PersonDbEntity>) null);
 
             // Act
             var response = await _classUnderTest.ExecuteAsync(request, "", token, query).ConfigureAwait(false);
