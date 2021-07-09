@@ -23,9 +23,6 @@ namespace PersonApi.V1.Boundary.Request.Validation
             RuleFor(x => x.NationalInsuranceNo)
                                  .Matches(NiRegEx, RegexOptions.IgnoreCase)
                                  .When(x => !string.IsNullOrEmpty(x.NationalInsuranceNo));
-            RuleForEach(x => x.PersonTypes)
-                .ChildRules(x => x.RuleFor(y => y).IsInEnum());
-
             RuleFor(x => x.Languages).Must(x => x.Count() < 10)
                                      .WithMessage("Please only enter up to 10 languages")
                                      .When(x => x.Languages != null);

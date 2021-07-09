@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Xunit;
 
-namespace EntityApi.Tests.V1.Infrastructure
+namespace PersonApi.Tests.V1.Infrastructure
 {
     public class EntityUpdaterTests
     {

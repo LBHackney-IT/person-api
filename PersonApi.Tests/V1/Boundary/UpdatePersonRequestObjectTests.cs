@@ -16,7 +16,6 @@ namespace PersonApi.Tests.V1.Boundary
             result.Identifications.Should().BeNull();
             result.Languages.Should().BeNull();
             result.CommunicationRequirements.Should().BeNull();
-            result.PersonTypes.Should().BeNull();
             result.Tenures.Should().BeNull();
         }
 
@@ -28,7 +27,6 @@ namespace PersonApi.Tests.V1.Boundary
             result.Identifications.Should().BeEquivalentTo(request.Identifications);
             result.Languages.Should().BeEquivalentTo(request.Languages);
             result.CommunicationRequirements.Should().BeEquivalentTo(request.CommunicationRequirements);
-            result.PersonTypes.Should().BeEquivalentTo(request.PersonTypes);
             result.Tenures.Should().BeEquivalentTo(request.Tenures);
         }
     }
