@@ -1,3 +1,5 @@
+using Hackney.Core.Http;
+using Hackney.Core.JWT;
 using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,9 +9,6 @@ using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
-using PersonApi.V1.Infrastructure;
-using PersonApi.V1.Infrastructure.JWT;
-using Amazon.DynamoDBv2.Model;
 
 namespace PersonApi.V1.Controllers
 {
@@ -24,15 +23,18 @@ namespace PersonApi.V1.Controllers
         private readonly ITokenFactory _tokenFactory;
         private readonly IHttpContextWrapper _contextWrapper;
         private readonly IUpdatePersonUseCase _updatePersonUseCase;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public PersonApiController(IGetByIdUseCase getByIdUseCase, IPostNewPersonUseCase newPersonUseCase,
-            IUpdatePersonUseCase updatePersonUseCase, ITokenFactory tokenFactory, IHttpContextWrapper contextWrapper)
+            IUpdatePersonUseCase updatePersonUseCase, ITokenFactory tokenFactory, IHttpContextWrapper contextWrapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             _getByIdUseCase = getByIdUseCase;
             _newPersonUseCase = newPersonUseCase;
             _updatePersonUseCase = updatePersonUseCase;
             _tokenFactory = tokenFactory;
             _contextWrapper = contextWrapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -85,10 +87,19 @@ namespace PersonApi.V1.Controllers
         [HttpPatch]
         [Route("{id}")]
         [LogCall(LogLevel.Information)]
-        public async Task<IActionResult> UpdatePersonByIdAsync([FromBody] UpdatePersonRequestObject personRequestObject, [FromRoute] PersonQueryObject query)
+        public async Task<IActionResult> UpdatePersonByIdAsync([FromBody] UpdatePersonRequestObject personRequestObject,
+            [FromRoute] PersonQueryObject query)
         {
+            // This is only possible because the EnableRequestBodyRewind middleware is specified in the application startup.
+            var bodyText = await _httpContextAccessor.HttpContext.Request.GetRawBodyStringAsync().ConfigureAwait(false);
+
             var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
-            var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject, token, query).ConfigureAwait(false);
+
+            // We use a request object AND the raw request body text because the incoming request will only contain the fields that changed
+            // whereas the request object has all possible updateable fields defined.
+            // The implementation will use the raw body text to identify which fields to update and the request object is specified here so that its
+            // associated validation will be executed by the MVC pipeline before we even get to this point.
+            var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject, bodyText, token, query).ConfigureAwait(false);
             if (person == null) return NotFound(query.Id);
 
             return NoContent();

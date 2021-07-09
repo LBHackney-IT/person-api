@@ -1,13 +1,13 @@
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
 using AutoFixture;
+using PersonApi.V1.Boundary.Request;
+using PersonApi.V1.Domain;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Amazon.SimpleNotificationService;
-using Amazon.SimpleNotificationService.Model;
-using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Domain;
 using System.Linq;
 
 namespace PersonApi.Tests.V1.E2ETests.Fixtures
@@ -93,14 +93,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
         public void GivenAPersonIdDoesNotExist()
         {
-            if (null == Person)
-            {
-                var person = _fixture.Build<PersonDbEntity>()
-                                    .Create();
-                _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
-                Person = person;
-                PersonId = person.Id;
-            }
+            PersonId = Guid.NewGuid();
         }
 
         public void GivenAPersonDoesNotExist()
@@ -124,16 +117,13 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             CreatePersonRequest = personRequest;
         }
 
-        public void GivenAUpdatePersonRequest(PersonDbEntity person)
+        public void GivenAUpdatePersonRequest()
         {
-
-            var personRequest = ToRequest(person);
-
-            if (personRequest != null)
+            var personRequest = new UpdatePersonRequestObject()
             {
-                personRequest.FirstName = "Update";
-                personRequest.Surname = "Updating";
-            }
+                FirstName = "Update",
+                Surname = "Updating"
+            };
 
             UpdateSnsTopic();
 
@@ -193,34 +183,6 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             }).Result;
 
             Environment.SetEnvironmentVariable("UPDATED_PERSON_SNS_ARN", response.TopicArn);
-        }
-
-        private UpdatePersonRequestObject ToRequest(PersonDbEntity entity)
-        {
-            if (entity == null) return null;
-
-            return new UpdatePersonRequestObject
-            {
-                Title = entity.Title,
-                PreferredTitle = entity.PreferredTitle,
-                PreferredFirstName = entity.PreferredFirstName,
-                PreferredMiddleName = entity.PreferredMiddleName,
-                PreferredSurname = entity.PreferredSurname,
-                FirstName = entity.FirstName,
-                MiddleName = entity.MiddleName,
-                Surname = entity.Surname,
-                Ethnicity = entity.Ethnicity,
-                Nationality = entity.Nationality,
-                NationalInsuranceNo = entity.NationalInsuranceNo?.ToUpper(),
-                PlaceOfBirth = entity.PlaceOfBirth,
-                DateOfBirth = entity.DateOfBirth,
-                Gender = entity.Gender,
-                Identifications = entity.Identifications.ToList(),
-                Languages = entity.Languages.ToList(),
-                CommunicationRequirements = entity.CommunicationRequirements.ToList(),
-                PersonTypes = entity.PersonTypes.ToList(),
-                Tenures = entity.Tenures.ToList()
-            };
         }
     }
 }

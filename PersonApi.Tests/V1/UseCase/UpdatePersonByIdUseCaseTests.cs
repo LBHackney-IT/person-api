@@ -1,14 +1,16 @@
 using AutoFixture;
 using FluentAssertions;
+using Hackney.Core.JWT;
 using Moq;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
-using PersonApi.V1.Infrastructure.JWT;
+using PersonApi.V1.Infrastructure;
 using PersonApi.V1.UseCase;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -51,27 +53,87 @@ namespace PersonApi.Tests.V1.UseCase
         }
 
         [Fact]
-        public async Task UpdatePersonByIdUseCaseGatewayReturnsFound()
+        public async Task UpdatePersonByIdUseCaseGatewayReturnsResult()
         {
             // Arrange
             var request = ConstructRequest();
             var query = ConstructQuery(Guid.NewGuid());
             var token = new Token();
-            var oldPerson = ConstructPerson(query.Id);
             var updatedPerson = ConstructPerson(query.Id);
-            var gatewayResult = new UpdatePersonGatewayResult(oldPerson, updatedPerson);
-            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, query)).ReturnsAsync(gatewayResult);
+            var gatewayResult = new UpdateEntityResult<PersonDbEntity>()
+            {
+                UpdatedEntity = updatedPerson.ToDatabase(),
+                OldValues = new Dictionary<string, object>
+                {
+                    {  "firstName", "old first name" },
+                    {  "surname", "old surname" }
+                },
+                NewValues = new Dictionary<string, object>
+                {
+                    {  "firstName", "New first name" },
+                    {  "surname", "New surname" }
+                }
+            };
+            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, It.IsAny<string>(), query))
+                        .ReturnsAsync(gatewayResult);
             var snsEvent = _fixture.Create<PersonSns>();
-            _mockSnsFactory.Setup(x => x.Update(oldPerson, updatedPerson, token))
+            _mockSnsFactory.Setup(x => x.Update(gatewayResult, token))
                            .Returns(snsEvent);
 
             // Act
-            var response = await _classUnderTest.ExecuteAsync(request, token, query).ConfigureAwait(false);
+            var response = await _classUnderTest.ExecuteAsync(request, "", token, query).ConfigureAwait(false);
 
             // Assert
-            _mockSnsFactory.Verify(x => x.Update(oldPerson, updatedPerson, token), Times.Once);
+            _mockSnsFactory.Verify(x => x.Update(gatewayResult, token), Times.Once);
             _mockSnsGateway.Verify(x => x.Publish(snsEvent), Times.Once);
-            response.Should().BeEquivalentTo(_responseFactory.ToResponse(gatewayResult.UpdatedPerson));
+            response.Should().BeEquivalentTo(_responseFactory.ToResponse(updatedPerson));
+        }
+
+        [Fact]
+        public async Task UpdatePersonByIdUseCaseGatewayReturnsResultNoChanges()
+        {
+            // Arrange
+            var request = ConstructRequest();
+            var query = ConstructQuery(Guid.NewGuid());
+            var token = new Token();
+            var updatedPerson = ConstructPerson(query.Id);
+            var gatewayResult = new UpdateEntityResult<PersonDbEntity>()
+            {
+                UpdatedEntity = updatedPerson.ToDatabase()
+            };
+            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, It.IsAny<string>(), query))
+                        .ReturnsAsync(gatewayResult);
+            var snsEvent = _fixture.Create<PersonSns>();
+            _mockSnsFactory.Setup(x => x.Update(gatewayResult, token))
+                           .Returns(snsEvent);
+
+            // Act
+            var response = await _classUnderTest.ExecuteAsync(request, "", token, query).ConfigureAwait(false);
+
+            // Assert
+            _mockSnsFactory.Verify(x => x.Update(gatewayResult, token), Times.Never);
+            _mockSnsGateway.Verify(x => x.Publish(snsEvent), Times.Never);
+            response.Should().BeEquivalentTo(_responseFactory.ToResponse(updatedPerson));
+        }
+
+        [Fact]
+        public async Task UpdatePersonByIdUseCaseGatewayReturnsNull()
+        {
+            // Arrange
+            var request = ConstructRequest();
+            var query = ConstructQuery(Guid.NewGuid());
+            var token = new Token();
+            
+            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, It.IsAny<string>(), query))
+                        .ReturnsAsync((UpdateEntityResult<PersonDbEntity>)null);
+
+            // Act
+            var response = await _classUnderTest.ExecuteAsync(request, "", token, query).ConfigureAwait(false);
+
+            // Assert
+            _mockSnsFactory.Verify(x => x.Update(It.IsAny<UpdateEntityResult<PersonDbEntity>>(), It.IsAny<Token>()), Times.Never);
+            _mockSnsGateway.Verify(x => x.Publish(It.IsAny<PersonSns>()), Times.Never);
+            response.Should().BeNull();
         }
 
         [Fact]
@@ -82,10 +144,11 @@ namespace PersonApi.Tests.V1.UseCase
             var token = new Token();
             var query = ConstructQuery(Guid.NewGuid());
             var exception = new ApplicationException("Test exception");
-            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(personRequest, query)).ThrowsAsync(exception);
+            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(personRequest, It.IsAny<string>(), query)).ThrowsAsync(exception);
 
             // Act
-            Func<Task<PersonResponseObject>> func = async () => await _classUnderTest.ExecuteAsync(personRequest, token, query).ConfigureAwait(false);
+            Func<Task<PersonResponseObject>> func = async () =>
+                await _classUnderTest.ExecuteAsync(personRequest, "", token, query).ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
