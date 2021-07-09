@@ -1,10 +1,7 @@
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Infrastructure;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace PersonApi.V1.Factories
 {
@@ -28,12 +25,17 @@ namespace PersonApi.V1.Factories
                 PlaceOfBirth = updatePersonRequestObject.PlaceOfBirth,
                 DateOfBirth = updatePersonRequestObject.DateOfBirth,
                 Gender = updatePersonRequestObject.Gender,
-                Identifications = updatePersonRequestObject.Identifications == null ? null : updatePersonRequestObject.Identifications.Select(x => x).ToList(),
-                Languages = updatePersonRequestObject.Languages == null ? null : updatePersonRequestObject.Languages.Select(x => x).ToList(),
-                CommunicationRequirements = updatePersonRequestObject.CommunicationRequirements == null ? null : updatePersonRequestObject.CommunicationRequirements.Select(x => x).ToList(),
-                PersonTypes = updatePersonRequestObject.PersonTypes == null ? null : updatePersonRequestObject.PersonTypes.Select(x => x).ToList(),
-                Tenures = updatePersonRequestObject.Tenures == null ? null : updatePersonRequestObject.Tenures.Select(x => x).ToList()
+                Identifications = GetListOrNull(updatePersonRequestObject.Identifications),
+                Languages = GetListOrNull(updatePersonRequestObject.Languages),
+                PersonTypes = null,
+                CommunicationRequirements = GetListOrNull(updatePersonRequestObject.CommunicationRequirements),
+                Tenures = GetListOrNull(updatePersonRequestObject.Tenures)
             };
+        }
+
+        private static List<T> GetListOrNull<T>(IEnumerable<T> enumerable)
+        {
+            return enumerable == null ? null : enumerable.ToList();
         }
     }
 }

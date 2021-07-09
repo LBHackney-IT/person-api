@@ -87,7 +87,6 @@ namespace PersonApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public async Task<IActionResult> UpdatePersonByIdAsync([FromBody] UpdatePersonRequestObject personRequestObject, [FromRoute] PersonQueryObject query)
         {
-            if (query.Id == null) return BadRequest(query.Id);
             var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
             var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject, token, query).ConfigureAwait(false);
             if (person == null) return NotFound(query.Id);

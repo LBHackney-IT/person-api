@@ -3,6 +3,7 @@ using AutoFixture;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
@@ -11,9 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PersonApi.V1.Boundary.Request;
 using Xunit;
-using Amazon.DynamoDBv2;
 
 namespace PersonApi.Tests.V1.Gateways
 {
@@ -58,9 +57,8 @@ namespace PersonApi.Tests.V1.Gateways
             return new PersonQueryObject() { Id = id };
         }
 
-        private UpdatePersonRequestObject ConstructRequest(Guid id)
+        private UpdatePersonRequestObject ConstructRequest()
         {
-            id = Guid.NewGuid();
             return new UpdatePersonRequestObject()
             {
                 Surname = "Update"
@@ -169,7 +167,7 @@ namespace PersonApi.Tests.V1.Gateways
             var constructPerson = ConstructCreatePerson();
             var query = ConstructQuery(constructPerson.Id);
             await _dynamoDb.SaveAsync(constructPerson.ToDatabase()).ConfigureAwait(false);
-            var constructRequest = ConstructRequest(constructPerson.Id);
+            var constructRequest = ConstructRequest();
             //Act
             await _classUnderTest.UpdatePersonByIdAsync(constructRequest, query).ConfigureAwait(false);
 
@@ -177,6 +175,7 @@ namespace PersonApi.Tests.V1.Gateways
             var load = await _dynamoDb.LoadAsync<PersonDbEntity>(constructPerson.Id).ConfigureAwait(false);
             load.Surname.Should().Be(constructRequest.Surname);
             load.FirstName.Should().Be(constructPerson.FirstName);
+            load.PersonTypes.Should().BeEquivalentTo(constructPerson.PersonTypes);
             load.CommunicationRequirements.Should().BeEquivalentTo(constructPerson.CommunicationRequirements);
             load.DateOfBirth.Should().Be(constructPerson.DateOfBirth);
             load.Ethnicity.Should().Be(constructPerson.Ethnicity);
@@ -187,7 +186,6 @@ namespace PersonApi.Tests.V1.Gateways
             load.MiddleName.Should().Be(constructPerson.MiddleName);
             load.NationalInsuranceNo.Should().Be(constructPerson.NationalInsuranceNo);
             load.Nationality.Should().Be(constructPerson.Nationality);
-            load.PersonTypes.Should().BeEquivalentTo(constructPerson.PersonTypes);
             load.PlaceOfBirth.Should().Be(constructPerson.PlaceOfBirth);
             load.PreferredFirstName.Should().Be(constructPerson.PreferredFirstName);
             load.PreferredMiddleName.Should().Be(constructPerson.PreferredMiddleName);
@@ -197,13 +195,14 @@ namespace PersonApi.Tests.V1.Gateways
             load.Title.Should().Be(constructPerson.Title);
         }
 
+
         [Fact]
         public async Task UpdatePersonByIdReturnsNullIfEntityDoesntExist()
         {
             // Act
             var id = Guid.NewGuid();
             var query = ConstructQuery(id);
-            var constructRequest = ConstructRequest(query.Id);
+            var constructRequest = ConstructRequest();
 
             var response = await _classUnderTest.UpdatePersonByIdAsync(constructRequest, query).ConfigureAwait(false);
 
@@ -220,13 +219,13 @@ namespace PersonApi.Tests.V1.Gateways
             _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _logger.Object);
             var id = Guid.NewGuid();
             var query = ConstructQuery(id);
-            var constructRequest = ConstructRequest(query.Id);
+            var constructRequest = ConstructRequest();
             var exception = new ApplicationException("Test exception");
             mockDynamoDb.Setup(x => x.LoadAsync<PersonDbEntity>(id, default))
                         .ThrowsAsync(exception);
 
             // Act
-            Func<Task<Person>> func = async () => await _classUnderTest.UpdatePersonByIdAsync(constructRequest, query).ConfigureAwait(false);
+            Func<Task<UpdatePersonGatewayResult>> func = async () => await _classUnderTest.UpdatePersonByIdAsync(constructRequest, query).ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
