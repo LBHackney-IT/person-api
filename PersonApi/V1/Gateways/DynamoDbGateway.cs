@@ -54,7 +54,6 @@ namespace PersonApi.V1.Gateways
             var personDbEntity = requestObject.ToDatabase();
             personDbEntity.Id = query.Id;
             var load = await _dynamoDbContext.LoadAsync<PersonDbEntity>(query.Id).ConfigureAwait(false);
-
             if (load == null) return null;
 
             await _dynamoDbContext.SaveAsync(personDbEntity, new DynamoDBOperationConfig { IgnoreNullValues = true }).ConfigureAwait(false);

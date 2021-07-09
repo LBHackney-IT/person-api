@@ -175,6 +175,7 @@ namespace PersonApi.Tests.V1.Gateways
             var load = await _dynamoDb.LoadAsync<PersonDbEntity>(constructPerson.Id).ConfigureAwait(false);
             load.Surname.Should().Be(constructRequest.Surname);
             load.FirstName.Should().Be(constructPerson.FirstName);
+            load.PersonTypes.Should().BeEquivalentTo(constructPerson.PersonTypes);
             load.CommunicationRequirements.Should().BeEquivalentTo(constructPerson.CommunicationRequirements);
             load.DateOfBirth.Should().Be(constructPerson.DateOfBirth);
             load.Ethnicity.Should().Be(constructPerson.Ethnicity);
@@ -193,6 +194,7 @@ namespace PersonApi.Tests.V1.Gateways
             load.Tenures.Should().BeEquivalentTo(constructPerson.Tenures);
             load.Title.Should().Be(constructPerson.Title);
         }
+
 
         [Fact]
         public async Task UpdatePersonByIdReturnsNullIfEntityDoesntExist()
