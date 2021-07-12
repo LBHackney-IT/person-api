@@ -1,9 +1,10 @@
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using PersonApi.V1.Domain;
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PersonApi.V1.Gateways
@@ -12,16 +13,30 @@ namespace PersonApi.V1.Gateways
     {
         private readonly IAmazonSimpleNotificationService _amazonSimpleNotificationService;
         private readonly IConfiguration _configuration;
+        private readonly JsonSerializerOptions _jsonOptions;
 
         public PersonSnsGateway(IAmazonSimpleNotificationService amazonSimpleNotificationService, IConfiguration configuration)
         {
             _amazonSimpleNotificationService = amazonSimpleNotificationService;
             _configuration = configuration;
+
+            _jsonOptions = CreateJsonOptions();
+        }
+
+        private static JsonSerializerOptions CreateJsonOptions()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            options.Converters.Add(new JsonStringEnumConverter());
+            return options;
         }
 
         public async Task Publish(PersonSns personSns)
         {
-            string message = JsonConvert.SerializeObject(personSns);
+            string message = JsonSerializer.Serialize(personSns, _jsonOptions);
             var request = new PublishRequest
             {
                 Message = message,

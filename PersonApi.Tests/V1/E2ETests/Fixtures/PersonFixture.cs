@@ -78,6 +78,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 var person = _fixture.Build<PersonDbEntity>()
                                      .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                                      .With(x => x.NationalInsuranceNo, "AA123456C")
+                                     .With(x => x.Title, Title.Mr)
                                      .With(x => x.Tenures, _fixture.Build<Tenure>()
                                               .With(y => y.StartDate, "")
                                               .With(y => y.EndDate, "")
@@ -122,7 +123,8 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             var personRequest = new UpdatePersonRequestObject()
             {
                 FirstName = "Update",
-                Surname = "Updating"
+                Surname = "Updating",
+                Title = Title.Dr
             };
 
             UpdateSnsTopic();
