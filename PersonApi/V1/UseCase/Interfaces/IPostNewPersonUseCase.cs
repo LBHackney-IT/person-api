@@ -1,7 +1,7 @@
-using System.Threading.Tasks;
+using Hackney.Core.JWT;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.Infrastructure.JWT;
+using System.Threading.Tasks;
 
 namespace PersonApi.V1.UseCase.Interfaces
 {

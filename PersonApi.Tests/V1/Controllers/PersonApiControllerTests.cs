@@ -1,5 +1,8 @@
 using AutoFixture;
 using FluentAssertions;
+using Hackney.Core.Http;
+using Hackney.Core.JWT;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PersonApi.V1.Boundary.Request;
@@ -7,12 +10,10 @@ using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Controllers;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using PersonApi.V1.Infrastructure;
-using PersonApi.V1.Infrastructure.JWT;
 using Xunit;
-using Bogus;
 
 namespace PersonApi.Tests.V1.Controllers
 {
@@ -25,7 +26,9 @@ namespace PersonApi.Tests.V1.Controllers
         private readonly Mock<ITokenFactory> _mockTokenFactory;
         private readonly Mock<IHttpContextWrapper> _mockContextWrapper;
         private readonly Mock<HttpRequest> _mockHttpRequest;
+        private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
 
+        private const string RequestBodyText = "Some request body text";
         private readonly PersonApiController _sut;
         private readonly Fixture _fixture = new Fixture();
 
@@ -37,11 +40,18 @@ namespace PersonApi.Tests.V1.Controllers
             _mockTokenFactory = new Mock<ITokenFactory>();
             _mockContextWrapper = new Mock<IHttpContextWrapper>();
             _mockHttpRequest = new Mock<HttpRequest>();
+            _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
 
             _sut = new PersonApiController(_mockGetByIdUseCase.Object, _mockNewPersonUseCase.Object, _mockUpdatePersonUseCase.Object,
-                _mockTokenFactory.Object, _mockContextWrapper.Object);
+                _mockTokenFactory.Object, _mockContextWrapper.Object, _mockHttpContextAccessor.Object);
+
+            _mockHttpRequest.SetupGet(x => x.Body).Returns(new MemoryStream(Encoding.Default.GetBytes(RequestBodyText)));
 
             _mockContextWrapper.Setup(x => x.GetContextRequestHeaders(It.IsAny<HttpContext>())).Returns(new HeaderDictionary());
+
+            var mockHttpContext = new Mock<HttpContext>();
+            mockHttpContext.SetupGet(x => x.Request).Returns(_mockHttpRequest.Object);
+            _mockHttpContextAccessor.SetupGet(x => x.HttpContext).Returns(mockHttpContext.Object);
         }
 
         private PersonQueryObject ConstructQuery()
@@ -121,7 +131,8 @@ namespace PersonApi.Tests.V1.Controllers
         {
             // Arrange
             var exception = new ApplicationException("Test exception");
-            _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<CreatePersonRequestObject>(), It.IsAny<Token>())).ThrowsAsync(exception);
+            _mockNewPersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<CreatePersonRequestObject>(), It.IsAny<Token>()))
+                                 .ThrowsAsync(exception);
 
             // Act
             Func<Task<IActionResult>> func = async () => await _sut.PostNewPerson(new CreatePersonRequestObject())
@@ -136,7 +147,8 @@ namespace PersonApi.Tests.V1.Controllers
             // Arrange
             var query = ConstructQuery();
             var request = ConstructRequest();
-            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request, It.IsAny<Token>(), query)).ReturnsAsync((PersonResponseObject) null);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request, RequestBodyText, It.IsAny<Token>(), query))
+                                    .ReturnsAsync((PersonResponseObject) null);
 
             // Act
             var response = await _sut.UpdatePersonByIdAsync(request, query).ConfigureAwait(false);
@@ -153,7 +165,8 @@ namespace PersonApi.Tests.V1.Controllers
             var query = ConstructQuery();
             var request = ConstructRequest();
             var personResponse = _fixture.Create<PersonResponseObject>();
-            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request, It.IsAny<Token>(), query)).ReturnsAsync(personResponse);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(request, RequestBodyText, It.IsAny<Token>(), query))
+                                    .ReturnsAsync(personResponse);
 
             // Act
             var response = await _sut.UpdatePersonByIdAsync(request, query).ConfigureAwait(false);
@@ -168,7 +181,8 @@ namespace PersonApi.Tests.V1.Controllers
             // Arrange
             var query = ConstructQuery();
             var exception = new ApplicationException("Test exception");
-            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<UpdatePersonRequestObject>(), It.IsAny<Token>(), query)).ThrowsAsync(exception);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<UpdatePersonRequestObject>(), RequestBodyText, It.IsAny<Token>(), query))
+                                    .ThrowsAsync(exception);
 
             // Act
             Func<Task<IActionResult>> func = async () => await _sut.UpdatePersonByIdAsync(new UpdatePersonRequestObject(), query)

@@ -1,7 +1,7 @@
-using System;
+using Hackney.Core.JWT;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Infrastructure;
-using PersonApi.V1.Infrastructure.JWT;
+using System;
 
 namespace PersonApi.V1.Factories
 {
@@ -32,13 +32,13 @@ namespace PersonApi.V1.Factories
             };
         }
 
-        public PersonSns Update(Person old, Person updated, Token token)
+        public PersonSns Update(UpdateEntityResult<PersonDbEntity> updateResult, Token token)
         {
             return new PersonSns
             {
                 CorrelationId = Guid.NewGuid(),
                 DateTime = DateTime.UtcNow,
-                EntityId = old.Id,
+                EntityId = updateResult.UpdatedEntity.Id,
                 Id = Guid.NewGuid(),
                 EventType = UpdatePersonConstants.EVENTTYPE,
                 Version = UpdatePersonConstants.V1VERSION,
@@ -52,8 +52,8 @@ namespace PersonApi.V1.Factories
                 },
                 EventData = new EventData
                 {
-                    OldData = old,
-                    NewData = updated
+                    OldData = updateResult.OldValues,
+                    NewData = updateResult.NewValues
                 }
             };
         }

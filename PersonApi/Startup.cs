@@ -2,10 +2,12 @@ using Amazon;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using FluentValidation.AspNetCore;
-using Hackney.Core.DynamoDb;
 using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.HealthCheck;
+using Hackney.Core.Http;
+using Hackney.Core.JWT;
 using Hackney.Core.Logging;
+using Hackney.Core.Middleware;
 using Hackney.Core.Middleware.CorrelationId;
 using Hackney.Core.Middleware.Exception;
 using Hackney.Core.Middleware.Logging;
@@ -21,6 +23,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using PersonApi.V1.Boundary;
+using PersonApi.V1.Domain.Configuration;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;
@@ -35,8 +38,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using PersonApi.V1.Domain.Configuration;
-using PersonApi.V1.Infrastructure.JWT;
 
 namespace PersonApi
 {
@@ -76,6 +77,7 @@ namespace PersonApi
             });
 
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
+            services.AddHttpContextAccessor();
 
             services.AddDynamoDbHealthCheck<PersonDbEntity>();
 
@@ -159,6 +161,7 @@ namespace PersonApi
             services.AddScoped<ISnsFactory, PersonSnsFactory>();
             services.AddScoped<ITokenFactory, TokenFactory>();
             services.AddScoped<IHttpContextWrapper, HttpContextWrapper>();
+            services.AddScoped<IEntityUpdater, EntityUpdater>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
@@ -193,6 +196,7 @@ namespace PersonApi
             app.UseLoggingScope();
             app.UseCustomExceptionHandler(logger);
             app.UseXRay("person-api");
+            app.EnableRequestBodyRewind();
 
             //Get All ApiVersions,
             var api = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
