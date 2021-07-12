@@ -1,10 +1,11 @@
+using Hackney.Core.JWT;
 using Hackney.Core.Logging;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
-using PersonApi.V1.Infrastructure.JWT;
 using PersonApi.V1.UseCase.Interfaces;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PersonApi.V1.UseCase
@@ -26,14 +27,20 @@ namespace PersonApi.V1.UseCase
         }
 
         [LogCall]
-        public async Task<PersonResponseObject> ExecuteAsync(UpdatePersonRequestObject personRequestObject, Token token, PersonQueryObject query)
+        public async Task<PersonResponseObject> ExecuteAsync(UpdatePersonRequestObject personRequestObject, string requestBody,
+            Token token, PersonQueryObject query)
         {
-            var result = await _gateway.UpdatePersonByIdAsync(personRequestObject, query).ConfigureAwait(false);
+            var result = await _gateway.UpdatePersonByIdAsync(personRequestObject, requestBody, query).ConfigureAwait(false);
+            if (result is null) return null;
 
-            var personSnsMessage = _snsFactory.Update(result.OldPerson, result.UpdatedPerson, token);
-            await _snsGateway.Publish(personSnsMessage).ConfigureAwait(false);
+            // Only raise the event if something actually changed.
+            if (result.NewValues.Any())
+            {
+                var personSnsMessage = _snsFactory.Update(result, token);
+                await _snsGateway.Publish(personSnsMessage).ConfigureAwait(false);
+            }
 
-            return _responseFactory.ToResponse(result.UpdatedPerson);
+            return _responseFactory.ToResponse(result.UpdatedEntity.ToDomain());
         }
     }
 }

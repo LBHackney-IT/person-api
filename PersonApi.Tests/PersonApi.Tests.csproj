@@ -7,7 +7,7 @@
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-    <NoWarn>CA1305;CA1051;CA1822;CA1001;CA1062;S2699;CA2000</NoWarn>
+    <NoWarn>CA1305;CA1051;CA1822;CA1001;CA1062;S2699;CA2000;S1764;CA1307;CA1303</NoWarn>
   </PropertyGroup>
     
   <ItemGroup>
@@ -23,6 +23,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="DeepCloner" Version="0.10.2" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.13" />
@@ -39,10 +40,6 @@
     
   <ItemGroup>
     <ProjectReference Include="..\PersonApi\PersonApi.csproj" />
-  </ItemGroup>
-    
-  <ItemGroup>
-    <Folder Include="V1\Infrastructure\" />
   </ItemGroup>
 
 </Project>

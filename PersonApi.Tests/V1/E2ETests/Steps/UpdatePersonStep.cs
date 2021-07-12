@@ -1,14 +1,11 @@
-using Amazon.SimpleNotificationService.Model;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Infrastructure;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -27,16 +24,25 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
         /// </summary>
         /// <param name="requestObject"></param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> CallApi(UpdatePersonRequestObject requestObject, Guid id)
+        public async Task<HttpResponseMessage> CallApi(UpdatePersonRequestObject requestObject, Guid? id)
         {
             var token =
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nQGRldmVsb3BtZW50LmNvbSIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiVGVzdGVyIiwiZ3JvdXBzIjpbImUyZS10ZXN0aW5nIl0sImlhdCI6MTYyMzA1ODIzMn0.SooWAr-NUZLwW8brgiGpi2jZdWjyZBwp4GJikn0PvEw";
 
-            var uri = new Uri($"api/v1/persons/{id}", UriKind.Relative);
+            var idString = id.HasValue ? id.Value.ToString() : "dsfoidfjh";
+            var uri = new Uri($"api/v1/persons/{idString}", UriKind.Relative);
 
             var message = new HttpRequestMessage(HttpMethod.Patch, uri);
 
-            message.Content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json");
+            var jsonSettings = new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Formatting = Formatting.Indented,
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Converters = new[] { new StringEnumConverter() }
+            };
+            var requestJson = JsonConvert.SerializeObject(requestObject, jsonSettings);
+            message.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
             message.Method = HttpMethod.Patch;
             message.Headers.Add("Authorization", token);
 
@@ -46,7 +52,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             return await _httpClient.SendAsync(message).ConfigureAwait(false);
         }
 
-        public async Task WhenTheUpdatePersonApiIsCalled(UpdatePersonRequestObject personRequestObject, Guid id)
+        public async Task WhenTheUpdatePersonApiIsCalled(UpdatePersonRequestObject personRequestObject, Guid? id)
         {
             _lastResponse = await CallApi(personRequestObject, id).ConfigureAwait(false);
 
@@ -56,6 +62,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
         {
             _lastResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
             var result = await personFixture._dbContext.LoadAsync<PersonDbEntity>(personFixture.Person.Id).ConfigureAwait(false);
+            result.FirstName.Should().Be(personFixture.UpdatePersonRequest.FirstName);
             result.Surname.Should().Be(personFixture.UpdatePersonRequest.Surname);
         }
 

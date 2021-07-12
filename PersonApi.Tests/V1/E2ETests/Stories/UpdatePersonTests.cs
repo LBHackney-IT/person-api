@@ -49,9 +49,19 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         public void ServiceReturnsTheRequestedPerson()
         {
             this.Given(g => _personFixture.GivenAPersonAlreadyExistsAndUpdateRequested())
-                .And(g => _personFixture.GivenAUpdatePersonRequest(_personFixture.Person))
+                .And(g => _personFixture.GivenAUpdatePersonRequest())
                 .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest, _personFixture.PersonId))
                 .Then(t => _steps.ThenThePersonDetailsAreUpdated(_personFixture))
+                .BDDfy();
+        }
+
+        [Fact]
+        public void ServiceReturnsNotFoundWhenNoPersonExists()
+        {
+            this.Given(g => _personFixture.GivenAPersonIdDoesNotExist())
+                .And(g => _personFixture.GivenAUpdatePersonRequest())
+                .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest, _personFixture.PersonId))
+                .Then(r => _steps.ThenNotFoundIsReturned())
                 .BDDfy();
         }
 
@@ -59,8 +69,8 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         public void ServiceReturnsBadRequest()
         {
             this.Given(g => _personFixture.GivenAPersonIdDoesNotExist())
-                .And(g => _personFixture.GivenAUpdatePersonRequest(_personFixture.Person))
-                .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest, _personFixture.PersonId))
+                .And(g => _personFixture.GivenAUpdatePersonRequest())
+                .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest, null))
                 .Then(r => _steps.ThenBadRequestIsReturned())
                 .BDDfy();
         }
