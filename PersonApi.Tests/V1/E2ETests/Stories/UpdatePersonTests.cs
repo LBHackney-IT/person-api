@@ -46,7 +46,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         }
 
         [Fact]
-        public void ServiceReturnsTheRequestedPerson()
+        public void ServiceUpdatesTheRequestedPerson()
         {
             this.Given(g => _personFixture.GivenAPersonAlreadyExistsAndUpdateRequested())
                 .And(g => _personFixture.GivenAUpdatePersonRequest())
