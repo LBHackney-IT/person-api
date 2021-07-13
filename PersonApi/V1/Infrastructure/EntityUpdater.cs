@@ -1,4 +1,5 @@
 using Hackney.Core;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,13 @@ namespace PersonApi.V1.Infrastructure
 
     public class EntityUpdater : IEntityUpdater
     {
+        private readonly ILogger<EntityUpdater> _logger;
+
+        public EntityUpdater(ILogger<EntityUpdater> logger)
+        {
+            _logger = logger;
+        }
+
         private static JsonSerializerOptions CreateJsonOptions()
         {
             var options = new JsonSerializerOptions
@@ -84,13 +92,20 @@ namespace PersonApi.V1.Infrastructure
 
                 var requestObjectProperty = updateObjectType.GetProperty(prop.Name);
                 if (requestObjectProperty is null)
-                    throw new ArgumentException($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}).");
+                {
+                    _logger.LogWarning($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}). Ignoring {prop.Name} value...");
+                    continue;
+                    //throw new ArgumentException($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}).");
+                }
 
                 var updateValue = requestObjectProperty.GetValue(updateObject);
                 var existingValue = prop.GetValue(entityToUpdate);
 
                 // For sub-objects this Equals() check will only work if the Equals() method is overridden
-                if (!ignoreUnchangedProperties || !updateValue.Equals(existingValue))
+                if (!ignoreUnchangedProperties
+                    //|| !(updateValue is null && existingValue is null)
+                    //|| (updateValue is null && (existingValue != null))
+                    || !updateValue.Equals(existingValue))
                 {
                     result.OldValues.Add(propName, existingValue);
                     result.NewValues.Add(propName, updateValue);
