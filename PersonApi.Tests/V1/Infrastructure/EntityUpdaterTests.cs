@@ -204,9 +204,9 @@ namespace PersonApi.Tests.V1.Infrastructure
             var requestObject = _fixture.Build<EntityUpdateRequest>()
                                         // Updated
                                         .With(x => x.SomeBool, !entity.SomeBool)
-                                        .With(x => x.SomeString, (string)null)
+                                        .With(x => x.SomeString, (string) null)
                                         .With(x => x.SomeDate, DateTime.UtcNow)
-                                        .With(x => x.ASubEntity, (SubEntity)null)
+                                        .With(x => x.ASubEntity, (SubEntity) null)
                                         .With(x => x.SomeEnum, (EnumExample?) null)
                                         .With(x => x.SomeInt, (int?) null)
                                         .Create();
