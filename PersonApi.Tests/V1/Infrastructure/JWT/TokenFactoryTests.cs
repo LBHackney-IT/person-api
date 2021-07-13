@@ -1,6 +1,6 @@
 using FluentAssertions;
+using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
-using PersonApi.V1.Infrastructure.JWT;
 using Xunit;
 
 namespace PersonApi.Tests.V1.Infrastructure.JWT

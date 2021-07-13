@@ -1,10 +1,10 @@
-using System.Threading.Tasks;
+using Hackney.Core.JWT;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
-using PersonApi.V1.Infrastructure.JWT;
 using PersonApi.V1.UseCase.Interfaces;
+using System.Threading.Tasks;
 
 namespace PersonApi.V1.UseCase
 {

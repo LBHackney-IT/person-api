@@ -31,14 +31,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         public static IEnumerable<object[]> Titles => GetEnumValues<Title>();
         public static IEnumerable<object[]> Genders => GetEnumValues<Gender>();
 
-        //[Fact]
-        //public void ShouldErrorWithEmptyId()
-        //{
-        //    var query = new PersonRequestObject() { Id = Guid.Empty };
-        //    var result = _sut.TestValidate(query);
-        //    result.ShouldHaveValidationErrorFor(x => x.Id);
-        //}
-
         [Theory]
         [MemberData(nameof(Titles))]
         public void TitleShouldNotErrorWithValidValue(Title valid)

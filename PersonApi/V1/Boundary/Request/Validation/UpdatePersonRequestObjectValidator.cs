@@ -13,10 +13,6 @@ namespace PersonApi.V1.Boundary.Request.Validation
 
         public UpdatePersonRequestObjectValidator()
         {
-            // Not needed for create person, but will be needed for edit person
-            //RuleFor(x => x.Id).NotNull()
-            //                  .NotEqual(Guid.Empty);
-
             // Mandatory fields
             RuleFor(x => x.Title).IsInEnum();
             RuleFor(x => x.DateOfBirth).NotEqual(default(DateTime))
