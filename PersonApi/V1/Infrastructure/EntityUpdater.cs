@@ -1,4 +1,5 @@
 using Hackney.Core;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,13 @@ namespace PersonApi.V1.Infrastructure
 
     public class EntityUpdater : IEntityUpdater
     {
+        private readonly ILogger<EntityUpdater> _logger;
+
+        public EntityUpdater(ILogger<EntityUpdater> logger)
+        {
+            _logger = logger;
+        }
+
         private static JsonSerializerOptions CreateJsonOptions()
         {
             var options = new JsonSerializerOptions
@@ -20,6 +28,13 @@ namespace PersonApi.V1.Infrastructure
             };
             options.Converters.Add(new JsonStringEnumConverter());
             return options;
+        }
+
+        private static bool HasValueChanged(object existingValue, object updateValue)
+        {
+            if (updateValue is null && existingValue is null) return false;
+            if (updateValue is null && (existingValue != null)) return true;
+            return !updateValue.Equals(existingValue);
         }
 
         /// <summary>
@@ -84,13 +99,18 @@ namespace PersonApi.V1.Infrastructure
 
                 var requestObjectProperty = updateObjectType.GetProperty(prop.Name);
                 if (requestObjectProperty is null)
-                    throw new ArgumentException($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}).");
+                {
+                    // Received a property on the request Json we weren't expecting (it's not on the request object)
+                    // So we log a warning, ignore it and carry on.
+                    _logger.LogWarning($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}). Ignoring {prop.Name} value...");
+                    continue;
+                }
 
                 var updateValue = requestObjectProperty.GetValue(updateObject);
                 var existingValue = prop.GetValue(entityToUpdate);
 
                 // For sub-objects this Equals() check will only work if the Equals() method is overridden
-                if (!ignoreUnchangedProperties || !updateValue.Equals(existingValue))
+                if (!ignoreUnchangedProperties || HasValueChanged(existingValue, updateValue))
                 {
                     result.OldValues.Add(propName, existingValue);
                     result.NewValues.Add(propName, updateValue);
