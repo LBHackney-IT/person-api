@@ -23,7 +23,6 @@ namespace PersonApi.Tests.V1.Infrastructure
         private readonly JsonSerializerOptions _jsonOptions;
         private const string NotValidJson = "Not valid json";
         private const string JsonWithUnknownPropertyName = "{ \"unknownProp\": \"Some new value\" }";
-        //private const string JsonWithKnownPropertyName = "{ \"someString\": \"Some new value\" }";
         private const string JsonWithKnownPropertyNameNotOnRequestObj = "{ \"someOtherString\": \"Some new value\" }";
 
         public EntityUpdaterTests()
@@ -51,7 +50,9 @@ namespace PersonApi.Tests.V1.Infrastructure
             actual.Should().HaveCount(expected.Count);
             foreach (var prop in expected)
             {
-                prop.Value.Equals(actual[prop.Key]).Should().BeTrue();
+                var expectedVal = prop.Value;
+                if (expectedVal is null) actual[prop.Key].Should().BeNull();
+                else expectedVal.Equals(actual[prop.Key]).Should().BeTrue();
             }
         }
 
@@ -185,6 +186,33 @@ namespace PersonApi.Tests.V1.Infrastructure
             var inputJson = JsonSerializer.Serialize(requestObject, CreateJsonOptions(true));
 
             var propNames = new string[] { "someBool", "someString", "someDate", "aSubEntity" };
+            var expectedOld = ConstructJsonDictionaryFromObject(entity, propNames.ToArray());
+            var expectedNew = ConstructJsonDictionaryFromObject(requestObject, propNames.ToArray());
+
+            var result = _sut.UpdateEntity(entity, inputJson, requestObject);
+            result.Should().NotBeNull();
+            result.UpdatedEntity.Should().Be(entity);
+
+            VerifyValues(expectedOld, result.OldValues);
+            VerifyValues(expectedNew, result.NewValues);
+        }
+
+        [Fact]
+        public void UpdateEntityWithSomeNullValuesReturnsResult()
+        {
+            var entity = _fixture.Build<Entity>().With(x => x.SomeBool, true).Create();
+            var requestObject = _fixture.Build<EntityUpdateRequest>()
+                                        // Updated
+                                        .With(x => x.SomeBool, !entity.SomeBool)
+                                        .With(x => x.SomeString, (string)null)
+                                        .With(x => x.SomeDate, DateTime.UtcNow)
+                                        .With(x => x.ASubEntity, (SubEntity)null)
+                                        .With(x => x.SomeEnum, (EnumExample?) null)
+                                        .With(x => x.SomeInt, (int?) null)
+                                        .Create();
+            var inputJson = JsonSerializer.Serialize(requestObject, CreateJsonOptions(false));
+
+            var propNames = new string[] { "someBool", "someString", "someDate", "aSubEntity", "someEnum", "someInt" };
             var expectedOld = ConstructJsonDictionaryFromObject(entity, propNames.ToArray());
             var expectedNew = ConstructJsonDictionaryFromObject(requestObject, propNames.ToArray());
 

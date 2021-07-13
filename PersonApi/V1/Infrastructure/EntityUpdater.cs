@@ -30,6 +30,13 @@ namespace PersonApi.V1.Infrastructure
             return options;
         }
 
+        private static bool HasValueChanged(object existingValue, object updateValue)
+        {
+            if (updateValue is null && existingValue is null) return false;
+            if (updateValue is null && (existingValue != null)) return true;
+            return !updateValue.Equals(existingValue);
+        }
+
         /// <summary>
         /// Updates the supplied entity with the updated property values described in the request object / json
         /// Defaults the ignoreUnchangedProperties input value to true.
@@ -93,19 +100,17 @@ namespace PersonApi.V1.Infrastructure
                 var requestObjectProperty = updateObjectType.GetProperty(prop.Name);
                 if (requestObjectProperty is null)
                 {
+                    // Received a property on the request Json we weren't expecting (it's not on the request object)
+                    // So we log a warning, ignore it and carry on.
                     _logger.LogWarning($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}). Ignoring {prop.Name} value...");
                     continue;
-                    //throw new ArgumentException($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}).");
                 }
 
                 var updateValue = requestObjectProperty.GetValue(updateObject);
                 var existingValue = prop.GetValue(entityToUpdate);
 
                 // For sub-objects this Equals() check will only work if the Equals() method is overridden
-                if (!ignoreUnchangedProperties
-                    //|| !(updateValue is null && existingValue is null)
-                    //|| (updateValue is null && (existingValue != null))
-                    || !updateValue.Equals(existingValue))
+                if (!ignoreUnchangedProperties || HasValueChanged(existingValue, updateValue))
                 {
                     result.OldValues.Add(propName, existingValue);
                     result.NewValues.Add(propName, updateValue);
