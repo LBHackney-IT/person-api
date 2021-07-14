@@ -22,26 +22,11 @@ namespace PersonApi.V1.Infrastructure
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string Surname { get; set; }
-        public string Ethnicity { get; set; }
-        public string Nationality { get; set; }
-        public string NationalInsuranceNo { get; set; }
         public string PlaceOfBirth { get; set; }
         public string Reason { get; set; }
 
         [DynamoDBProperty(Converter = typeof(DynamoDbDateTimeConverter))]
         public DateTime? DateOfBirth { get; set; }
-
-        [DynamoDBProperty(Converter = typeof(DynamoDbEnumConverter<Gender>))]
-        public Gender? Gender { get; set; }
-
-        [DynamoDBProperty(Converter = typeof(DynamoDbObjectListConverter<Identification>))]
-        public List<Identification> Identifications { get; set; } = new List<Identification>();
-
-        [DynamoDBProperty(Converter = typeof(DynamoDbObjectListConverter<Language>))]
-        public List<Language> Languages { get; set; } = new List<Language>();
-
-        [DynamoDBProperty(Converter = typeof(DynamoDbEnumListConverter<CommunicationRequirement>))]
-        public List<CommunicationRequirement> CommunicationRequirements { get; set; } = new List<CommunicationRequirement>();
 
         [DynamoDBProperty(Converter = typeof(DynamoDbEnumListConverter<PersonType>))]
         public List<PersonType> PersonTypes { get; set; } = new List<PersonType>();

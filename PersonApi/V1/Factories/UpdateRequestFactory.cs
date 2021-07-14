@@ -19,16 +19,9 @@ namespace PersonApi.V1.Factories
                 FirstName = updatePersonRequestObject.FirstName,
                 MiddleName = updatePersonRequestObject.MiddleName,
                 Surname = updatePersonRequestObject.Surname,
-                Ethnicity = updatePersonRequestObject.Ethnicity,
-                Nationality = updatePersonRequestObject.Nationality,
-                NationalInsuranceNo = updatePersonRequestObject.NationalInsuranceNo?.ToUpper(),
                 PlaceOfBirth = updatePersonRequestObject.PlaceOfBirth,
                 DateOfBirth = updatePersonRequestObject.DateOfBirth,
-                Gender = updatePersonRequestObject.Gender,
-                Identifications = GetListOrNull(updatePersonRequestObject.Identifications),
-                Languages = GetListOrNull(updatePersonRequestObject.Languages),
                 PersonTypes = null,
-                CommunicationRequirements = GetListOrNull(updatePersonRequestObject.CommunicationRequirements),
                 Tenures = GetListOrNull(updatePersonRequestObject.Tenures)
             };
         }

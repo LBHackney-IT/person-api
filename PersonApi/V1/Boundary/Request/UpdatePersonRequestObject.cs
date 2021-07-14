@@ -22,23 +22,9 @@ namespace PersonApi.V1.Boundary.Request
 
         public string Surname { get; set; }
 
-        public string Ethnicity { get; set; }
-
-        public string Nationality { get; set; }
-
-        public string NationalInsuranceNo { get; set; }
-
         public string PlaceOfBirth { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
-
-        public Gender? Gender { get; set; }
-
-        public IEnumerable<Identification> Identifications { get; set; }
-
-        public IEnumerable<Language> Languages { get; set; }
-
-        public IEnumerable<CommunicationRequirement> CommunicationRequirements { get; set; }
         public IEnumerable<Tenure> Tenures { get; set; }
     }
 }

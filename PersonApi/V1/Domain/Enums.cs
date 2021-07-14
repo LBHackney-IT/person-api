@@ -30,18 +30,4 @@ namespace PersonApi.V1.Domain
         F,  // Female
         O   // Other?
     }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum IdentificationType
-    {
-        Passport,
-        DrivingLicence
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum CommunicationRequirement
-    {
-        SignLanguage,
-        InterpreterRequired
-    }
 }

@@ -19,16 +19,9 @@ namespace PersonApi.V1.Factories
                 FirstName = databaseEntity.FirstName,
                 MiddleName = databaseEntity.MiddleName,
                 Surname = databaseEntity.Surname,
-                Ethnicity = databaseEntity.Ethnicity,
-                Nationality = databaseEntity.Nationality,
-                NationalInsuranceNo = databaseEntity.NationalInsuranceNo?.ToUpper(),
                 PlaceOfBirth = databaseEntity.PlaceOfBirth,
                 DateOfBirth = databaseEntity.DateOfBirth,
-                Gender = databaseEntity.Gender,
                 Reason = databaseEntity.Reason,
-                Identifications = databaseEntity.Identifications,
-                Languages = databaseEntity.Languages,
-                CommunicationRequirements = databaseEntity.CommunicationRequirements,
                 PersonTypes = databaseEntity.PersonTypes,
                 Tenures = databaseEntity.Tenures
             };
@@ -47,16 +40,9 @@ namespace PersonApi.V1.Factories
                 FirstName = entity.FirstName,
                 MiddleName = entity.MiddleName,
                 Surname = entity.Surname,
-                Ethnicity = entity.Ethnicity,
-                Nationality = entity.Nationality,
-                NationalInsuranceNo = entity.NationalInsuranceNo?.ToUpper(),
                 PlaceOfBirth = entity.PlaceOfBirth,
                 DateOfBirth = entity.DateOfBirth,
-                Gender = entity.Gender,
                 Reason = entity.Reason,
-                Identifications = entity.Identifications.ToList(),
-                Languages = entity.Languages.ToList(),
-                CommunicationRequirements = entity.CommunicationRequirements.ToList(),
                 PersonTypes = entity.PersonTypes.ToList(),
                 Tenures = entity.Tenures.ToList()
             };
