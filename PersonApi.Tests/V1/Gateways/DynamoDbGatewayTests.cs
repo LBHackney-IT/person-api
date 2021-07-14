@@ -108,21 +108,6 @@ namespace PersonApi.Tests.V1.Gateways
             return person;
         }
 
-        private Person ConstructPerson(bool nullOptionalEnums = false)
-
-        {
-            var person = _fixture.Build<Person>()
-                            .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                            .Create();
-            if (nullOptionalEnums)
-            {
-                person.Gender = null;
-                person.PreferredTitle = null;
-            }
-
-            return person;
-        }
-
         [Fact]
         public async Task GetPersonByIdReturnsNullIfEntityDoesntExist()
         {
