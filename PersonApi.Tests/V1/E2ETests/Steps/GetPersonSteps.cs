@@ -28,18 +28,12 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             var responseContent = await _lastResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             var apiPerson = JsonSerializer.Deserialize<PersonResponseObject>(responseContent, CreateJsonOptions());
 
-            apiPerson.CommunicationRequirements.Should().BeEquivalentTo(expectedPerson.CommunicationRequirements);
             apiPerson.DateOfBirth.Should().Be(ResponseFactory.FormatDateOfBirth(expectedPerson.DateOfBirth));
-            apiPerson.Ethnicity.Should().Be(expectedPerson.Ethnicity);
             apiPerson.FirstName.Should().Be(expectedPerson.FirstName);
-            apiPerson.Gender.Should().Be(expectedPerson.Gender);
             apiPerson.Id.Should().Be(expectedPerson.Id);
-            apiPerson.Identifications.Should().BeEquivalentTo(expectedPerson.Identifications);
-            apiPerson.Languages.Should().BeEquivalentTo(expectedPerson.Languages);
             // TODO - Update the links verification when implemented
             apiPerson.Links.Should().BeEmpty();
             apiPerson.MiddleName.Should().Be(expectedPerson.MiddleName);
-            apiPerson.Nationality.Should().Be(expectedPerson.Nationality);
             apiPerson.PersonTypes.Should().BeEquivalentTo(expectedPerson.PersonTypes);
             apiPerson.PlaceOfBirth.Should().Be(expectedPerson.PlaceOfBirth);
             apiPerson.PreferredFirstName.Should().Be(expectedPerson.PreferredFirstName);

@@ -37,16 +37,13 @@ namespace PersonApi.Tests.V1.Factories
         }
 
         [Theory]
-        [InlineData(true, null)]
-        [InlineData(true, "234238945")]
-        [InlineData(false, null)]
-        [InlineData(false, "234238945")]
-        public void CanMapADomainPersonToAResponsePerson(bool hasDob, string ni)
+        [InlineData(true)]
+        [InlineData(false)]
+        public void CanMapADomainPersonToAResponsePerson(bool hasDob)
         {
             DateTime? dob = hasDob ? DateTime.UtcNow.AddYears(-30) : default;
             var person = _fixture.Build<Person>()
                                  .With(x => x.DateOfBirth, dob)
-                                 .With(x => x.NationalInsuranceNo, ni)
                                  .Create();
             var response = _sut.ToResponse(person);
 
@@ -57,14 +54,8 @@ namespace PersonApi.Tests.V1.Factories
             response.FirstName.Should().Be(person.FirstName);
             response.MiddleName.Should().Be(person.MiddleName);
             response.Surname.Should().Be(person.Surname);
-            response.Ethnicity.Should().Be(person.Ethnicity);
-            response.Nationality.Should().Be(person.Nationality);
             response.PlaceOfBirth.Should().Be(person.PlaceOfBirth);
             response.DateOfBirth.Should().Be(ResponseFactory.FormatDateOfBirth(person.DateOfBirth));
-            response.Gender.Should().Be(person.Gender);
-            response.Identifications.Should().BeEquivalentTo(person.Identifications);
-            response.Languages.Should().BeEquivalentTo(person.Languages);
-            response.CommunicationRequirements.Should().BeEquivalentTo(person.CommunicationRequirements);
             response.PersonTypes.Should().BeEquivalentTo(person.PersonTypes);
             response.Tenures.Should().BeEquivalentTo(person.Tenures);
         }
