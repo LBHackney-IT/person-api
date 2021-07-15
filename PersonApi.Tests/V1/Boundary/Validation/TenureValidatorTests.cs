@@ -126,7 +126,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [InlineData("Some string with <tag> in it.")]
         public void UprnShouldErrorWithInvalidValue(string invalid)
         {
-            var model = new Tenure() { Uprn = invalid, PaymentReference = invalid, PropertyReference = invalid};
+            var model = new Tenure() { Uprn = invalid, PaymentReference = invalid, PropertyReference = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.Uprn);
             result.ShouldHaveValidationErrorFor(x => x.PropertyReference);
