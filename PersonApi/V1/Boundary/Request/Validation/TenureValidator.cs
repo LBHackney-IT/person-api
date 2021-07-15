@@ -23,6 +23,10 @@ namespace PersonApi.V1.Boundary.Request.Validation
                 .When(y => !string.IsNullOrEmpty(y.Type));
             RuleFor(x => x.Uprn).NotXssString()
                 .When(y => !string.IsNullOrEmpty(y.Uprn));
+            RuleFor(x => x.PropertyReference).NotXssString()
+                .When(y => !string.IsNullOrEmpty(y.Uprn));
+            RuleFor(x => x.PaymentReference).NotXssString()
+                .When(y => !string.IsNullOrEmpty(y.Uprn));
         }
     }
 }
