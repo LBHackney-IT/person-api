@@ -4,16 +4,23 @@ using Hackney.Core.Http;
 using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Moq;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Controllers;
+using PersonApi.V1.Domain;
+using PersonApi.V1.Factories;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Routing;
 using Xunit;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
+using System.Linq;
 
 namespace PersonApi.Tests.V1.Controllers
 {
@@ -27,6 +34,7 @@ namespace PersonApi.Tests.V1.Controllers
         private readonly Mock<IHttpContextWrapper> _mockContextWrapper;
         private readonly Mock<HttpRequest> _mockHttpRequest;
         private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
+        private readonly ResponseFactory _responseFactory;
 
         private const string RequestBodyText = "Some request body text";
         private readonly PersonApiController _sut;
@@ -34,6 +42,10 @@ namespace PersonApi.Tests.V1.Controllers
 
         public PersonApiControllerTests()
         {
+
+            var stubHttpContext = new DefaultHttpContext();
+            var controllerContext = new ControllerContext(new ActionContext(stubHttpContext, new RouteData(), new ControllerActionDescriptor()));
+
             _mockGetByIdUseCase = new Mock<IGetByIdUseCase>();
             _mockNewPersonUseCase = new Mock<IPostNewPersonUseCase>();
             _mockUpdatePersonUseCase = new Mock<IUpdatePersonUseCase>();
@@ -41,9 +53,12 @@ namespace PersonApi.Tests.V1.Controllers
             _mockContextWrapper = new Mock<IHttpContextWrapper>();
             _mockHttpRequest = new Mock<HttpRequest>();
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+            _responseFactory = new ResponseFactory(null);
 
             _sut = new PersonApiController(_mockGetByIdUseCase.Object, _mockNewPersonUseCase.Object, _mockUpdatePersonUseCase.Object,
-                _mockTokenFactory.Object, _mockContextWrapper.Object, _mockHttpContextAccessor.Object);
+                _mockTokenFactory.Object, _mockContextWrapper.Object, _mockHttpContextAccessor.Object, _responseFactory);
+
+            _sut.ControllerContext = controllerContext;
 
             _mockHttpRequest.SetupGet(x => x.Body).Returns(new MemoryStream(Encoding.Default.GetBytes(RequestBodyText)));
 
@@ -69,7 +84,7 @@ namespace PersonApi.Tests.V1.Controllers
         {
             // Arrange
             var query = ConstructQuery();
-            _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(query)).ReturnsAsync((PersonResponseObject) null);
+            _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(query)).ReturnsAsync((Person) null);
 
             // Act
             var response = await _sut.GetPersonByIdAsync(query).ConfigureAwait(false);
@@ -84,7 +99,7 @@ namespace PersonApi.Tests.V1.Controllers
         {
             // Arrange
             var query = ConstructQuery();
-            var personResponse = _fixture.Create<PersonResponseObject>();
+            var personResponse = _fixture.Create<Person>();
             _mockGetByIdUseCase.Setup(x => x.ExecuteAsync(query)).ReturnsAsync(personResponse);
 
             // Act
@@ -92,7 +107,9 @@ namespace PersonApi.Tests.V1.Controllers
 
             // Assert
             response.Should().BeOfType(typeof(OkObjectResult));
-            (response as OkObjectResult).Value.Should().Be(personResponse);
+            _sut.HttpContext.Response.Headers.TryGetValue("ETag", out StringValues val).Should().BeTrue();
+            val.First().Should().Be(personResponse.VersionNumber.ToString());
+            (response as OkObjectResult).Value.Should().BeEquivalentTo(_responseFactory.ToResponse(personResponse));
         }
 
         [Fact]

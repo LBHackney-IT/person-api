@@ -2,6 +2,7 @@ using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
 using FluentAssertions;
 using Force.DeepCloner;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PersonApi.V1.Boundary.Request;
@@ -31,7 +32,7 @@ namespace PersonApi.Tests.V1.Gateways
 
         private readonly List<Action> _cleanup = new List<Action>();
 
-        private const string RequestBody = "{ \"firstName\": \"new first name\", \"placeOfBirth\": \"Towcester\" }";
+        private const string RequestBody = "{ \"firstName\": \"new first name\", \"placeOfBirth\": \"Towcester\"}";
 
         public DynamoDbGatewayTests(AwsIntegrationTests<Startup> dbTestFixture)
         {
@@ -99,6 +100,7 @@ namespace PersonApi.Tests.V1.Gateways
         {
             var person = _fixture.Build<Person>()
                             .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                            .With(x => x.VersionNumber, (int?) null)
                             .Create();
             if (nullOptionalEnums)
             {
@@ -127,7 +129,7 @@ namespace PersonApi.Tests.V1.Gateways
         public async Task GetPersonByIdReturnsThePersonIfItExists(bool nullOptionalEnums)
         {
             // Arrange
-            var entity = ConstructCreatePerson(nullOptionalEnums);
+            var entity = ConstructPerson(nullOptionalEnums);
             entity.Tenures = new[] { entity.Tenures.First() };
             entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
 
@@ -141,7 +143,20 @@ namespace PersonApi.Tests.V1.Gateways
             var response = await _classUnderTest.GetPersonByIdAsync(query).ConfigureAwait(false);
 
             // Assert
-            entity.Should().BeEquivalentTo(response);
+            entity.DateOfBirth.Should().Be(response.DateOfBirth);
+            entity.FirstName.Should().Be(response.FirstName);
+            entity.Surname.Should().Be(response.Surname);
+            entity.Tenures.Should().BeEquivalentTo(response.Tenures);
+            entity.Id.Should().Be(response.Id);
+            entity.MiddleName.Should().Be(response.MiddleName);
+            entity.PersonTypes.Should().BeEquivalentTo(response.PersonTypes);
+            entity.PlaceOfBirth.Should().Be(response.PlaceOfBirth);
+            entity.PreferredFirstName.Should().Be(response.PreferredFirstName);
+            entity.PreferredMiddleName.Should().Be(response.PreferredMiddleName);
+            entity.PreferredSurname.Should().Be(response.PreferredSurname);
+            entity.PreferredTitle.Should().Be(response.PreferredTitle);
+            entity.Reason.Should().Be(response.Reason);
+            entity.Title.Should().Be(response.Title);
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {entity.Id}", Times.Once());
         }
 
@@ -199,6 +214,7 @@ namespace PersonApi.Tests.V1.Gateways
             var updatedPerson = person.DeepClone();
             updatedPerson.FirstName = constructRequest.FirstName;
             updatedPerson.PlaceOfBirth = constructRequest.PlaceOfBirth;
+            updatedPerson.VersionNumber = 0;
             _mockUpdater.Setup(x => x.UpdateEntity(It.IsAny<PersonDbEntity>(), RequestBody, constructRequest))
                         .Returns(new UpdateEntityResult<PersonDbEntity>()
                         {
