@@ -95,7 +95,13 @@ namespace PersonApi.V1.Infrastructure
             {
                 var prop = allEntityProperties.FirstOrDefault(x => x.Name.ToCamelCase() == propName);
                 if (prop is null)
-                    throw new ArgumentException($"Entity object (type: {entityType.Name}) does not contain a property called {propName}.");
+                {
+                    // Received a property on the request Json that's not on the entity at all
+                    // So we log a warning, ignore it and carry on.
+                    _logger.LogWarning($"Entity object (type: {entityType.Name}) does not contain a property called {propName}. Ignoring {propName} value...");
+                    result.IgnoredProperties.Add(propName);
+                    continue;
+                }
 
                 var requestObjectProperty = updateObjectType.GetProperty(prop.Name);
                 if (requestObjectProperty is null)
@@ -103,6 +109,7 @@ namespace PersonApi.V1.Infrastructure
                     // Received a property on the request Json we weren't expecting (it's not on the request object)
                     // So we log a warning, ignore it and carry on.
                     _logger.LogWarning($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}). Ignoring {prop.Name} value...");
+                    result.IgnoredProperties.Add(propName);
                     continue;
                 }
 

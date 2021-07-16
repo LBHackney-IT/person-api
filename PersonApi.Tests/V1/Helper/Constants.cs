@@ -15,19 +15,8 @@ namespace PersonApi.Tests.V1.Helper
         public const string FIRSTNAME = "Robert";
         public const string MIDDLENAME = "Tim";
         public const string SURNAME = "Roberts";
-        public const string ETHNICITY = "Caucasian";
-        public const string NATIONALITY = "British";
-        public const string NINO = "AA123456C";
         public const string PLACEOFBIRTH = "London";
         public static DateTime DATEOFBIRTH { get; } = DateTime.UtcNow.AddYears(-40);
-        public const Gender GENDER = Gender.M;
-        public const IdentificationType IDENTIFICATIONTYPE = IdentificationType.Passport;
-        public const string IDENTIFICATIONVALUE = "Some id value";
-        public const bool IDENTIFICATIONISSEEN = true;
-        public const string IDENTIFICATIONLINKTODOC = "Some link";
-
-        public const bool LANGUAGEISPRIMARY = true;
-        public const string LANGUAGENAME = "English";
 
         public const string SOMEUPRN = "SomeUprn";
         public const string SOMETYPE = "SomeType";
@@ -36,8 +25,6 @@ namespace PersonApi.Tests.V1.Helper
         public const string STARTDATE = "2012-07-19";
         public const string ENDDATE = "2015-07-19";
 
-        public static IEnumerable<CommunicationRequirement> COMMSREQ { get; }
-            = new List<CommunicationRequirement> { CommunicationRequirement.SignLanguage };
         public static IEnumerable<PersonType> PERSONTYPES { get; }
             = new List<PersonType> { PersonType.HouseholdMember };
 
@@ -53,31 +40,8 @@ namespace PersonApi.Tests.V1.Helper
             entity.FirstName = Constants.FIRSTNAME;
             entity.MiddleName = Constants.MIDDLENAME;
             entity.Surname = Constants.SURNAME;
-            entity.Ethnicity = Constants.ETHNICITY;
-            entity.Nationality = Constants.NATIONALITY;
-            entity.NationalInsuranceNo = Constants.NINO;
             entity.PlaceOfBirth = Constants.PLACEOFBIRTH;
             entity.DateOfBirth = Constants.DATEOFBIRTH;
-            entity.Gender = Constants.GENDER;
-            entity.Identifications = new[]
-            {
-                new Identification
-                {
-                    IdentificationType = Constants.IDENTIFICATIONTYPE,
-                    IsOriginalDocumentSeen = Constants.IDENTIFICATIONISSEEN,
-                    LinkToDocument = Constants.IDENTIFICATIONLINKTODOC,
-                    Value = Constants.IDENTIFICATIONVALUE
-                }
-            };
-            entity.Languages = new[]
-            {
-                new Language
-                {
-                    IsPrimary = Constants.LANGUAGEISPRIMARY,
-                    Name = Constants.LANGUAGENAME
-                }
-            };
-
             entity.Tenures = new[]
             {
                 new Tenure
@@ -91,8 +55,6 @@ namespace PersonApi.Tests.V1.Helper
                     Uprn = SOMEUPRN
                 }
             };
-
-            entity.CommunicationRequirements = Constants.COMMSREQ;
             entity.PersonTypes = Constants.PERSONTYPES;
             return entity;
         }

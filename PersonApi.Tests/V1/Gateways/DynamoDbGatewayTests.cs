@@ -85,11 +85,9 @@ namespace PersonApi.Tests.V1.Gateways
         {
             var person = _fixture.Build<CreatePersonRequestObject>()
                             .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                            .With(x => x.NationalInsuranceNo, "NZ223344E")
                             .Create();
             if (nullOptionalEnums)
             {
-                person.Gender = null;
                 person.PreferredTitle = null;
             }
 
@@ -101,11 +99,9 @@ namespace PersonApi.Tests.V1.Gateways
         {
             var person = _fixture.Build<Person>()
                             .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                            .With(x => x.NationalInsuranceNo, "NZ223344E")
                             .Create();
             if (nullOptionalEnums)
             {
-                person.Gender = null;
                 person.PreferredTitle = null;
             }
 
@@ -231,16 +227,9 @@ namespace PersonApi.Tests.V1.Gateways
 
             // Not changed
             load.Surname.Should().Be(person.Surname);
-            load.CommunicationRequirements.Should().BeEquivalentTo(person.CommunicationRequirements);
             load.DateOfBirth.Should().Be(person.DateOfBirth);
-            load.Ethnicity.Should().Be(person.Ethnicity);
-            load.Gender.Should().Be(person.Gender);
             load.Id.Should().Be(person.Id);
-            load.Identifications.Should().BeEquivalentTo(person.Identifications);
-            load.Languages.Should().BeEquivalentTo(person.Languages);
             load.MiddleName.Should().Be(person.MiddleName);
-            load.NationalInsuranceNo.Should().Be(person.NationalInsuranceNo);
-            load.Nationality.Should().Be(person.Nationality);
             load.PersonTypes.Should().BeEquivalentTo(person.PersonTypes);
             load.PreferredFirstName.Should().Be(person.PreferredFirstName);
             load.PreferredMiddleName.Should().Be(person.PreferredMiddleName);

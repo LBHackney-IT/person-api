@@ -11,14 +11,10 @@ namespace PersonApi.Tests.V1.Factories
     {
         private readonly Fixture _fixture = new Fixture();
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("2034732948")]
-        public void CanMapADatabaseEntityToADomainObject(string ni)
+        [Fact]
+        public void CanMapADatabaseEntityToADomainObject()
         {
             var databaseEntity = _fixture.Build<PersonDbEntity>()
-                                         .With(x => x.NationalInsuranceNo, ni)
                                          .Create();
             var entity = databaseEntity.ToDomain();
 
@@ -29,27 +25,15 @@ namespace PersonApi.Tests.V1.Factories
             databaseEntity.FirstName.Should().Be(entity.FirstName);
             databaseEntity.MiddleName.Should().Be(entity.MiddleName);
             databaseEntity.Surname.Should().Be(entity.Surname);
-            databaseEntity.Ethnicity.Should().Be(entity.Ethnicity);
-            databaseEntity.Nationality.Should().Be(entity.Nationality);
-            databaseEntity.NationalInsuranceNo.Should().Be(entity.NationalInsuranceNo);
             databaseEntity.PlaceOfBirth.Should().Be(entity.PlaceOfBirth);
             databaseEntity.DateOfBirth.Should().Be(entity.DateOfBirth);
-            databaseEntity.Gender.Should().Be(entity.Gender);
-            databaseEntity.Identifications.Should().BeEquivalentTo(entity.Identifications);
-            databaseEntity.Languages.Should().BeEquivalentTo(entity.Languages);
-            databaseEntity.CommunicationRequirements.Should().BeEquivalentTo(entity.CommunicationRequirements);
-            databaseEntity.PersonTypes.Should().BeEquivalentTo(entity.PersonTypes);
             databaseEntity.Tenures.Should().BeEquivalentTo(entity.Tenures);
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("2034732948")]
-        public void CanMapADomainEntityToADatabaseObject(string ni)
+        [Fact]
+        public void CanMapADomainEntityToADatabaseObject()
         {
             var person = _fixture.Build<Person>()
-                                 .With(x => x.NationalInsuranceNo, ni)
                                  .Create();
             var databaseEntity = person.ToDatabase();
 
@@ -60,15 +44,8 @@ namespace PersonApi.Tests.V1.Factories
             person.FirstName.Should().Be(databaseEntity.FirstName);
             person.MiddleName.Should().Be(databaseEntity.MiddleName);
             person.Surname.Should().Be(databaseEntity.Surname);
-            person.Ethnicity.Should().Be(databaseEntity.Ethnicity);
-            person.Nationality.Should().Be(databaseEntity.Nationality);
-            person.NationalInsuranceNo.Should().Be(databaseEntity.NationalInsuranceNo);
             person.PlaceOfBirth.Should().Be(databaseEntity.PlaceOfBirth);
             person.DateOfBirth.Should().Be(databaseEntity.DateOfBirth);
-            person.Gender.Should().Be(databaseEntity.Gender);
-            person.Identifications.Should().BeEquivalentTo(databaseEntity.Identifications);
-            person.Languages.Should().BeEquivalentTo(databaseEntity.Languages);
-            person.CommunicationRequirements.Should().BeEquivalentTo(databaseEntity.CommunicationRequirements);
             person.PersonTypes.Should().BeEquivalentTo(databaseEntity.PersonTypes);
             person.Tenures.Should().BeEquivalentTo(databaseEntity.Tenures);
         }

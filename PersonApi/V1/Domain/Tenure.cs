@@ -20,6 +20,10 @@ namespace PersonApi.V1.Domain
 
         public string Uprn { get; set; }
 
+        public string PaymentReference { get; set; }
+
+        public string PropertyReference { get; set; }
+
         [DynamoDBIgnore]
         public bool IsActive
         {
@@ -47,7 +51,9 @@ namespace PersonApi.V1.Domain
                 && EndDate.Equals(otherObj.EndDate)
                 && Id.Equals(otherObj.Id)
                 && Type.Equals(otherObj.Type)
-                && Uprn.Equals(otherObj.Uprn);
+                && Uprn.Equals(otherObj.Uprn)
+                && PaymentReference.Equals(otherObj.PaymentReference)
+                && PropertyReference.Equals(otherObj.PropertyReference);
         }
 
         public override int GetHashCode()
@@ -60,6 +66,8 @@ namespace PersonApi.V1.Domain
                           .Append(Id.ToString())
                           .Append(Type)
                           .Append(Uprn)
+                          .Append(PaymentReference)
+                          .Append(PropertyReference)
                           .Append(IsActive)
                           .ToString()
                           .GetHashCode();
