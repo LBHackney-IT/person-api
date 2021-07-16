@@ -90,19 +90,25 @@ namespace PersonApi.Tests.V1.Infrastructure
         }
 
         [Fact]
-        public void UpdateEntityJsonContainsUnknownPropertyNameThrows()
+        public void UpdateEntityJsonContainsUnknownPropertyNameIgnoresAndLogsWarning()
         {
-            Func<UpdateEntityResult<Entity>> func = () => _sut.UpdateEntity(new Entity(), JsonWithUnknownPropertyName, new EntityUpdateRequest());
-            func.Should().Throw<ArgumentException>()
-                .WithMessage($"Entity object (type: {typeof(Entity).Name}) does not contain a property called unknownProp.");
+            var result = _sut.UpdateEntity(new Entity(), JsonWithUnknownPropertyName, new EntityUpdateRequest());
+
+            result.IgnoredProperties.Count.Should().Be(1);
+            result.IgnoredProperties.First().Should().Be("unknownProp");
+            _mockLogger.VerifyExact(LogLevel.Warning,
+                $"Entity object (type: {typeof(Entity).Name}) does not contain a property called unknownProp. Ignoring unknownProp value...",
+                Times.Once());
         }
 
         [Fact]
-        public void UpdateEntityUpdateRequestContainsUnknownPropertyNameLogsWarning()
+        public void UpdateEntityUpdateRequestContainsUnknownPropertyNameIgnoresAndLogsWarning()
         {
             var requestObj = new OtherEntityUpdateRequest() { UnknownProp = "Some new value" };
-            _sut.UpdateEntity(new Entity(), JsonWithKnownPropertyNameNotOnRequestObj, requestObj);
+            var result = _sut.UpdateEntity(new Entity(), JsonWithKnownPropertyNameNotOnRequestObj, requestObj);
 
+            result.IgnoredProperties.Count.Should().Be(1);
+            result.IgnoredProperties.First().Should().Be("someOtherString");
             _mockLogger.VerifyExact(LogLevel.Warning,
                 $"Request object (type: {typeof(OtherEntityUpdateRequest).Name}) does not contain a property called SomeOtherString that is on the entity type ({typeof(Entity).Name}). Ignoring SomeOtherString value...",
                 Times.Once());
