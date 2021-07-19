@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Domain;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
+using PersonApi.V1.Factories;
 
 namespace PersonApi.V1.Controllers
 {
@@ -24,10 +26,11 @@ namespace PersonApi.V1.Controllers
         private readonly IHttpContextWrapper _contextWrapper;
         private readonly IUpdatePersonUseCase _updatePersonUseCase;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IResponseFactory _responseFactory;
 
         public PersonApiController(IGetByIdUseCase getByIdUseCase, IPostNewPersonUseCase newPersonUseCase,
             IUpdatePersonUseCase updatePersonUseCase, ITokenFactory tokenFactory, IHttpContextWrapper contextWrapper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IResponseFactory responseFactory)
         {
             _getByIdUseCase = getByIdUseCase;
             _newPersonUseCase = newPersonUseCase;
@@ -35,6 +38,7 @@ namespace PersonApi.V1.Controllers
             _tokenFactory = tokenFactory;
             _contextWrapper = contextWrapper;
             _httpContextAccessor = httpContextAccessor;
+            _responseFactory = responseFactory;
         }
 
         /// <summary>
@@ -56,7 +60,9 @@ namespace PersonApi.V1.Controllers
             var person = await _getByIdUseCase.ExecuteAsync(query).ConfigureAwait(false);
             if (null == person) return NotFound(query.Id);
 
-            return Ok(person);
+            HttpContext.Response.Headers.Add("ETag", person.VersionNumber.ToString());
+
+            return Ok(_responseFactory.ToResponse(person));
         }
 
         [ProducesResponseType(typeof(PersonResponseObject), StatusCodes.Status201Created)]

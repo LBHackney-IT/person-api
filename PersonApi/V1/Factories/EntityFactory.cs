@@ -23,7 +23,8 @@ namespace PersonApi.V1.Factories
                 DateOfBirth = databaseEntity.DateOfBirth,
                 Reason = databaseEntity.Reason,
                 PersonTypes = databaseEntity.PersonTypes,
-                Tenures = databaseEntity.Tenures
+                Tenures = databaseEntity.Tenures,
+                VersionNumber = databaseEntity.VersionNumber
             };
         }
 
@@ -44,7 +45,8 @@ namespace PersonApi.V1.Factories
                 DateOfBirth = entity.DateOfBirth,
                 Reason = entity.Reason,
                 PersonTypes = entity.PersonTypes.ToList(),
-                Tenures = entity.Tenures.ToList()
+                Tenures = entity.Tenures.ToList(),
+                VersionNumber = entity.VersionNumber
             };
         }
     }

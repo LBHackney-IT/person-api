@@ -59,6 +59,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             {
                 var person = _fixture.Build<PersonDbEntity>()
                                      .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                                     .With(x => x.VersionNumber, (int?) null)
                                     .Create();
                 foreach (var tenure in person.Tenures)
                 {
@@ -81,6 +82,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                                               .With(y => y.StartDate, "")
                                               .With(y => y.EndDate, "")
                                               .CreateMany(2).ToList())
+                                     .With(x => x.VersionNumber, (int?) null)
                                     .Create();
                 _dbContext.SaveAsync<PersonDbEntity>(person).GetAwaiter().GetResult();
                 Person = person;

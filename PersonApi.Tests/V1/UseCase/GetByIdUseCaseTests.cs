@@ -17,15 +17,13 @@ namespace PersonApi.Tests.V1.UseCase
     public class GetByIdUseCaseTests
     {
         private readonly Mock<IPersonApiGateway> _mockGateway;
-        private readonly ResponseFactory _responseFactory;
         private readonly GetByIdUseCase _classUnderTest;
         private readonly Fixture _fixture = new Fixture();
 
         public GetByIdUseCaseTests()
         {
             _mockGateway = new Mock<IPersonApiGateway>();
-            _responseFactory = new ResponseFactory(null);
-            _classUnderTest = new GetByIdUseCase(_mockGateway.Object, _responseFactory);
+            _classUnderTest = new GetByIdUseCase(_mockGateway.Object);
         }
 
         private PersonQueryObject ConstructQuery()
@@ -59,7 +57,7 @@ namespace PersonApi.Tests.V1.UseCase
             var response = await _classUnderTest.ExecuteAsync(query).ConfigureAwait(false);
 
             // Assert
-            response.Should().BeEquivalentTo(_responseFactory.ToResponse(person));
+            response.Should().BeEquivalentTo(person);
         }
 
         [Fact]
@@ -71,7 +69,7 @@ namespace PersonApi.Tests.V1.UseCase
             _mockGateway.Setup(x => x.GetPersonByIdAsync(query)).ThrowsAsync(exception);
 
             // Act
-            Func<Task<PersonResponseObject>> func = async () => await _classUnderTest.ExecuteAsync(query).ConfigureAwait(false);
+            Func<Task<Person>> func = async () => await _classUnderTest.ExecuteAsync(query).ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);

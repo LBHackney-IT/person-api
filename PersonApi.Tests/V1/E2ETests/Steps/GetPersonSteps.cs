@@ -1,8 +1,10 @@
 using FluentAssertions;
 using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -27,6 +29,10 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
 
             var responseContent = await _lastResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             var apiPerson = JsonSerializer.Deserialize<PersonResponseObject>(responseContent, CreateJsonOptions());
+
+            var eTagHeaders = _lastResponse.Headers.GetValues("ETag");
+            eTagHeaders.Count().Should().Be(1);
+            eTagHeaders.First().Should().Be(expectedPerson.VersionNumber.ToString());
 
             apiPerson.DateOfBirth.Should().Be(ResponseFactory.FormatDateOfBirth(expectedPerson.DateOfBirth));
             apiPerson.FirstName.Should().Be(expectedPerson.FirstName);
