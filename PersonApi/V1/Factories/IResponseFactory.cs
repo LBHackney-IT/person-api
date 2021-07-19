@@ -6,5 +6,6 @@ namespace PersonApi.V1.Factories
     public interface IResponseFactory
     {
         PersonResponseObject ToResponse(Person domain);
+
     }
 }
