@@ -27,8 +27,6 @@ namespace PersonApi.Tests.V1.Gateways
         private readonly Fixture _fixture = new Fixture();
         private readonly Mock<ILogger<DynamoDbGateway>> _logger;
         private readonly Mock<IEntityUpdater> _mockUpdater;
-        private readonly Mock<IHttpContextAccessor> _mockContextAccessor;
-        private readonly HttpContext _httpContext;
         private DynamoDbGateway _classUnderTest;
 
         private readonly IDynamoDBContext _dynamoDb;
@@ -42,9 +40,6 @@ namespace PersonApi.Tests.V1.Gateways
             _dynamoDb = dbTestFixture.DynamoDbContext;
             _mockUpdater = new Mock<IEntityUpdater>();
             _logger = new Mock<ILogger<DynamoDbGateway>>();
-            _mockContextAccessor = new Mock<IHttpContextAccessor>();
-            _httpContext = new DefaultHttpContext();
-            _mockContextAccessor.SetupGet(x => x.HttpContext).Returns(_httpContext);
             _classUnderTest = new DynamoDbGateway(_dynamoDb, _mockUpdater.Object, _logger.Object);
         }
 
