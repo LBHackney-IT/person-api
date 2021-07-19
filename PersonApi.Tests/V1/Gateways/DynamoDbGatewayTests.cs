@@ -2,14 +2,16 @@ using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
 using FluentAssertions;
 using Force.DeepCloner;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;
+using PersonApi.V1.Infrastructure.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +28,8 @@ namespace PersonApi.Tests.V1.Gateways
         private readonly Fixture _fixture = new Fixture();
         private readonly Mock<ILogger<DynamoDbGateway>> _logger;
         private readonly Mock<IEntityUpdater> _mockUpdater;
+        private readonly Mock<IHttpContextAccessor> _mockContextAccessor;
+        private readonly HttpContext _httpContext;
         private DynamoDbGateway _classUnderTest;
 
         private readonly IDynamoDBContext _dynamoDb;
@@ -39,7 +43,10 @@ namespace PersonApi.Tests.V1.Gateways
             _dynamoDb = dbTestFixture.DynamoDbContext;
             _mockUpdater = new Mock<IEntityUpdater>();
             _logger = new Mock<ILogger<DynamoDbGateway>>();
-            _classUnderTest = new DynamoDbGateway(_dynamoDb, _mockUpdater.Object, _logger.Object);
+            _mockContextAccessor = new Mock<IHttpContextAccessor>();
+            _httpContext = new DefaultHttpContext();
+            _mockContextAccessor.SetupGet(x => x.HttpContext).Returns(_httpContext);
+            _classUnderTest = new DynamoDbGateway(_dynamoDb, _mockUpdater.Object, _logger.Object, _mockContextAccessor.Object);
         }
 
         public void Dispose()
@@ -95,12 +102,12 @@ namespace PersonApi.Tests.V1.Gateways
             return person;
         }
 
-        private Person ConstructPerson(bool nullOptionalEnums = false)
+        private Person ConstructPerson(bool nullOptionalEnums = false, int? versionNumber = null)
 
         {
             var person = _fixture.Build<Person>()
                             .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                            .With(x => x.VersionNumber, (int?) null)
+                            .With(x => x.VersionNumber, versionNumber)
                             .Create();
             if (nullOptionalEnums)
             {
@@ -108,6 +115,11 @@ namespace PersonApi.Tests.V1.Gateways
             }
 
             return person;
+        }
+
+        private void SetIfMatch(int? versionNumber)
+        {
+            _httpContext.Request.Headers.Add(HeaderConstants.IfMatch, new StringValues(versionNumber?.ToString()));
         }
 
         [Fact]
@@ -143,20 +155,21 @@ namespace PersonApi.Tests.V1.Gateways
             var response = await _classUnderTest.GetPersonByIdAsync(query).ConfigureAwait(false);
 
             // Assert
-            entity.DateOfBirth.Should().Be(response.DateOfBirth);
-            entity.FirstName.Should().Be(response.FirstName);
-            entity.Surname.Should().Be(response.Surname);
-            entity.Tenures.Should().BeEquivalentTo(response.Tenures);
-            entity.Id.Should().Be(response.Id);
-            entity.MiddleName.Should().Be(response.MiddleName);
-            entity.PersonTypes.Should().BeEquivalentTo(response.PersonTypes);
-            entity.PlaceOfBirth.Should().Be(response.PlaceOfBirth);
-            entity.PreferredFirstName.Should().Be(response.PreferredFirstName);
-            entity.PreferredMiddleName.Should().Be(response.PreferredMiddleName);
-            entity.PreferredSurname.Should().Be(response.PreferredSurname);
-            entity.PreferredTitle.Should().Be(response.PreferredTitle);
-            entity.Reason.Should().Be(response.Reason);
-            entity.Title.Should().Be(response.Title);
+            response.DateOfBirth.Should().Be(entity.DateOfBirth);
+            response.FirstName.Should().Be(entity.FirstName);
+            response.Surname.Should().Be(entity.Surname);
+            response.Tenures.Should().BeEquivalentTo(entity.Tenures);
+            response.Id.Should().Be(entity.Id);
+            response.MiddleName.Should().Be(entity.MiddleName);
+            response.PersonTypes.Should().BeEquivalentTo(entity.PersonTypes);
+            response.PlaceOfBirth.Should().Be(entity.PlaceOfBirth);
+            response.PreferredFirstName.Should().Be(entity.PreferredFirstName);
+            response.PreferredMiddleName.Should().Be(entity.PreferredMiddleName);
+            response.PreferredSurname.Should().Be(entity.PreferredSurname);
+            response.PreferredTitle.Should().Be(entity.PreferredTitle);
+            response.Reason.Should().Be(entity.Reason);
+            response.Title.Should().Be(entity.Title);
+            response.VersionNumber.Should().Be(0);
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {entity.Id}", Times.Once());
         }
 
@@ -165,7 +178,7 @@ namespace PersonApi.Tests.V1.Gateways
         {
             // Arrange
             var mockDynamoDb = new Mock<IDynamoDBContext>();
-            _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _mockUpdater.Object, _logger.Object);
+            _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _mockUpdater.Object, _logger.Object, _mockContextAccessor.Object);
             var id = Guid.NewGuid();
             var query = ConstructQuery(id);
             var exception = new ApplicationException("Test exception");
@@ -230,6 +243,7 @@ namespace PersonApi.Tests.V1.Gateways
                                 { "placeOfBirth", updatedPerson.PlaceOfBirth }
                             }
                         });
+            SetIfMatch(0);
 
             //Act
             await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query).ConfigureAwait(false);
@@ -253,8 +267,32 @@ namespace PersonApi.Tests.V1.Gateways
             load.PreferredTitle.Should().Be(person.PreferredTitle);
             load.Tenures.Should().BeEquivalentTo(person.Tenures);
             load.Title.Should().Be(person.Title);
+
+            var expectedVersionNumber = 1;
+            load.VersionNumber.Should().Be(expectedVersionNumber);
         }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData(5)]
+        public async Task UpdatePersonThrowsExceptionOnVersionConflict(int? incomingVersionNumber)
+        {
+            // Arrange
+            var person = ConstructPerson();
+            var query = ConstructQuery(person.Id);
+            await _dynamoDb.SaveAsync(person.ToDatabase()).ConfigureAwait(false);
+            var constructRequest = ConstructRequest();
+
+            SetIfMatch(incomingVersionNumber);
+
+            //Act
+            Func<Task<UpdateEntityResult<PersonDbEntity>>> func = async () => await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query).ConfigureAwait(false);
+
+            // Assert
+            func.Should().Throw<VersionNumberConflictException>()
+                         .Where(x => (x.IncomingVersionNumber == incomingVersionNumber) && (x.ExpectedVersionNumber == 0));
+            _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.SaveAsync to update id {query.Id}", Times.Never());
+        }
 
         [Fact]
         public async Task UpdatePersonByIdReturnsNullIfEntityDoesntExist()
@@ -268,7 +306,7 @@ namespace PersonApi.Tests.V1.Gateways
 
             // Assert
             response.Should().BeNull();
-            _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.SaveAsync to update id {query.Id}", Times.Once());
+            _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.SaveAsync to update id {query.Id}", Times.Never());
         }
 
         [Fact]
@@ -276,7 +314,7 @@ namespace PersonApi.Tests.V1.Gateways
         {
             // Arrange
             var mockDynamoDb = new Mock<IDynamoDBContext>();
-            _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _mockUpdater.Object, _logger.Object);
+            _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _mockUpdater.Object, _logger.Object, _mockContextAccessor.Object);
             var id = Guid.NewGuid();
             var query = ConstructQuery(id);
             var constructRequest = ConstructRequest();
@@ -290,7 +328,7 @@ namespace PersonApi.Tests.V1.Gateways
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
             mockDynamoDb.Verify(x => x.LoadAsync<PersonDbEntity>(id, default), Times.Once);
-            _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.SaveAsync to update id {query.Id}", Times.Once());
+            _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.SaveAsync to update id {query.Id}", Times.Never());
         }
     }
 }

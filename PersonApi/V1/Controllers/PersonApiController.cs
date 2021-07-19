@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.Domain;
+using PersonApi.V1.Factories;
+using PersonApi.V1.Infrastructure;
+using PersonApi.V1.Infrastructure.Exceptions;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
-using PersonApi.V1.Factories;
 
 namespace PersonApi.V1.Controllers
 {
@@ -60,7 +61,7 @@ namespace PersonApi.V1.Controllers
             var person = await _getByIdUseCase.ExecuteAsync(query).ConfigureAwait(false);
             if (null == person) return NotFound(query.Id);
 
-            HttpContext.Response.Headers.Add("ETag", person.VersionNumber.ToString());
+            HttpContext.Response.Headers.Add(HeaderConstants.ETag, person.VersionNumber.ToString());
 
             return Ok(_responseFactory.ToResponse(person));
         }
@@ -101,14 +102,21 @@ namespace PersonApi.V1.Controllers
 
             var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
 
-            // We use a request object AND the raw request body text because the incoming request will only contain the fields that changed
-            // whereas the request object has all possible updateable fields defined.
-            // The implementation will use the raw body text to identify which fields to update and the request object is specified here so that its
-            // associated validation will be executed by the MVC pipeline before we even get to this point.
-            var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject, bodyText, token, query).ConfigureAwait(false);
-            if (person == null) return NotFound(query.Id);
+            try
+            {
+                // We use a request object AND the raw request body text because the incoming request will only contain the fields that changed
+                // whereas the request object has all possible updateable fields defined.
+                // The implementation will use the raw body text to identify which fields to update and the request object is specified here so that its
+                // associated validation will be executed by the MVC pipeline before we even get to this point.
+                var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject, bodyText, token, query).ConfigureAwait(false);
+                if (person == null) return NotFound(query.Id);
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (VersionNumberConflictException vncErr)
+            {
+                return Conflict(vncErr.Message);
+            }
         }
     }
 }

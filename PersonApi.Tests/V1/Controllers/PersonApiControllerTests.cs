@@ -5,22 +5,23 @@ using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Controllers;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
+using PersonApi.V1.Infrastructure;
+using PersonApi.V1.Infrastructure.Exceptions;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Routing;
 using Xunit;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
-using System.Linq;
 
 namespace PersonApi.Tests.V1.Controllers
 {
@@ -107,7 +108,7 @@ namespace PersonApi.Tests.V1.Controllers
 
             // Assert
             response.Should().BeOfType(typeof(OkObjectResult));
-            _sut.HttpContext.Response.Headers.TryGetValue("ETag", out StringValues val).Should().BeTrue();
+            _sut.HttpContext.Response.Headers.TryGetValue(HeaderConstants.ETag, out StringValues val).Should().BeTrue();
             val.First().Should().Be(personResponse.VersionNumber.ToString());
             (response as OkObjectResult).Value.Should().BeEquivalentTo(_responseFactory.ToResponse(personResponse));
         }
@@ -207,6 +208,27 @@ namespace PersonApi.Tests.V1.Controllers
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
+        }
+
+        [Theory]
+        [InlineData(null, 0)]
+        [InlineData(0, 1)]
+        [InlineData(0, null)]
+        [InlineData(2, 1)]
+        public async Task UpdatePersonByIdAsyncVersionNumberConflictExceptionReturns409(int? expected, int? actual)
+        {
+            // Arrange
+            var query = ConstructQuery();
+            var exception = new VersionNumberConflictException(expected, actual);
+            _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<UpdatePersonRequestObject>(), RequestBodyText, It.IsAny<Token>(), query))
+                                    .ThrowsAsync(exception);
+
+            // Act
+            var result = await _sut.UpdatePersonByIdAsync(new UpdatePersonRequestObject(), query).ConfigureAwait(false);
+
+            // Assert
+            result.Should().BeOfType(typeof(ConflictObjectResult));
+            (result as ConflictObjectResult).Value.Should().BeEquivalentTo(exception.Message);
         }
     }
 }

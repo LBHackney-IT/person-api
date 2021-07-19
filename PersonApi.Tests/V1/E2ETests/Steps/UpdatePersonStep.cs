@@ -24,7 +24,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
         /// </summary>
         /// <param name="requestObject"></param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> CallApi(UpdatePersonRequestObject requestObject, Guid? id)
+        public async Task<HttpResponseMessage> CallApi(UpdatePersonRequestObject requestObject, Guid? id, int? ifMatch)
         {
             var token =
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nQGRldmVsb3BtZW50LmNvbSIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiVGVzdGVyIiwiZ3JvdXBzIjpbImUyZS10ZXN0aW5nIl0sImlhdCI6MTYyMzA1ODIzMn0.SooWAr-NUZLwW8brgiGpi2jZdWjyZBwp4GJikn0PvEw";
@@ -45,6 +45,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             message.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
             message.Method = HttpMethod.Patch;
             message.Headers.Add("Authorization", token);
+            message.Headers.TryAddWithoutValidation(HeaderConstants.IfMatch, ifMatch?.ToString());
 
             _httpClient.DefaultRequestHeaders
                 .Accept
@@ -54,7 +55,12 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
 
         public async Task WhenTheUpdatePersonApiIsCalled(UpdatePersonRequestObject personRequestObject, Guid? id)
         {
-            _lastResponse = await CallApi(personRequestObject, id).ConfigureAwait(false);
+            await WhenTheUpdatePersonApiIsCalled(personRequestObject, id, 0).ConfigureAwait(false);
+        }
+
+        public async Task WhenTheUpdatePersonApiIsCalled(UpdatePersonRequestObject personRequestObject, Guid? id, int? ifMatch)
+        {
+            _lastResponse = await CallApi(personRequestObject, id, ifMatch).ConfigureAwait(false);
 
         }
 
@@ -64,8 +70,17 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             var result = await personFixture._dbContext.LoadAsync<PersonDbEntity>(personFixture.Person.Id).ConfigureAwait(false);
             result.FirstName.Should().Be(personFixture.UpdatePersonRequest.FirstName);
             result.Surname.Should().Be(personFixture.UpdatePersonRequest.Surname);
+            result.VersionNumber.Should().Be(1);
         }
 
+        public async Task ThenConflictIsReturned(int? versionNumber)
+        {
+            _lastResponse.StatusCode.Should().Be(HttpStatusCode.Conflict);
+            var responseContent = await _lastResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            var sentVersionNumberString = (versionNumber is null) ? "{null}" : versionNumber.ToString();
+            responseContent.Should().Contain($"The version number supplied ({sentVersionNumberString}) does not match the current value on the entity (0).");
+        }
 
         public void ThenBadRequestIsReturned()
         {
