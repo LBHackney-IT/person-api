@@ -52,8 +52,10 @@ namespace PersonApi.Tests.V1.UseCase
                            .Create();
         }
 
-        [Fact]
-        public async Task UpdatePersonByIdUseCaseGatewayReturnsResult()
+        [Theory]
+        [InlineData(null)]
+        [InlineData(3)]
+        public async Task UpdatePersonByIdUseCaseGatewayReturnsResult(int? ifMatch)
         {
             // Arrange
             var request = ConstructRequest();
@@ -74,14 +76,14 @@ namespace PersonApi.Tests.V1.UseCase
                     {  "surname", "New surname" }
                 }
             };
-            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, It.IsAny<string>(), query))
+            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, It.IsAny<string>(), query, ifMatch))
                         .ReturnsAsync(gatewayResult);
             var snsEvent = _fixture.Create<PersonSns>();
             _mockSnsFactory.Setup(x => x.Update(gatewayResult, token))
                            .Returns(snsEvent);
 
             // Act
-            var response = await _classUnderTest.ExecuteAsync(request, "", token, query).ConfigureAwait(false);
+            var response = await _classUnderTest.ExecuteAsync(request, "", token, query, ifMatch).ConfigureAwait(false);
 
             // Assert
             _mockSnsFactory.Verify(x => x.Update(gatewayResult, token), Times.Once);
@@ -89,8 +91,10 @@ namespace PersonApi.Tests.V1.UseCase
             response.Should().BeEquivalentTo(_responseFactory.ToResponse(updatedPerson));
         }
 
-        [Fact]
-        public async Task UpdatePersonByIdUseCaseGatewayReturnsResultNoChanges()
+        [Theory]
+        [InlineData(null)]
+        [InlineData(3)]
+        public async Task UpdatePersonByIdUseCaseGatewayReturnsResultNoChanges(int? ifMatch)
         {
             // Arrange
             var request = ConstructRequest();
@@ -101,14 +105,14 @@ namespace PersonApi.Tests.V1.UseCase
             {
                 UpdatedEntity = updatedPerson.ToDatabase()
             };
-            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, It.IsAny<string>(), query))
+            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, It.IsAny<string>(), query, ifMatch))
                         .ReturnsAsync(gatewayResult);
             var snsEvent = _fixture.Create<PersonSns>();
             _mockSnsFactory.Setup(x => x.Update(gatewayResult, token))
                            .Returns(snsEvent);
 
             // Act
-            var response = await _classUnderTest.ExecuteAsync(request, "", token, query).ConfigureAwait(false);
+            var response = await _classUnderTest.ExecuteAsync(request, "", token, query, ifMatch).ConfigureAwait(false);
 
             // Assert
             _mockSnsFactory.Verify(x => x.Update(gatewayResult, token), Times.Never);
@@ -116,19 +120,21 @@ namespace PersonApi.Tests.V1.UseCase
             response.Should().BeEquivalentTo(_responseFactory.ToResponse(updatedPerson));
         }
 
-        [Fact]
-        public async Task UpdatePersonByIdUseCaseGatewayReturnsNull()
+        [Theory]
+        [InlineData(null)]
+        [InlineData(3)]
+        public async Task UpdatePersonByIdUseCaseGatewayReturnsNull(int? ifMatch)
         {
             // Arrange
             var request = ConstructRequest();
             var query = ConstructQuery(Guid.NewGuid());
             var token = new Token();
 
-            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, It.IsAny<string>(), query))
+            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(request, It.IsAny<string>(), query, ifMatch))
                         .ReturnsAsync((UpdateEntityResult<PersonDbEntity>) null);
 
             // Act
-            var response = await _classUnderTest.ExecuteAsync(request, "", token, query).ConfigureAwait(false);
+            var response = await _classUnderTest.ExecuteAsync(request, "", token, query, ifMatch).ConfigureAwait(false);
 
             // Assert
             _mockSnsFactory.Verify(x => x.Update(It.IsAny<UpdateEntityResult<PersonDbEntity>>(), It.IsAny<Token>()), Times.Never);
@@ -136,19 +142,21 @@ namespace PersonApi.Tests.V1.UseCase
             response.Should().BeNull();
         }
 
-        [Fact]
-        public void UpdatePersonByIdAsyncExceptionIsThrown()
+        [Theory]
+        [InlineData(null)]
+        [InlineData(3)]
+        public void UpdatePersonByIdAsyncExceptionIsThrown(int? ifMatch)
         {
             // Arrange
             var personRequest = new UpdatePersonRequestObject();
             var token = new Token();
             var query = ConstructQuery(Guid.NewGuid());
             var exception = new ApplicationException("Test exception");
-            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(personRequest, It.IsAny<string>(), query)).ThrowsAsync(exception);
+            _mockGateway.Setup(x => x.UpdatePersonByIdAsync(personRequest, It.IsAny<string>(), query, ifMatch)).ThrowsAsync(exception);
 
             // Act
             Func<Task<PersonResponseObject>> func = async () =>
-                await _classUnderTest.ExecuteAsync(personRequest, "", token, query).ConfigureAwait(false);
+                await _classUnderTest.ExecuteAsync(personRequest, "", token, query, ifMatch).ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);

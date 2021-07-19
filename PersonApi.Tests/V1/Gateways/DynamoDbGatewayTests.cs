@@ -4,7 +4,6 @@ using FluentAssertions;
 using Force.DeepCloner;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using Moq;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Domain;
@@ -46,7 +45,7 @@ namespace PersonApi.Tests.V1.Gateways
             _mockContextAccessor = new Mock<IHttpContextAccessor>();
             _httpContext = new DefaultHttpContext();
             _mockContextAccessor.SetupGet(x => x.HttpContext).Returns(_httpContext);
-            _classUnderTest = new DynamoDbGateway(_dynamoDb, _mockUpdater.Object, _logger.Object, _mockContextAccessor.Object);
+            _classUnderTest = new DynamoDbGateway(_dynamoDb, _mockUpdater.Object, _logger.Object);
         }
 
         public void Dispose()
@@ -117,11 +116,6 @@ namespace PersonApi.Tests.V1.Gateways
             return person;
         }
 
-        private void SetIfMatch(int? versionNumber)
-        {
-            _httpContext.Request.Headers.Add(HeaderConstants.IfMatch, new StringValues(versionNumber?.ToString()));
-        }
-
         [Fact]
         public async Task GetPersonByIdReturnsNullIfEntityDoesntExist()
         {
@@ -178,7 +172,7 @@ namespace PersonApi.Tests.V1.Gateways
         {
             // Arrange
             var mockDynamoDb = new Mock<IDynamoDBContext>();
-            _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _mockUpdater.Object, _logger.Object, _mockContextAccessor.Object);
+            _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _mockUpdater.Object, _logger.Object);
             var id = Guid.NewGuid();
             var query = ConstructQuery(id);
             var exception = new ApplicationException("Test exception");
@@ -243,10 +237,9 @@ namespace PersonApi.Tests.V1.Gateways
                                 { "placeOfBirth", updatedPerson.PlaceOfBirth }
                             }
                         });
-            SetIfMatch(0);
 
             //Act
-            await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query).ConfigureAwait(false);
+            await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query, 0).ConfigureAwait(false);
 
             //Assert
             var load = await _dynamoDb.LoadAsync<PersonDbEntity>(person.Id).ConfigureAwait(false);
@@ -275,7 +268,7 @@ namespace PersonApi.Tests.V1.Gateways
         [Theory]
         [InlineData(null)]
         [InlineData(5)]
-        public async Task UpdatePersonThrowsExceptionOnVersionConflict(int? incomingVersionNumber)
+        public async Task UpdatePersonThrowsExceptionOnVersionConflict(int? ifMatch)
         {
             // Arrange
             var person = ConstructPerson();
@@ -283,14 +276,13 @@ namespace PersonApi.Tests.V1.Gateways
             await _dynamoDb.SaveAsync(person.ToDatabase()).ConfigureAwait(false);
             var constructRequest = ConstructRequest();
 
-            SetIfMatch(incomingVersionNumber);
-
             //Act
-            Func<Task<UpdateEntityResult<PersonDbEntity>>> func = async () => await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query).ConfigureAwait(false);
+            Func<Task<UpdateEntityResult<PersonDbEntity>>> func = async () => await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query, ifMatch)
+                                                                                                   .ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<VersionNumberConflictException>()
-                         .Where(x => (x.IncomingVersionNumber == incomingVersionNumber) && (x.ExpectedVersionNumber == 0));
+                         .Where(x => (x.IncomingVersionNumber == ifMatch) && (x.ExpectedVersionNumber == 0));
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.SaveAsync to update id {query.Id}", Times.Never());
         }
 
@@ -302,7 +294,7 @@ namespace PersonApi.Tests.V1.Gateways
             var query = ConstructQuery(id);
             var constructRequest = ConstructRequest();
 
-            var response = await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query).ConfigureAwait(false);
+            var response = await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query, 0).ConfigureAwait(false);
 
             // Assert
             response.Should().BeNull();
@@ -314,7 +306,7 @@ namespace PersonApi.Tests.V1.Gateways
         {
             // Arrange
             var mockDynamoDb = new Mock<IDynamoDBContext>();
-            _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _mockUpdater.Object, _logger.Object, _mockContextAccessor.Object);
+            _classUnderTest = new DynamoDbGateway(mockDynamoDb.Object, _mockUpdater.Object, _logger.Object);
             var id = Guid.NewGuid();
             var query = ConstructQuery(id);
             var constructRequest = ConstructRequest();
@@ -323,7 +315,8 @@ namespace PersonApi.Tests.V1.Gateways
                         .ThrowsAsync(exception);
 
             // Act
-            Func<Task<UpdateEntityResult<PersonDbEntity>>> func = async () => await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query).ConfigureAwait(false);
+            Func<Task<UpdateEntityResult<PersonDbEntity>>> func = async () => await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query, 0)
+                                                                                                   .ConfigureAwait(false);
 
             // Assert
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
