@@ -4,7 +4,7 @@ The Person Api is the LBH Api responsible for person/comments within the new MTF
 
 ### Api definition
 
-Swagger Hub - https://app.swaggerhub.com/apis/Hackney/personApi/1.0.0
+Swagger Hub - https://app.swaggerhub.com/apis/Hackney/personAPI/1.0.0
 
 ## Stack
 

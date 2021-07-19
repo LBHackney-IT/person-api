@@ -19,5 +19,7 @@ namespace PersonApi.V1.Domain
         public string Reason { get; set; }
         public IEnumerable<PersonType> PersonTypes { get; set; }
         public IEnumerable<Tenure> Tenures { get; set; }
+        public int? VersionNumber { get; set; }
+
     }
 }
