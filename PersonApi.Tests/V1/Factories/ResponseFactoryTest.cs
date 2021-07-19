@@ -39,7 +39,7 @@ namespace PersonApi.Tests.V1.Factories
         [Fact]
         public void NullPersonToResponseReturnsNull()
         {
-            var response = _sut.ToResponse((Person)null);
+            var response = _sut.ToResponse((Person) null);
             response.Should().BeNull();
         }
 
