@@ -38,6 +38,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using HeaderConstants = PersonApi.V1.Infrastructure.HeaderConstants;
 
 namespace PersonApi
 {
@@ -182,7 +183,7 @@ namespace PersonApi
                 .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .WithExposedHeaders("ETag"));
+                .WithExposedHeaders(HeaderConstants.ETag));
 
             if (env.IsDevelopment())
             {
