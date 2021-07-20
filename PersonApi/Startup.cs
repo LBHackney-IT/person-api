@@ -181,7 +181,8 @@ namespace PersonApi
             app.UseCors(builder => builder
                 .AllowAnyOrigin()
                 .AllowAnyHeader()
-                .AllowAnyMethod());
+                .AllowAnyMethod()
+                .WithExposedHeaders("ETag"));
 
             if (env.IsDevelopment())
             {
