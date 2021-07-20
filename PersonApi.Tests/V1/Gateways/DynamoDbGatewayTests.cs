@@ -2,7 +2,6 @@ using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
 using FluentAssertions;
 using Force.DeepCloner;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PersonApi.V1.Boundary.Request;

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.Domain;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;

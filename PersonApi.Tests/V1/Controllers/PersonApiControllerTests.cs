@@ -18,7 +18,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Routing;
 using Xunit;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
 
