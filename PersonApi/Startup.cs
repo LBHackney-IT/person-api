@@ -187,7 +187,7 @@ namespace PersonApi
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             app.UseCors("ApiCorsPolicy");
-            
+
 
             if (env.IsDevelopment())
             {
