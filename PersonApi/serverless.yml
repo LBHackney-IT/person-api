@@ -1,4 +1,4 @@
-service: person-apiV5
+service: person-apiV6
 provider:
   name: aws
   runtime: dotnetcore3.1
@@ -14,7 +14,7 @@ package:
   artifact: ./bin/release/netcoreapp3.1/person-api.zip
 
 functions:
-  PersonApiV5:
+  PersonApiV6:
     name: ${self:service}-${self:provider.stage}
     handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
@@ -31,13 +31,17 @@ functions:
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
             managedExternally: true
-          cors:
-          - enabled: true
+          cors:          
           - origin: '*'
           - headers: 
             - Content-Type            
             - Authorization
-            - If-Match          
+            - If-Match
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amz-Date
+          allowCredentials: false
 resources:
   Resources:
     LambdaSecurityGroup:
@@ -135,7 +139,7 @@ resources:
     AppConfig:
       Type: AWS::AppConfig::Application
       Properties:
-        Name: housing-tl/${self:provider.stage}/person-apiV5
+        Name: housing-tl/${self:provider.stage}/person-apiV6
     DevEnvironment:
       Type: AWS::AppConfig::Environment
       Properties:
