@@ -1,4 +1,4 @@
-service: person-apiV6
+service: person-api
 provider:
   name: aws
   runtime: dotnetcore3.1
@@ -14,7 +14,7 @@ package:
   artifact: ./bin/release/netcoreapp3.1/person-api.zip
 
 functions:
-  PersonApiV6:
+  PersonApi:
     name: ${self:service}-${self:provider.stage}
     handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
@@ -139,7 +139,7 @@ resources:
     AppConfig:
       Type: AWS::AppConfig::Application
       Properties:
-        Name: housing-tl/${self:provider.stage}/person-apiV6
+        Name: housing-tl/${self:provider.stage}/person-api
     DevEnvironment:
       Type: AWS::AppConfig::Environment
       Properties:
