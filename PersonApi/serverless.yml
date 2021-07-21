@@ -14,7 +14,7 @@ package:
   artifact: ./bin/release/netcoreapp3.1/person-api.zip
 
 functions:
-  PersonApi:
+  PersonApiV2:
     name: ${self:service}-${self:provider.stage}
     handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
