@@ -1,4 +1,4 @@
-service: person-apiV4
+service: person-apiV5
 provider:
   name: aws
   runtime: dotnetcore3.1
@@ -14,7 +14,7 @@ package:
   artifact: ./bin/release/netcoreapp3.1/person-api.zip
 
 functions:
-  PersonApiV4:
+  PersonApiV5:
     name: ${self:service}-${self:provider.stage}
     handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
@@ -34,8 +34,10 @@ functions:
           cors:
           - enabled: true
           - origin: '*'
-          - headers: 'Content-Type,Authorization,If-Match'
-          - methods: 'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'
+          - headers: 
+            - Content-Type            
+            - Authorization
+            - If-Match          
 resources:
   Resources:
     LambdaSecurityGroup:
@@ -133,7 +135,7 @@ resources:
     AppConfig:
       Type: AWS::AppConfig::Application
       Properties:
-        Name: housing-tl/${self:provider.stage}/person-apiV4
+        Name: housing-tl/${self:provider.stage}/person-apiV5
     DevEnvironment:
       Type: AWS::AppConfig::Environment
       Properties:
