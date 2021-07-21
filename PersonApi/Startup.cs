@@ -65,8 +65,8 @@ namespace PersonApi
                 builder
                     .AllowAnyOrigin()
                     .WithHeaders(HeaderNames.ContentType, HeaderNames.Authorization, "If-Match", "ETag")
-                    .AllowAnyMethod()
-                    .AllowCredentials();
+                    .AllowAnyMethod();
+
             }));
 
             services
