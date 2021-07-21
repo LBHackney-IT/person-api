@@ -4,15 +4,12 @@ using Newtonsoft.Json.Linq;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using PersonApi.V1.Domain;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace PersonApi.Tests.V1.E2ETests.Steps

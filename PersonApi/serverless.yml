@@ -30,8 +30,18 @@ functions:
             type: request
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
-            managedExternally: true       
-          cors: true
+            managedExternally: true
+          cors:          
+          - origin: '*'
+          - headers: 
+            - Content-Type            
+            - Authorization
+            - If-Match
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amz-Date
+          allowCredentials: false
 resources:
   Resources:
     LambdaSecurityGroup:

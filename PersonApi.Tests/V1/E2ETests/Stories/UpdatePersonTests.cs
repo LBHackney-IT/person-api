@@ -1,9 +1,6 @@
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.Tests.V1.E2ETests.Steps;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TestStack.BDDfy;
 using Xunit;
 
