@@ -182,7 +182,7 @@ namespace PersonApi
                 .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .WithExposedHeaders("ETag"));
+                .WithExposedHeaders("ETag", "If-Match"));
 
             if (env.IsDevelopment())
             {
