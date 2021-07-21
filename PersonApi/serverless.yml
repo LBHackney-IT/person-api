@@ -1,4 +1,4 @@
-service: person-api
+service: person-apiV2
 provider:
   name: aws
   runtime: dotnetcore3.1
