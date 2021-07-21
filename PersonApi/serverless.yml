@@ -1,4 +1,4 @@
-service: person-apiV2
+service: person-apiV3
 provider:
   name: aws
   runtime: dotnetcore3.1
@@ -14,7 +14,7 @@ package:
   artifact: ./bin/release/netcoreapp3.1/person-api.zip
 
 functions:
-  PersonApiV2:
+  PersonApiV3:
     name: ${self:service}-${self:provider.stage}
     handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
@@ -131,7 +131,7 @@ resources:
     AppConfig:
       Type: AWS::AppConfig::Application
       Properties:
-        Name: housing-tl/${self:provider.stage}/person-api
+        Name: housing-tl/${self:provider.stage}/person-apiV3
     DevEnvironment:
       Type: AWS::AppConfig::Environment
       Properties:
@@ -143,7 +143,7 @@ resources:
         ApplicationId: !Ref AppConfig
         Name: "PersonConfigurationProfile"
         RetrievalRoleArn: ${ssm:/housing-tl/${self:provider.stage}/app-config/retrieval-role-arn}
-        LocationUri: ssm-parameter:///housing-tl/person-api/configurationData
+        LocationUri: ssm-parameter:///housing-tl/person-apiV3/configurationData
     DeploymentStrategy:
       Type: AWS::AppConfig::DeploymentStrategy
       Properties:
