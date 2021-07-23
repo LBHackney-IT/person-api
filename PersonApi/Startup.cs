@@ -58,7 +58,7 @@ namespace PersonApi
         private const string ApiName = "person";
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services, IWebHostEnvironment env)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {
@@ -91,8 +91,6 @@ namespace PersonApi
 
             services.AddSwaggerGen(c =>
             {
-                if(!env.IsDevelopment())
-                {
                     c.AddSecurityDefinition("Token",
                         new OpenApiSecurityScheme
                         {
@@ -112,7 +110,7 @@ namespace PersonApi
                             new List<string>()
                         }
                     });
-                }
+
                 //Looks at the APIVersionAttribute [ApiVersion("x")] on controllers and decides whether or not
                 //to include it in that version of the swagger document
                 //Controllers must have this [ApiVersion("x")] to be included in swagger documentation!!
