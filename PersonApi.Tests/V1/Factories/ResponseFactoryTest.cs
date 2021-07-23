@@ -36,6 +36,13 @@ namespace PersonApi.Tests.V1.Factories
             formatted.Should().BeNull();
         }
 
+        [Fact]
+        public void NullPersonToResponseReturnsNull()
+        {
+            var response = _sut.ToResponse((Person) null);
+            response.Should().BeNull();
+        }
+
         [Theory]
         [InlineData(true)]
         [InlineData(false)]

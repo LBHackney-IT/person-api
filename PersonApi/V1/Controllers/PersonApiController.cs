@@ -1,15 +1,18 @@
 using Hackney.Core.Http;
 using Hackney.Core.JWT;
 using Hackney.Core.Logging;
+using Hackney.Core.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Factories;
+using PersonApi.V1.Infrastructure.Exceptions;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
-using PersonApi.V1.Factories;
+using HeaderConstants = PersonApi.V1.Infrastructure.HeaderConstants;
 
 namespace PersonApi.V1.Controllers
 {
@@ -24,19 +27,17 @@ namespace PersonApi.V1.Controllers
         private readonly ITokenFactory _tokenFactory;
         private readonly IHttpContextWrapper _contextWrapper;
         private readonly IUpdatePersonUseCase _updatePersonUseCase;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IResponseFactory _responseFactory;
 
         public PersonApiController(IGetByIdUseCase getByIdUseCase, IPostNewPersonUseCase newPersonUseCase,
             IUpdatePersonUseCase updatePersonUseCase, ITokenFactory tokenFactory, IHttpContextWrapper contextWrapper,
-            IHttpContextAccessor httpContextAccessor, IResponseFactory responseFactory)
+            IResponseFactory responseFactory)
         {
             _getByIdUseCase = getByIdUseCase;
             _newPersonUseCase = newPersonUseCase;
             _updatePersonUseCase = updatePersonUseCase;
             _tokenFactory = tokenFactory;
             _contextWrapper = contextWrapper;
-            _httpContextAccessor = httpContextAccessor;
             _responseFactory = responseFactory;
         }
 
@@ -59,7 +60,7 @@ namespace PersonApi.V1.Controllers
             var person = await _getByIdUseCase.ExecuteAsync(query).ConfigureAwait(false);
             if (null == person) return NotFound(query.Id);
 
-            HttpContext.Response.Headers.Add("ETag", person.VersionNumber.ToString());
+            HttpContext.Response.Headers.Add(HeaderConstants.ETag, person.VersionNumber.ToString());
 
             return Ok(_responseFactory.ToResponse(person));
         }
@@ -96,18 +97,28 @@ namespace PersonApi.V1.Controllers
             [FromRoute] PersonQueryObject query)
         {
             // This is only possible because the EnableRequestBodyRewind middleware is specified in the application startup.
-            var bodyText = await _httpContextAccessor.HttpContext.Request.GetRawBodyStringAsync().ConfigureAwait(false);
-
+            var bodyText = await HttpContext.Request.GetRawBodyStringAsync().ConfigureAwait(false);
             var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
 
-            // We use a request object AND the raw request body text because the incoming request will only contain the fields that changed
-            // whereas the request object has all possible updateable fields defined.
-            // The implementation will use the raw body text to identify which fields to update and the request object is specified here so that its
-            // associated validation will be executed by the MVC pipeline before we even get to this point.
-            var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject, bodyText, token, query).ConfigureAwait(false);
-            if (person == null) return NotFound(query.Id);
+            string ifMatchString = HttpContext.Request.Headers.GetHeaderValue(HeaderConstants.IfMatch);
+            var ifMatch = int.TryParse(ifMatchString, out int i) ? i : (int?) null;
 
-            return NoContent();
+            try
+            {
+                // We use a request object AND the raw request body text because the incoming request will only contain the fields that changed
+                // whereas the request object has all possible updateable fields defined.
+                // The implementation will use the raw body text to identify which fields to update and the request object is specified here so that its
+                // associated validation will be executed by the MVC pipeline before we even get to this point.
+                var person = await _updatePersonUseCase.ExecuteAsync(personRequestObject, bodyText, token, query, ifMatch)
+                                                       .ConfigureAwait(false);
+                if (person == null) return NotFound(query.Id);
+
+                return NoContent();
+            }
+            catch (VersionNumberConflictException vncErr)
+            {
+                return Conflict(vncErr.Message);
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ namespace PersonApi.V1.Gateways
 
         Task<Person> PostNewPersonAsync(CreatePersonRequestObject requestObject);
 
-        Task<UpdateEntityResult<PersonDbEntity>> UpdatePersonByIdAsync(UpdatePersonRequestObject requestObject, string requestBody, PersonQueryObject query);
+        Task<UpdateEntityResult<PersonDbEntity>> UpdatePersonByIdAsync(UpdatePersonRequestObject requestObject, string requestBody,
+                                                                       PersonQueryObject query, int? ifMatch);
     }
 }
