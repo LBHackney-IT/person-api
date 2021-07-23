@@ -28,9 +28,9 @@ namespace PersonApi.V1.UseCase
 
         [LogCall]
         public async Task<PersonResponseObject> ExecuteAsync(UpdatePersonRequestObject personRequestObject, string requestBody,
-            Token token, PersonQueryObject query)
+            Token token, PersonQueryObject query, int? ifMatch)
         {
-            var result = await _gateway.UpdatePersonByIdAsync(personRequestObject, requestBody, query).ConfigureAwait(false);
+            var result = await _gateway.UpdatePersonByIdAsync(personRequestObject, requestBody, query, ifMatch).ConfigureAwait(false);
             if (result is null) return null;
 
             // Only raise the event if something actually changed.
