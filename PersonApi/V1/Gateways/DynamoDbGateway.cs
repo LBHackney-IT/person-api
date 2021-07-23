@@ -5,6 +5,7 @@ using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
+using PersonApi.V1.Infrastructure.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,16 +45,21 @@ namespace PersonApi.V1.Gateways
         }
 
         [LogCall]
-        public async Task<UpdateEntityResult<PersonDbEntity>> UpdatePersonByIdAsync(UpdatePersonRequestObject requestObject, string requestBody, PersonQueryObject query)
+        public async Task<UpdateEntityResult<PersonDbEntity>> UpdatePersonByIdAsync(UpdatePersonRequestObject requestObject, string requestBody,
+                                                                                    PersonQueryObject query, int? ifMatch)
         {
-            _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync to update id {query.Id}");
-
             var existingPerson = await _dynamoDbContext.LoadAsync<PersonDbEntity>(query.Id).ConfigureAwait(false);
             if (existingPerson == null) return null;
 
+            if (ifMatch != existingPerson.VersionNumber)
+                throw new VersionNumberConflictException(ifMatch, existingPerson.VersionNumber);
+
             var result = _updater.UpdateEntity(existingPerson, requestBody, requestObject);
             if (result.NewValues.Any())
+            {
+                _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync to update id {query.Id}");
                 await _dynamoDbContext.SaveAsync(result.UpdatedEntity).ConfigureAwait(false);
+            }
 
             return result;
         }

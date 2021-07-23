@@ -1,7 +1,6 @@
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.Tests.V1.E2ETests.Steps;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using TestStack.BDDfy;
 using Xunit;
 

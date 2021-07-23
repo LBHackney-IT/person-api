@@ -1,8 +1,6 @@
 using FluentValidation;
 using Hackney.Core.Validation;
 using System;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace PersonApi.V1.Boundary.Request.Validation
 {

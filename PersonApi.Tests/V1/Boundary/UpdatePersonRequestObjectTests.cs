@@ -2,7 +2,6 @@ using AutoFixture;
 using FluentAssertions;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Factories;
-using System;
 using Xunit;
 
 namespace PersonApi.Tests.V1.Boundary

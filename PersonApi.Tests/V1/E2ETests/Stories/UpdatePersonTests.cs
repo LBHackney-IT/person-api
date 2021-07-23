@@ -1,9 +1,6 @@
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.Tests.V1.E2ETests.Steps;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TestStack.BDDfy;
 using Xunit;
 
@@ -52,6 +49,18 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
                 .And(g => _personFixture.GivenAUpdatePersonRequest())
                 .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest, _personFixture.PersonId))
                 .Then(t => _steps.ThenThePersonDetailsAreUpdated(_personFixture))
+                .BDDfy();
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(5)]
+        public void ServiceReturnsConflictWhenIncorrectVersionNumber(int? versionNumber)
+        {
+            this.Given(g => _personFixture.GivenAPersonAlreadyExistsAndUpdateRequested())
+                .And(g => _personFixture.GivenAUpdatePersonRequest())
+                .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest, _personFixture.PersonId, versionNumber))
+                .Then(t => _steps.ThenConflictIsReturned(versionNumber))
                 .BDDfy();
         }
 
