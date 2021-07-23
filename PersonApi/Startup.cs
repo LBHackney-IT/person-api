@@ -83,25 +83,25 @@ namespace PersonApi
 
             services.AddSwaggerGen(c =>
             {
-                    c.AddSecurityDefinition("Token",
+                c.AddSecurityDefinition("Token",
+                    new OpenApiSecurityScheme
+                    {
+                        In = ParameterLocation.Header,
+                        Description = "Your Hackney API Key",
+                        Name = "X-Api-Key",
+                        Type = SecuritySchemeType.ApiKey
+                    });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
                         new OpenApiSecurityScheme
                         {
-                            In = ParameterLocation.Header,
-                            Description = "Your Hackney API Key",
-                            Name = "X-Api-Key",
-                            Type = SecuritySchemeType.ApiKey
-                        });
-
-                    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Token" }
-                            },
-                            new List<string>()
-                        }
-                    });
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Token" }
+                        },
+                        new List<string>()
+                    }
+                });
 
                 //Looks at the APIVersionAttribute [ApiVersion("x")] on controllers and decides whether or not
                 //to include it in that version of the swagger document
