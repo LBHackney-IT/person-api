@@ -38,7 +38,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Microsoft.Net.Http.Headers;
 
 namespace PersonApi
 {
@@ -60,14 +59,7 @@ namespace PersonApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
-            {
-                builder
-                    .AllowAnyOrigin()
-                    .WithHeaders(HeaderNames.ContentType, HeaderNames.Authorization, "If-Match", "ETag")
-                    .AllowAnyMethod();
-
-            }));
+            services.AddCors();
 
             services
                 .AddMvc()
@@ -186,7 +178,11 @@ namespace PersonApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
-            app.UseCors("ApiCorsPolicy");
+            app.UseCors(builder => builder
+                   .AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .WithExposedHeaders("ETag", "If-Match"));
 
 
             if (env.IsDevelopment())

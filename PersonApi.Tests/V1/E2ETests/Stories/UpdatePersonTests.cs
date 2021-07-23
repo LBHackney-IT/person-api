@@ -52,6 +52,18 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
                 .BDDfy();
         }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData(5)]
+        public void ServiceReturnsConflictWhenIncorrectVersionNumber(int? versionNumber)
+        {
+            this.Given(g => _personFixture.GivenAPersonAlreadyExistsAndUpdateRequested())
+                .And(g => _personFixture.GivenAUpdatePersonRequest())
+                .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest, _personFixture.PersonId, versionNumber))
+                .Then(t => _steps.ThenConflictIsReturned(versionNumber))
+                .BDDfy();
+        }
+
         [Fact]
         public void ServiceReturnsNotFoundWhenNoPersonExists()
         {
