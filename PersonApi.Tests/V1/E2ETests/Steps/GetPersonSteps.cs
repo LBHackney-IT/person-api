@@ -1,5 +1,6 @@
 using FluentAssertions;
 using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using System;
