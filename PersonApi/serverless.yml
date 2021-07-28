@@ -42,6 +42,10 @@ functions:
               - X-Amz-Security-Token
               - X-Amz-User-Agent
             allowCredentials: false
+      - http:
+          path: /swagger/{proxy+}
+          method: GET
+          private: false
 
 resources:
   Resources:
