@@ -31,6 +31,6 @@ namespace PersonApi.V1.Boundary.Response
         public string Reason { get; set; }
         public IEnumerable<PersonType> PersonTypes { get; set; }
         public IEnumerable<ApiLink> Links { get; set; }
-        public IEnumerable<Tenure> Tenures { get; set; }
+        public IEnumerable<TenureResponseObject> Tenures { get; set; }
     }
 }
