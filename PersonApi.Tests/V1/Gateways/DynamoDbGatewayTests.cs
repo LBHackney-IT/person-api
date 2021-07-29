@@ -202,6 +202,8 @@ namespace PersonApi.Tests.V1.Gateways
             var query = ConstructQuery(entity.Id);
             var response = await _classUnderTest.GetPersonByIdAsync(query).ConfigureAwait(false);
             response.Should().NotBeNull();
+
+            _cleanup.Add(async () => await _dynamoDb.DeleteAsync(response.ToDatabase()).ConfigureAwait(false));
         }
 
         [Fact]
@@ -209,8 +211,10 @@ namespace PersonApi.Tests.V1.Gateways
         {
             // Arrange
             var person = ConstructPerson();
+            var personDb = person.ToDatabase();
             var query = ConstructQuery(person.Id);
-            await _dynamoDb.SaveAsync(person.ToDatabase()).ConfigureAwait(false);
+            await _dynamoDb.SaveAsync(personDb).ConfigureAwait(false);
+
             var constructRequest = ConstructRequest();
 
             var updatedPerson = person.DeepClone();
@@ -238,6 +242,7 @@ namespace PersonApi.Tests.V1.Gateways
 
             //Assert
             var load = await _dynamoDb.LoadAsync<PersonDbEntity>(person.Id).ConfigureAwait(false);
+            _cleanup.Add(async () => await _dynamoDb.DeleteAsync(load).ConfigureAwait(false));
 
             // Changed
             load.FirstName.Should().Be(updatedPerson.FirstName);
@@ -267,8 +272,11 @@ namespace PersonApi.Tests.V1.Gateways
         {
             // Arrange
             var person = ConstructPerson();
+            var personDb = person.ToDatabase();
             var query = ConstructQuery(person.Id);
-            await _dynamoDb.SaveAsync(person.ToDatabase()).ConfigureAwait(false);
+            await _dynamoDb.SaveAsync(personDb).ConfigureAwait(false);
+            _cleanup.Add(async () => await _dynamoDb.DeleteAsync(personDb).ConfigureAwait(false));
+
             var constructRequest = ConstructRequest();
 
             //Act
