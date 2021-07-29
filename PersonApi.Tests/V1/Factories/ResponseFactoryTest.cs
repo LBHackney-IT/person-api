@@ -5,6 +5,7 @@ using PersonApi.V1.Boundary;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace PersonApi.Tests.V1.Factories
@@ -64,7 +65,7 @@ namespace PersonApi.Tests.V1.Factories
             response.PlaceOfBirth.Should().Be(person.PlaceOfBirth);
             response.DateOfBirth.Should().Be(ResponseFactory.FormatDateOfBirth(person.DateOfBirth));
             response.PersonTypes.Should().BeEquivalentTo(person.PersonTypes);
-            response.Tenures.Should().BeEquivalentTo(person.Tenures);
+            response.Tenures.Should().BeEquivalentTo(person.Tenures?.Select(x => ResponseFactory.ToResponse(x)));
         }
     }
 }

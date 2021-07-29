@@ -47,7 +47,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         {
             this.Given(g => _personFixture.GivenANewPersonRequest())
                 .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.CreatePersonRequest))
-                .Then(t => _steps.ThenThePersonDetailsAreReturnedAndIdIsNotEmpty())
+                .Then(t => _steps.ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(_personFixture))
                 .BDDfy();
         }
 

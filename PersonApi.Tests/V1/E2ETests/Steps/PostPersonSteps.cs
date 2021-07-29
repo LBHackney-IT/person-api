@@ -1,8 +1,10 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Infrastructure;
 using System;
 using System.Linq;
 using System.Net;
@@ -43,7 +45,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             _lastResponse = await _httpClient.SendAsync(message).ConfigureAwait(false);
         }
 
-        public async Task ThenThePersonDetailsAreReturnedAndIdIsNotEmpty()
+        public async Task ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(PersonFixture personFixture)
         {
             _lastResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -51,6 +53,8 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             var apiPerson = JsonSerializer.Deserialize<PersonResponseObject>(responseContent, CreateJsonOptions());
 
             apiPerson.Id.Should().NotBeEmpty();
+
+            await personFixture._dbContext.DeleteAsync<PersonDbEntity>(apiPerson.Id).ConfigureAwait(false);
         }
 
         public async Task ThenTheValidationErrorsAreReturned()
