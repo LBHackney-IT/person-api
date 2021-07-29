@@ -2,6 +2,7 @@ using PersonApi.V1.Boundary;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
 using System;
+using System.Linq;
 
 namespace PersonApi.V1.Factories
 {
@@ -37,8 +38,25 @@ namespace PersonApi.V1.Factories
                 DateOfBirth = FormatDateOfBirth(domain.DateOfBirth),
                 PersonTypes = domain.PersonTypes,
                 Links = _apiLinkGenerator?.GenerateLinksForPerson(domain),
-                Tenures = domain.Tenures,
+                Tenures = domain.Tenures?.Select(x => ToResponse(x)).ToList(),
                 Reason = domain.Reason
+            };
+        }
+
+        public static TenureResponseObject ToResponse(Tenure tenure)
+        {
+            return new TenureResponseObject()
+            {
+                AssetFullAddress = tenure.AssetFullAddress,
+                AssetId = tenure.AssetId,
+                EndDate = tenure.EndDate,
+                Id = tenure.Id,
+                IsActive = tenure.IsActive,
+                PaymentReference = tenure.PaymentReference,
+                PropertyReference = tenure.PropertyReference,
+                StartDate = tenure.StartDate,
+                Type = tenure.Type,
+                Uprn = tenure.Uprn
             };
         }
     }
