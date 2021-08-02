@@ -29,7 +29,8 @@ namespace PersonApi.Tests.V1.Infrastructure.JWT
                 Groups = new[] { "saml-aws-console-mtfh-developer" },
                 Iat = 1623058232,
                 Name = "Tester",
-                Nbf = 0
+                Nbf = 0,
+                Sub = "115018116092098676113"
             };
             var token =
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nLWR" +
