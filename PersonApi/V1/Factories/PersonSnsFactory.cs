@@ -21,7 +21,6 @@ namespace PersonApi.V1.Factories
                 SourceSystem = CreateEventConstants.SOURCESYSTEM,
                 User = new User
                 {
-                    Id = Guid.NewGuid(),
                     Name = token.Name,
                     Email = token.Email
                 },
@@ -46,7 +45,6 @@ namespace PersonApi.V1.Factories
                 SourceSystem = UpdatePersonConstants.SOURCESYSTEM,
                 User = new User
                 {
-                    Id = Guid.NewGuid(),
                     Name = token.Name,
                     Email = token.Email
                 },

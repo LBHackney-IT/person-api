@@ -2,6 +2,7 @@ using Amazon;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using FluentValidation.AspNetCore;
+using Hackney.Core.DI;
 using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.HealthCheck;
 using Hackney.Core.Http;
@@ -147,6 +148,8 @@ namespace PersonApi
 
             services.AddLogCallAspect();
             services.ConfigureAws();
+            services.AddTokenFactory();
+            services.AddHttpContextWrapper();
 
             RegisterGateways(services);
             RegisterUseCases(services);
@@ -159,8 +162,6 @@ namespace PersonApi
             services.AddScoped<IPersonApiGateway, DynamoDbGateway>();
             services.AddScoped<ISnsGateway, PersonSnsGateway>();
             services.AddScoped<ISnsFactory, PersonSnsFactory>();
-            services.AddScoped<ITokenFactory, TokenFactory>();
-            services.AddScoped<IHttpContextWrapper, HttpContextWrapper>();
             services.AddScoped<IEntityUpdater, EntityUpdater>();
         }
 
