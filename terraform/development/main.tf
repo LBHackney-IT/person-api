@@ -53,7 +53,7 @@ resource "aws_ssm_parameter" "person_sns_arn" {
 }
 
 resource "aws_synthetics_canary" "health-check-canaries" {
-  name                 = person-development-healthcheck
+  name                 = "person-development-healthcheck"
   artifact_s3_location = "s3://cw-syn-results-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}/"
   execution_role_arn   = "canaryExecutionRole"
   handler              = "exports.handler"
