@@ -8,6 +8,6 @@ namespace PersonApi.V1.Boundary.Request.Validation
         public const string FirstNameMandatory = "W15";
         public const string SurnameMandatory = "W16";
         public const string ReasonMandatory = "W17";
-        public const string XssCheckFailure = "W666";
+        public const string XssCheckFailure = "W42";
     }
 }
