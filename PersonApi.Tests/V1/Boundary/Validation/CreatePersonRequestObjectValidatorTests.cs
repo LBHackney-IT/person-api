@@ -133,7 +133,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             var model = new CreatePersonRequestObject() { FirstName = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.FirstName)
-                  .WithErrorCode("W15");
+                  .WithErrorCode(ErrorCodes.FirstNameMandatory);
         }
 
         [Fact]

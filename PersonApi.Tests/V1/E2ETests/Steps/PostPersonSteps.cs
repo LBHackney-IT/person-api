@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.V1.Boundary.Request;
+using PersonApi.V1.Boundary.Request.Validation;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Infrastructure;
 using System;
@@ -20,6 +21,14 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
     {
         public PostPersonSteps(HttpClient httpClient) : base(httpClient)
         { }
+
+        private static void ShouldHaveErrorFor(JEnumerable<JToken> errors, string propertyName, string errorCode = null)
+        {            
+            var error = errors.FirstOrDefault(x => (x.Path.Split('.').Last().Trim('\'', ']')) == propertyName) as JProperty;
+            error.Should().NotBeNull();
+            if (!string.IsNullOrEmpty(errorCode))
+                error.Value.ToString().Should().Contain(errorCode);
+        }
 
         /// <summary>
         /// You can use jwt.io to decode the token - it is the same one we'd use on dev, etc. 
@@ -62,14 +71,14 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             var responseContent = await _lastResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             JObject jo = JObject.Parse(responseContent);
-            var errorProperties = jo["errors"].Children().Select(x => x.Path.Split('.').Last().Trim('\'', ']')).ToList();
+            var errors = jo["errors"].Children();
 
-            errorProperties.Should().Contain("FirstName");
-            errorProperties.Should().Contain("Surname");
-            errorProperties.Should().Contain("PersonTypes");
-            errorProperties.Should().Contain("DateOfBirth");
-            errorProperties.Should().Contain("StartDate"); // Tenure
-            errorProperties.Should().Contain("EndDate"); // Tenure
+            ShouldHaveErrorFor(errors, "FirstName", ErrorCodes.FirstNameMandatory);
+            ShouldHaveErrorFor(errors, "Surname", ErrorCodes.SurnameMandatory);
+            ShouldHaveErrorFor(errors, "PersonTypes", ErrorCodes.PersonTypeMandatory);
+            ShouldHaveErrorFor(errors, "DateOfBirth", ErrorCodes.DoBInFuture);
+            ShouldHaveErrorFor(errors, "StartDate");
+            ShouldHaveErrorFor(errors, "EndDate");
         }
 
         public void ThenBadRequestIsReturned()
