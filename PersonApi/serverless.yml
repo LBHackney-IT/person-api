@@ -46,9 +46,29 @@ functions:
           path: /swagger/{proxy+}
           method: GET
           private: false
+  HealthCheck:
+    name: ${self:service}-${self:provider.stage}-healthcheck
+    handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
+    role: canaryExecutionRole
+    events:
+       - http:
+          path: /healthcheck/ping
+          method: GET
+          private: false
 
 resources:
   Resources:
+    canaryExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /${self:service}/${self:provider.stage}/
+        RoleName: ${self:service}-canaryExecutionRole
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: "lambda:InvokeFunction"
+              Resource: "*"
     LambdaSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:

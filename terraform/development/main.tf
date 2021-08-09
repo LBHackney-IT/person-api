@@ -24,6 +24,8 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+
+
 locals {
     parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
 }
@@ -48,5 +50,17 @@ resource "aws_ssm_parameter" "person_sns_arn" {
   name  = "/sns-topic/development/person/arn"
   type  = "String"
   value = aws_sns_topic.person_topic.arn
+}
+
+resource "aws_synthetics_canary" "health-check-canaries" {
+  name                 = person-development-healthcheck
+  artifact_s3_location = "s3://cw-syn-results-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}/"
+  execution_role_arn   = "canaryExecutionRole"
+  handler              = "exports.handler"
+  runtime_version      = "syn-nodejs-puppeteer-3.1"
+
+  schedule {
+    expression = "rate(5 minute)"
+  }
 }
 
