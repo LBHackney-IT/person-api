@@ -9,9 +9,13 @@ namespace PersonApi.V1.Boundary.Request.Validation
     {
         public TenureValidator()
         {
-            RuleFor(x => x.AssetFullAddress).NotXssString()
+            RuleFor(x => x.AssetFullAddress)
+                .NotXssString()
+                .WithErrorCode(ErrorCodes.XssCheckFailure)
                 .When(y => !string.IsNullOrEmpty(y.AssetFullAddress));
-            RuleFor(x => x.AssetId).NotXssString()
+            RuleFor(x => x.AssetId)
+                .NotXssString()
+                .WithErrorCode(ErrorCodes.XssCheckFailure)
                 .When(y => !string.IsNullOrEmpty(y.AssetId));
             RuleFor(x => x.StartDate).Must(x => DateTime.TryParse(x, out DateTime dt))
                 .When(y => !string.IsNullOrEmpty(y.StartDate));
@@ -19,13 +23,21 @@ namespace PersonApi.V1.Boundary.Request.Validation
                 .When(y => !string.IsNullOrEmpty(y.EndDate));
             RuleFor(x => x.Id).NotNull()
                               .NotEqual(Guid.Empty);
-            RuleFor(x => x.Type).NotXssString()
+            RuleFor(x => x.Type)
+                .NotXssString()
+                .WithErrorCode(ErrorCodes.XssCheckFailure)
                 .When(y => !string.IsNullOrEmpty(y.Type));
-            RuleFor(x => x.Uprn).NotXssString()
+            RuleFor(x => x.Uprn)
+                .NotXssString()
+                .WithErrorCode(ErrorCodes.XssCheckFailure)
                 .When(y => !string.IsNullOrEmpty(y.Uprn));
-            RuleFor(x => x.PropertyReference).NotXssString()
+            RuleFor(x => x.PropertyReference)
+                .NotXssString()
+                .WithErrorCode(ErrorCodes.XssCheckFailure)
                 .When(y => !string.IsNullOrEmpty(y.Uprn));
-            RuleFor(x => x.PaymentReference).NotXssString()
+            RuleFor(x => x.PaymentReference)
+                .NotXssString()
+                .WithErrorCode(ErrorCodes.XssCheckFailure)
                 .When(y => !string.IsNullOrEmpty(y.Uprn));
         }
     }
