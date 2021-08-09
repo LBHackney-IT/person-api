@@ -16,37 +16,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         }
 
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void AddressShouldNotErrorWithNoValue(string value)
-        {
-            var model = new Tenure() { AssetFullAddress = value };
-            var result = _sut.TestValidate(model);
-            result.ShouldNotHaveValidationErrorFor(x => x.AssetFullAddress);
-        }
-
-        [Theory]
-        [InlineData("Some string with <tag> in it.")]
-        public void AssetIdShouldErrorWithInvalidValue(string invalid)
-        {
-            var model = new Tenure() { AssetId = invalid };
-            var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.AssetId);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void AssetIdShouldNotErrorWithNoValue(string value)
-        {
-            var model = new Tenure() { AssetId = value };
-            var result = _sut.TestValidate(model);
-            result.ShouldNotHaveValidationErrorFor(x => x.AssetId);
-        }
-
-        [Theory]
         [InlineData("10 Some month 2001")]
-        [InlineData("Some string with <tag> in it.")]
         public void StartDateShouldErrorWithInvalidValue(string invalid)
         {
             var model = new Tenure() { StartDate = invalid };
@@ -55,35 +25,12 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         }
 
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("2000-10-10")]
-        public void StartDateShouldNotErrorWithNoValue(string value)
-        {
-            var model = new Tenure() { StartDate = value };
-            var result = _sut.TestValidate(model);
-            result.ShouldNotHaveValidationErrorFor(x => x.StartDate);
-        }
-
-        [Theory]
         [InlineData("10 Some month 2001")]
-        [InlineData("Some string with <tag> in it.")]
         public void EndDateShouldErrorWithInvalidValue(string invalid)
         {
             var model = new Tenure() { EndDate = invalid };
             var result = _sut.TestValidate(model);
             result.ShouldHaveValidationErrorFor(x => x.EndDate);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("2000-10-10")]
-        public void EndDateShouldNotErrorWithNoValue(string value)
-        {
-            var model = new Tenure() { EndDate = value };
-            var result = _sut.TestValidate(model);
-            result.ShouldNotHaveValidationErrorFor(x => x.EndDate);
         }
 
         [Fact]
@@ -94,52 +41,59 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             result.ShouldHaveValidationErrorFor(x => x.Id);
         }
 
-        [Theory]
-        [InlineData("Some string with <tag> in it.")]
-        public void AddressShouldErrorWithInvalidValue(string invalid)
+        [Fact]
+        public void PropertiesShouldErrorWithTagsInValue()
         {
-            var model = new Tenure() { AssetFullAddress = invalid };
+            string value = "Some string with <tag> in it.";
+            var model = new Tenure()
+            {
+                AssetFullAddress = value,
+                AssetId = value,
+                Type = value,
+                PropertyReference = value,
+                PaymentReference = value,
+                Uprn = value
+            };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.AssetFullAddress);
-        }
-
-        [Theory]
-        [InlineData("Some string with <tag> in it.")]
-        public void TypeShouldErrorWithInvalidValue(string invalid)
-        {
-            var model = new Tenure() { Type = invalid };
-            var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.Type);
+            result.ShouldHaveValidationErrorFor(x => x.AssetFullAddress)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
+            result.ShouldHaveValidationErrorFor(x => x.AssetId)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
+            result.ShouldHaveValidationErrorFor(x => x.Type)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
+            result.ShouldHaveValidationErrorFor(x => x.PropertyReference)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
+            result.ShouldHaveValidationErrorFor(x => x.PaymentReference)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
+            result.ShouldHaveValidationErrorFor(x => x.Uprn)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
         }
 
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void TypeShouldNotErrorWithNoValue(string value)
+        public void PropertiesShouldNotErrorWithNoValue(string value)
         {
-            var model = new Tenure() { Type = value };
+            var model = new Tenure()
+            {
+                AssetFullAddress = value,
+                AssetId = value,
+                StartDate = value,
+                EndDate = value,
+                Type = value,
+                PropertyReference = value,
+                PaymentReference = value,
+                Uprn = value
+            };
             var result = _sut.TestValidate(model);
+
+            result.ShouldNotHaveValidationErrorFor(x => x.AssetFullAddress);
+            result.ShouldNotHaveValidationErrorFor(x => x.AssetId);
+            result.ShouldNotHaveValidationErrorFor(x => x.StartDate);
+            result.ShouldNotHaveValidationErrorFor(x => x.EndDate);
             result.ShouldNotHaveValidationErrorFor(x => x.Type);
-        }
-
-        [Theory]
-        [InlineData("Some string with <tag> in it.")]
-        public void UprnShouldErrorWithInvalidValue(string invalid)
-        {
-            var model = new Tenure() { Uprn = invalid, PaymentReference = invalid, PropertyReference = invalid };
-            var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.Uprn);
-            result.ShouldHaveValidationErrorFor(x => x.PropertyReference);
-            result.ShouldHaveValidationErrorFor(x => x.PaymentReference);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void UprnShouldNotErrorWithNoValue(string value)
-        {
-            var model = new Tenure() { Uprn = value };
-            var result = _sut.TestValidate(model);
+            result.ShouldNotHaveValidationErrorFor(x => x.PropertyReference);
+            result.ShouldNotHaveValidationErrorFor(x => x.PaymentReference);
             result.ShouldNotHaveValidationErrorFor(x => x.Uprn);
         }
     }

@@ -29,6 +29,8 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         public static IEnumerable<object[]> Titles => GetEnumValues<Title>();
         public static IEnumerable<object[]> Genders => GetEnumValues<Gender>();
 
+        private const string StringWithTags = "Some string with <tag> in it.";
+
         [Theory]
         [MemberData(nameof(Titles))]
         public void TitleShouldNotErrorWithValidValue(Title valid)
@@ -76,13 +78,13 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             result.ShouldNotHaveValidationErrorFor(x => x.PreferredFirstName);
         }
 
-        [Theory]
-        [InlineData("Some string with <tag> in it.")]
-        public void PreferredFirstnameShouldErrorWithInvalidValue(string invalid)
+        [Fact]
+        public void PreferredFirstnameShouldErrorWithTagsInValue()
         {
-            var model = new CreatePersonRequestObject() { PreferredFirstName = invalid };
+            var model = new CreatePersonRequestObject() { PreferredFirstName = StringWithTags };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.PreferredFirstName);
+            result.ShouldHaveValidationErrorFor(x => x.PreferredFirstName)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
         }
 
         [Theory]
@@ -95,13 +97,13 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             result.ShouldNotHaveValidationErrorFor(x => x.PreferredMiddleName);
         }
 
-        [Theory]
-        [InlineData("Some string with <tag> in it.")]
-        public void PreferredMiddleNameShouldErrorWithInvalidValue(string invalid)
+        [Fact]
+        public void PreferredMiddleNameShouldErrorWithTagsInValue()
         {
-            var model = new CreatePersonRequestObject() { PreferredMiddleName = invalid };
+            var model = new CreatePersonRequestObject() { PreferredMiddleName = StringWithTags };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.PreferredMiddleName);
+            result.ShouldHaveValidationErrorFor(x => x.PreferredMiddleName)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
         }
 
         [Theory]
@@ -114,24 +116,33 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             result.ShouldNotHaveValidationErrorFor(x => x.PreferredSurname);
         }
 
-        [Theory]
-        [InlineData("Some string with <tag> in it.")]
-        public void PreferredSurnameShouldErrorWithInvalidValue(string invalid)
+        [Fact]
+        public void PreferredSurnameShouldErrorWithTagsInValue()
         {
-            var model = new CreatePersonRequestObject() { PreferredSurname = invalid };
+            var model = new CreatePersonRequestObject() { PreferredSurname = StringWithTags };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.PreferredSurname);
+            result.ShouldHaveValidationErrorFor(x => x.PreferredSurname)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
         }
 
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("Some string with <tag> in it.")]
-        public void FirstnameShouldErrorWithInvalidValue(string invalid)
+        public void FirstnameShouldErrorWithNoValue(string invalid)
         {
             var model = new CreatePersonRequestObject() { FirstName = invalid };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.FirstName);
+            result.ShouldHaveValidationErrorFor(x => x.FirstName)
+                  .WithErrorCode(ErrorCodes.FirstNameMandatory);
+        }
+
+        [Fact]
+        public void FirstnameShouldErrorWithWithTagsInValue()
+        {
+            var model = new CreatePersonRequestObject() { FirstName = StringWithTags };
+            var result = _sut.TestValidate(model);
+            result.ShouldHaveValidationErrorFor(x => x.FirstName)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
         }
 
         [Theory]
@@ -144,24 +155,33 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             result.ShouldNotHaveValidationErrorFor(x => x.MiddleName);
         }
 
-        [Theory]
-        [InlineData("Some string with <tag> in it.")]
-        public void MiddleNameShouldErrorWithInvalidValue(string invalid)
+        [Fact]
+        public void MiddleNameShouldErrorWithTagsInValue()
         {
-            var model = new CreatePersonRequestObject() { MiddleName = invalid };
+            var model = new CreatePersonRequestObject() { MiddleName = StringWithTags };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.MiddleName);
+            result.ShouldHaveValidationErrorFor(x => x.MiddleName)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
         }
 
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("Some string with <tag> in it.")]
-        public void SurnameShouldErrorWithInvalidValue(string invalid)
+        public void SurnameShouldErrorWithNoValue(string invalid)
         {
             var model = new CreatePersonRequestObject() { Surname = invalid };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.Surname);
+            result.ShouldHaveValidationErrorFor(x => x.Surname)
+                  .WithErrorCode(ErrorCodes.SurnameMandatory);
+        }
+
+        [Fact]
+        public void SurnameShouldErrorWithTagsInValue()
+        {
+            var model = new CreatePersonRequestObject() { Surname = StringWithTags };
+            var result = _sut.TestValidate(model);
+            result.ShouldHaveValidationErrorFor(x => x.Surname)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
         }
 
         [Theory]
@@ -174,21 +194,22 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
             result.ShouldNotHaveValidationErrorFor(x => x.PlaceOfBirth);
         }
 
-        [Theory]
-        [InlineData("Some string with <tag> in it.")]
-        public void PlaceOfBirthShouldErrorWithInvalidValue(string invalid)
+        [Fact]
+        public void PlaceOfBirthShouldErrorWithTagsInValue()
         {
-            var model = new CreatePersonRequestObject() { PlaceOfBirth = invalid };
+            var model = new CreatePersonRequestObject() { PlaceOfBirth = StringWithTags };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.PlaceOfBirth);
+            result.ShouldHaveValidationErrorFor(x => x.PlaceOfBirth)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
         }
 
         [Fact]
         public void DateOfBirthShouldErrorWithEmptyValue()
         {
-            var model = new CreatePersonRequestObject() { DateOfBirth = default };
+            var model = new CreatePersonRequestObject() { DateOfBirth = default(DateTime) };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.DateOfBirth);
+            result.ShouldHaveValidationErrorFor(x => x.DateOfBirth)
+                  .WithErrorCode(ErrorCodes.DoBInvalid);
         }
 
         [Fact]
@@ -196,18 +217,28 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         {
             var model = new CreatePersonRequestObject() { DateOfBirth = DateTime.UtcNow.AddDays(1) };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.DateOfBirth);
+            result.ShouldHaveValidationErrorFor(x => x.DateOfBirth)
+                  .WithErrorCode(ErrorCodes.DoBInFuture);
         }
 
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("Some string with <tag> in it.")]
-        public void ReasonShouldErrorWithInvalidValue(string invalid)
+        public void ReasonShouldErrorWithNoValue(string invalid)
         {
             var model = new CreatePersonRequestObject() { Reason = invalid };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.Reason);
+            result.ShouldHaveValidationErrorFor(x => x.Reason)
+                  .WithErrorCode(ErrorCodes.ReasonMandatory);
+        }
+
+        [Fact]
+        public void ReasonShouldErrorWithTagsInValue()
+        {
+            var model = new CreatePersonRequestObject() { Reason = StringWithTags };
+            var result = _sut.TestValidate(model);
+            result.ShouldHaveValidationErrorFor(x => x.Reason)
+                  .WithErrorCode(ErrorCodes.XssCheckFailure);
         }
 
         [Fact]
@@ -215,7 +246,8 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         {
             var model = new CreatePersonRequestObject() { PersonTypes = null };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.PersonTypes);
+            result.ShouldHaveValidationErrorFor(x => x.PersonTypes)
+                  .WithErrorCode(ErrorCodes.PersonTypeMandatory);
         }
 
         [Fact]
@@ -223,7 +255,8 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         {
             var model = new CreatePersonRequestObject() { PersonTypes = Enumerable.Empty<PersonType>() };
             var result = _sut.TestValidate(model);
-            result.ShouldHaveValidationErrorFor(x => x.PersonTypes);
+            result.ShouldHaveValidationErrorFor(x => x.PersonTypes)
+                  .WithErrorCode(ErrorCodes.PersonTypeMandatory);
         }
 
         [Fact]
