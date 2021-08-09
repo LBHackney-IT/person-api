@@ -23,7 +23,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
         { }
 
         private static void ShouldHaveErrorFor(JEnumerable<JToken> errors, string propertyName, string errorCode = null)
-        {            
+        {
             var error = errors.FirstOrDefault(x => (x.Path.Split('.').Last().Trim('\'', ']')) == propertyName) as JProperty;
             error.Should().NotBeNull();
             if (!string.IsNullOrEmpty(errorCode))
