@@ -11,7 +11,7 @@ terraform {
     required_providers {
         aws = {
             source  = "hashicorp/aws"
-            version = "~> 3.0"
+            version = "~> 3.53.0"
         }
     }
 }
@@ -23,6 +23,8 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
+
+
 
 locals {
     parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
@@ -48,5 +50,17 @@ resource "aws_ssm_parameter" "person_sns_arn" {
   name  = "/sns-topic/development/person/arn"
   type  = "String"
   value = aws_sns_topic.person_topic.arn
+}
+
+resource "aws_synthetics_canary" "health-check-canaries" {
+  name                 = "person-health-check"
+  artifact_s3_location = "s3://cw-syn-results-${data.aws_caller_identity.current.account_id}/canary/-${data.aws_region.current.name}/"
+  execution_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_Canary_Role"
+  handler              = "exports.handler"
+  runtime_version      = "syn-nodejs-puppeteer-3.0"
+
+  schedule {
+    expression = "rate(5 minute)"
+  }
 }
 
