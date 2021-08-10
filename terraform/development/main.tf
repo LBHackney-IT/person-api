@@ -54,10 +54,10 @@ resource "aws_ssm_parameter" "person_sns_arn" {
 
 resource "aws_synthetics_canary" "health-check-canaries" {
   name                 = "person-health-check"
-  artifact_s3_location = "s3://cw-syn-results-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}/"
+  artifact_s3_location = "s3://cw-syn-results-${data.aws_caller_identity.current.account_id}/canary/-${data.aws_region.current.name}/"
   execution_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_Canary_Role"
   handler              = "exports.handler"
-  runtime_version      = "syn-nodejs-puppeteer-3.1"
+  runtime_version      = "syn-nodejs-puppeteer-3.0"
 
   schedule {
     expression = "rate(5 minute)"
