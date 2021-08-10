@@ -5,8 +5,6 @@ using FluentValidation.AspNetCore;
 using Hackney.Core.DI;
 using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.HealthCheck;
-using Hackney.Core.Http;
-using Hackney.Core.JWT;
 using Hackney.Core.Logging;
 using Hackney.Core.Middleware;
 using Hackney.Core.Middleware.CorrelationId;
@@ -64,12 +62,14 @@ namespace PersonApi
 
             services
                 .AddMvc()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()))
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddFluentValidation();
+
             services.AddApiVersioning(o =>
             {
                 o.DefaultApiVersion = new ApiVersion(1, 0);
