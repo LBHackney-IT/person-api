@@ -52,15 +52,15 @@ resource "aws_ssm_parameter" "person_sns_arn" {
   value = aws_sns_topic.person_topic.arn
 }
 
-resource "aws_synthetics_canary" "health_check_canaries" {
-  name                 = "person-health-check"
-  artifact_s3_location = "s3://cw-syn-results-${data.aws_caller_identity.current.account_id}/canary/-${data.aws_region.current.name}/"
-  execution_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_Canary_Role"
-  handler              = "exports.handler"
-  runtime_version      = "syn-nodejs-puppeteer-3.0"
+#resource "aws_synthetics_canary" "health_check_canaries" {
+ # name                 = "person-health-check"
+  # artifact_s3_location = "s3://cw-syn-results-${data.aws_caller_identity.current.account_id}/canary/-${data.aws_region.current.name}/"
+  # execution_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_Canary_Role"
+  # handler              = "exports.handler"
+  # runtime_version      = "syn-nodejs-puppeteer-3.0"
 
-  schedule {
-    expression = "rate(5 minutes)"
-  }
-}
+  # schedule {
+   # expression = "rate(5 minutes)"
+  # }
+# }
 
