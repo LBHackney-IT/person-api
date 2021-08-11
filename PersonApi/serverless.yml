@@ -253,7 +253,7 @@ resources:
     
             };
             ​
-            exports.handler = async function {
+            exports.handler = async function () {
                 return await apiCanaryBlueprint();
             };
           }
