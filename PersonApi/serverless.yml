@@ -199,9 +199,8 @@ resources:
         ArtifactS3Location: "s3://cw-syn-results-${AWS::AccountId}/canary/-${AWS::Region}/"
         Code:
         {
-          Handler: exports.handler
+          Handler: exports.handler,
           Script:
-          
             "var synthetics = require('Synthetics');
             const log = require('SyntheticsLogger');
             ​
