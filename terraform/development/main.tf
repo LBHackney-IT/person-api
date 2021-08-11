@@ -52,7 +52,7 @@ resource "aws_ssm_parameter" "person_sns_arn" {
   value = aws_sns_topic.person_topic.arn
 }
 
-resource "aws_synthetics_canary" "health_check_canaries" {
+resource "aws_synthetics_canary" "canaries" {
   name                 = "person-health-check"
   artifact_s3_location = "s3://cw-syn-results-${data.aws_caller_identity.current.account_id}/canary/-${data.aws_region.current.name}/"
   execution_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_Canary_Role"
