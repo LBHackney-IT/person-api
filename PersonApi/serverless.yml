@@ -194,6 +194,7 @@ resources:
         ConfigurationProfileId: !Ref ConfigurationProfile
         ConfigurationVersion: '1'
 
+
 custom:
   vpcId:
     development: vpc-0d15f152935c8716f
