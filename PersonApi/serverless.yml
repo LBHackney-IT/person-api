@@ -201,7 +201,7 @@ resources:
           Handler: exports.handler
           Script:
           {
-            var synthetics = require('Synthetics');
+            "var synthetics = require('Synthetics');
             const log = require('SyntheticsLogger');
             ​
             const apiCanaryBlueprint = async function () {
@@ -233,8 +233,8 @@ resources:
                     path: '/healthcheck/ping',
                     port: '443',
                     protocol: 'https:',
-                    body: "",
-                    headers: {"Authorization": '/housing-tl/${self:provider:stage}/person-token'}
+                    body: '',
+                    headers: {'Authorization': '/housing-tl/${self:provider:stage}/person-token'}
                 };
                 requestOptionsStep1['headers']['User-Agent'] = [synthetics.getCanaryUserAgentString(), requestOptionsStep1['headers']['User-Agent']].join(' ');
             ​
@@ -255,7 +255,7 @@ resources:
             ​
             exports.handler = async function () {
                 return await apiCanaryBlueprint();
-            };
+            };"
           }
         ExecutionRoleArn: "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_Canary_Role"
         Name: person-health-check
