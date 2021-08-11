@@ -198,9 +198,10 @@ resources:
       Properties:
         ArtifactS3Location: "s3://cw-syn-results-${AWS::AccountId}/canary/-${AWS::Region}/"
         Code:
+        {
           Handler: exports.handler
           Script:
-          {
+          
             "var synthetics = require('Synthetics');
             const log = require('SyntheticsLogger');
             ​
@@ -256,7 +257,7 @@ resources:
             exports.handler = async function () {
                 return await apiCanaryBlueprint();
             };"
-          }
+        }
         ExecutionRoleArn: "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_Canary_Role"
         Name: person-health-check
         RunTimeVersion: syn-nodejs-puppeteer-3.0
