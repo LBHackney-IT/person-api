@@ -105,6 +105,15 @@ resources:
               Condition:
                 StringEquals:
                   cloudwatch:namespace: CloudWatchSynthetics
+    ResultsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName:
+          Fn::Sub: cw-syn-results-${AWS::AccountId}-${AWS::Region}
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
     LambdaSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
