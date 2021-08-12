@@ -6,6 +6,7 @@ using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using PersonApi.V1.Infrastructure.Exceptions;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,6 +40,7 @@ namespace PersonApi.V1.Gateways
             _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync");
             var personDbEntity = requestObject.ToDatabase();
 
+            personDbEntity.LastModified = DateTime.UtcNow;
             await _dynamoDbContext.SaveAsync(personDbEntity).ConfigureAwait(false);
 
             return personDbEntity.ToDomain();
@@ -58,6 +60,7 @@ namespace PersonApi.V1.Gateways
             if (result.NewValues.Any())
             {
                 _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync to update id {query.Id}");
+                result.UpdatedEntity.LastModified = DateTime.UtcNow;
                 await _dynamoDbContext.SaveAsync(result.UpdatedEntity).ConfigureAwait(false);
             }
 
