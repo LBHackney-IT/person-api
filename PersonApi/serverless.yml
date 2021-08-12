@@ -49,7 +49,7 @@ functions:
   HealthCheck:
     name: ${self:service}-${self:provider.stage}-healthcheck
     handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
-    role: canaryExecutionRole
+    role: CloudWatchSyntheticsRole
     events:
        - http:
           path: /healthcheck/ping
