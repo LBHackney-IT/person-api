@@ -200,7 +200,7 @@ resources:
         Code: {
            Handler: exports.handler,
            S3Bucket: "person-api-canaries-script",
-           S3Key: "person-api-canaries-script/apiCanaryBlueprint.js"
+           S3Key: "apiCanaryBlueprint.js"
           }
         ExecutionRoleArn: "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_Canary_Role"
         Name: person-health-check
