@@ -193,20 +193,20 @@ resources:
         DeploymentStrategyId: !Ref DeploymentStrategy
         ConfigurationProfileId: !Ref ConfigurationProfile
         ConfigurationVersion: '1'
-    Canaries:
-      Type: AWS::Synthetics::Canary
-      Properties:
-        ArtifactS3Location: "s3://cw-syn-results-${AWS::AccountId}/canary/-${AWS::Region}/"
-        Code: {
-           Handler: exports.handler,
-           S3Bucket: "person-api-canaries-script",
-           S3Key: "apiCanaryBlueprint.js"
-          }
-        ExecutionRoleArn: "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_Canary_Role"
-        Name: person-health-check
-        RunTimeVersion: syn-nodejs-puppeteer-3.0
-        Schedule: {Expression: 'rate(5 minutes)'}
-        StartCanaryAfterCreation: true
+    # Canaries:
+    #   Type: AWS::Synthetics::Canary
+    #   Properties:
+    #     ArtifactS3Location: "s3://cw-syn-results-${AWS::AccountId}/canary/-${AWS::Region}/"
+    #     Code: {
+    #        Handler: exports.handler,
+    #        S3Bucket: "person-api-canaries-script",
+    #        S3Key: "apiCanaryBlueprint.js"
+    #       }
+    #     ExecutionRoleArn: "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_Canary_Role"
+    #     Name: person-health-check
+    #     RunTimeVersion: syn-nodejs-puppeteer-3.0
+    #     Schedule: {Expression: 'rate(5 minutes)'}
+    #     StartCanaryAfterCreation: true
 
 
 custom:
