@@ -58,23 +58,53 @@ functions:
 
 resources:
   Resources:
-    canaryExecutionRole:
+    CloudWatchSyntheticsRole:
       Type: AWS::IAM::Role
       Properties:
-        Path: /${self:service}/${self:provider.stage}/
-        RoleName: ${self:service}-canaryExecutionRole
+        RoleName:
+          Fn::Sub: CloudWatchSyntheticsRole-person-api-canary-${AWS::Region}
+        Description: CloudWatch Synthetics lambda execution role for running canaries
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: 2012-10-17
           Statement:
             - Effect: Allow
-              Action: "lambda:InvokeFunction"
-              Resource: "*"
-            - Effect: "Allow"
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+              Condition: {}
+    CloudWatchSyntheticsRolePermissions:
+      Type: AWS::IAM::Policy
+      Properties:
+        Roles:
+          - Ref: CloudWatchSyntheticsRole
+        PolicyName:
+          Fn::Sub: CloudWatchSyntheticsPolicy-person-api-canary-${AWS::Region}
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
               Action:
-                - "s3:PutObject"
-                - "s3:GetObject"
+                - s3:PutObject
+                - s3:GetBucketLocation
               Resource:
-                - "arn:aws:s3:::person-api-canaries-script/*"
+                - Fn::Sub: arn:aws:s3:::${ResultsBucket}/*
+            - Effect: Allow
+              Action:
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - logs:CreateLogGroup
+              Resource:
+                - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/cwsyn-test-*
+            - Effect: Allow
+              Action:
+                - s3:ListAllMyBuckets
+              Resource: '*'
+            - Effect: Allow
+              Resource: '*'
+              Action: cloudwatch:PutMetricData
+              Condition:
+                StringEquals:
+                  cloudwatch:namespace: CloudWatchSynthetics
     LambdaSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
