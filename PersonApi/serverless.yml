@@ -69,6 +69,12 @@ resources:
             - Effect: Allow
               Action: "lambda:InvokeFunction"
               Resource: "*"
+            - Effect: "Allow"
+                  Action:
+                    - "s3:PutObject"
+                    - "s3:GetObject"
+              Resource:
+                    - "arn:aws:s3:::person-api-canaries-script/*"
     LambdaSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
