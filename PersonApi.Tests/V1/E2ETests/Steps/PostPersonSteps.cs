@@ -5,6 +5,7 @@ using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Request.Validation;
 using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Linq;
@@ -63,7 +64,13 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
 
             apiPerson.Id.Should().NotBeEmpty();
 
-            await personFixture._dbContext.DeleteAsync<PersonDbEntity>(apiPerson.Id).ConfigureAwait(false);
+            var dbRecord = await personFixture._dbContext.LoadAsync<PersonDbEntity>(apiPerson.Id).ConfigureAwait(false);
+            apiPerson.Should().BeEquivalentTo(new ResponseFactory(null).ToResponse(dbRecord.ToDomain()),
+                                              config => config.Excluding(y => y.Links));
+            dbRecord.VersionNumber.Should().Be(0);
+            dbRecord.LastModified.Should().BeCloseTo(DateTime.UtcNow, 500);
+
+            await personFixture._dbContext.DeleteAsync<PersonDbEntity>(dbRecord.Id).ConfigureAwait(false);
         }
 
         public async Task ThenTheValidationErrorsAreReturned()

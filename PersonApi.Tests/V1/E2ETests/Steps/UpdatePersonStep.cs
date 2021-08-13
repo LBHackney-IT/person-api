@@ -71,6 +71,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             result.FirstName.Should().Be(personFixture.UpdatePersonRequest.FirstName);
             result.Surname.Should().Be(personFixture.UpdatePersonRequest.Surname);
             result.VersionNumber.Should().Be(1);
+            result.LastModified.Should().BeCloseTo(DateTime.UtcNow, 500);
         }
 
         public async Task ThenConflictIsReturned(int? versionNumber)

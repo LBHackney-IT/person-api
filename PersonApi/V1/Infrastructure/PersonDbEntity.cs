@@ -36,5 +36,8 @@ namespace PersonApi.V1.Infrastructure
 
         [DynamoDBVersion]
         public int? VersionNumber { get; set; }
+
+        [DynamoDBProperty(Converter = typeof(DynamoDbDateTimeConverter))]
+        public DateTime? LastModified { get; set; }
     }
 }
