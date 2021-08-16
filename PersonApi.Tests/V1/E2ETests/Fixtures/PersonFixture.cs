@@ -106,8 +106,8 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             var personRequest = _fixture.Build<CreatePersonRequestObject>()
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                 .With(x => x.Tenures, _fixture.Build<Tenure>()
-                                              .With(y => y.StartDate, "")
-                                              .With(y => y.EndDate, "")
+                                              .With(y => y.StartDate, (string) null)
+                                              .With(y => y.EndDate, (string) null)
                                               .CreateMany(2))
                 .Create();
             CreateSnsTopic();

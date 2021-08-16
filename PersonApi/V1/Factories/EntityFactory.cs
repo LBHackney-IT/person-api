@@ -24,7 +24,8 @@ namespace PersonApi.V1.Factories
                 Reason = databaseEntity.Reason,
                 PersonTypes = databaseEntity.PersonTypes,
                 Tenures = databaseEntity.Tenures,
-                VersionNumber = databaseEntity.VersionNumber
+                VersionNumber = databaseEntity.VersionNumber,
+                LastModified = databaseEntity.LastModified
             };
         }
 
@@ -46,7 +47,8 @@ namespace PersonApi.V1.Factories
                 Reason = entity.Reason,
                 PersonTypes = entity.PersonTypes.ToList(),
                 Tenures = entity.Tenures.ToList(),
-                VersionNumber = entity.VersionNumber
+                VersionNumber = entity.VersionNumber,
+                LastModified = entity.LastModified
             };
         }
     }

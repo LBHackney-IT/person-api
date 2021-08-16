@@ -20,6 +20,6 @@ namespace PersonApi.V1.Domain
         public IEnumerable<PersonType> PersonTypes { get; set; }
         public IEnumerable<Tenure> Tenures { get; set; }
         public int? VersionNumber { get; set; }
-
+        public DateTime? LastModified { get; set; }
     }
 }
