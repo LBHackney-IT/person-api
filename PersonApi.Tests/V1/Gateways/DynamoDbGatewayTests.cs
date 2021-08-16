@@ -193,17 +193,19 @@ namespace PersonApi.Tests.V1.Gateways
             entity.Tenures = new[] { entity.Tenures.First() };
             entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
 
-            var dbEntity = entity.ToDatabase();
-
             // Act
-            await _dynamoDb.SaveAsync(dbEntity).ConfigureAwait(false);
+            _ = await _classUnderTest.PostNewPersonAsync(entity).ConfigureAwait(false);
 
             // Assert
-            var query = ConstructQuery(entity.Id);
-            var response = await _classUnderTest.GetPersonByIdAsync(query).ConfigureAwait(false);
-            response.Should().NotBeNull();
+            var dbEntity = await _dynamoDb.LoadAsync<PersonDbEntity>(entity.Id).ConfigureAwait(false);
 
-            _cleanup.Add(async () => await _dynamoDb.DeleteAsync(response.ToDatabase()).ConfigureAwait(false));
+            dbEntity.Should().BeEquivalentTo(entity.ToDatabase(),
+                                             config => config.Excluding(y => y.LastModified)
+                                                             .Excluding(y => y.VersionNumber));
+            dbEntity.VersionNumber.Should().Be(0);
+            dbEntity.LastModified.Should().BeCloseTo(DateTime.UtcNow, 500);
+
+            _cleanup.Add(async () => await _dynamoDb.DeleteAsync(dbEntity).ConfigureAwait(false));
         }
 
         [Fact]
@@ -263,6 +265,7 @@ namespace PersonApi.Tests.V1.Gateways
 
             var expectedVersionNumber = 1;
             load.VersionNumber.Should().Be(expectedVersionNumber);
+            load.LastModified.Should().BeCloseTo(DateTime.UtcNow, 500);
         }
 
         [Theory]
