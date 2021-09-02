@@ -50,10 +50,24 @@ namespace PersonApi.V1.Factories
             if (tenures == null) return null;
 
             // 1. Filter and order active tenures - newest to oldest
-            var activeTenures = tenures.Where(x => x.IsActive).OrderByDescending(x => DateTime.Parse(x.StartDate));
+            var activeTenures = tenures.Where(x => x.IsActive).OrderByDescending(x =>
+            {
+                DateTime parsedDate;
+
+                if (DateTime.TryParse(x.StartDate, out parsedDate)) return (DateTime?) parsedDate;
+
+                return null;
+            });
 
             // 2. Filter and order inactive tenures - newest to oldest
-            var inactiveTenures = tenures.Where(x => x.IsActive == false).OrderByDescending(x => DateTime.Parse(x.StartDate));
+            var inactiveTenures = tenures.Where(x => x.IsActive == false).OrderByDescending(x =>
+            {
+                DateTime parsedDate;
+
+                if (DateTime.TryParse(x.StartDate, out parsedDate)) return (DateTime?) parsedDate;
+
+                return null;
+            });
 
             // 3. create combined list of all tenures
             var allTenures = activeTenures.Concat(inactiveTenures);
