@@ -71,21 +71,13 @@ namespace PersonApi.Tests.V1.Factories
             response.Tenures.Should().BeEquivalentTo(person.Tenures?.Select(x => ResponseFactory.ToResponse(x)));
         }
 
-
-        // Test that tenures are ordered
-        // Active first - newest to oldest
-        // Inactive - newest to oldest
-
-        // create list of active tenures - random dates
-        // create list of inactive tenures - random dates
-
         [Fact]
-        public void PersonResponseObjectToResponseWhenCalledReturnsTenuresInCorrectOrder()
+        public void PersonResponseObjectToResponseWhenCalledOrdersActiveTenuresBeforeInactiveTenures()
         {
             var numberOfActiveTenures = _random.Next(2, 5);
             var numberOfInactiveTenures = _random.Next(2, 5);
 
-            // create random list of active and inactive tenures
+            // Create list of active and inactive tenures
             var shuffledTenures = CreateListOfShuffledTenures(numberOfActiveTenures, numberOfInactiveTenures);
 
             // mock person
@@ -94,22 +86,50 @@ namespace PersonApi.Tests.V1.Factories
             // call method
             var response = _sut.ToResponse(mockPerson);
 
-            // seperate response into what should be active and inactive tenures
             var responseActiveTenures = response.Tenures.Take(numberOfActiveTenures);
             var responseInactiveTenures = response.Tenures.Skip(numberOfActiveTenures).Take(numberOfInactiveTenures);
-
 
             // assert first half of tenures are active
             responseActiveTenures.Should().OnlyContain(x => x.IsActive == true);
 
             // assert second half of tenures are inactive
             responseInactiveTenures.Should().OnlyContain(x => x.IsActive == false);
+        }
 
-            // assert first half of tenures is in date order
-            responseActiveTenures.Select(x => DateTime.Parse(x.StartDate)).Should().BeInDescendingOrder();
+        [Fact]
+        public void PersonResponseObjectToResponseWhenCalledOrdersActiveTenuresByStartDate()
+        {
+            var numberOfActiveTenures = _random.Next(2, 5);
 
-            // assert second half of tenures is in date order
-            responseInactiveTenures.Select(x => DateTime.Parse(x.StartDate)).Should().BeInDescendingOrder();
+            // create random list of active tenures
+            var shuffledTenures = CreateListOfShuffledTenures(numberOfActiveTenures, 0);
+
+            // mock person
+            var mockPerson = _fixture.Build<Person>().With(x => x.Tenures, shuffledTenures).Create();
+
+            // call method
+            var response = _sut.ToResponse(mockPerson);
+
+            // assert active tenures are in date order
+            response.Tenures.Select(x => DateTime.Parse(x.StartDate)).Should().BeInDescendingOrder();
+        }
+
+        [Fact]
+        public void PersonResponseObjectToResponseWhenCalledOrdersInactiveTenuresByStartDate()
+        {
+            var numberOfInactiveTenures = _random.Next(2, 5);
+
+            // create random list of active tenures
+            var shuffledTenures = CreateListOfShuffledTenures(0, numberOfInactiveTenures);
+
+            // mock person
+            var mockPerson = _fixture.Build<Person>().With(x => x.Tenures, shuffledTenures).Create();
+
+            // call method
+            var response = _sut.ToResponse(mockPerson);
+
+            // assert inactive tenures are in date order
+            response.Tenures.Select(x => DateTime.Parse(x.StartDate)).Should().BeInDescendingOrder();
         }
 
         private List<Tenure> CreateListOfShuffledTenures(int numberOfActiveTenures, int numberOfInactiveTenures)
