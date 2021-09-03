@@ -8,16 +8,16 @@
 # 7) ENSURE THIS FILE IS PLACED WITHIN A 'terraform' FOLDER LOCATED AT THE ROOT PROJECT DIRECTORY
 
 terraform {
-    required_providers {
-        aws = {
-            source  = "hashicorp/aws"
-            version = "~> 3.0"
-        }
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
     }
+  }
 }
 
 provider "aws" {
-    region = "eu-west-2"
+  region = "eu-west-2"
 }
 
 data "aws_caller_identity" "current" {}
@@ -25,7 +25,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-    parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
+  parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
 }
 
 terraform {
@@ -41,12 +41,20 @@ resource "aws_sns_topic" "person_topic" {
   name                        = "person.fifo"
   fifo_topic                  = true
   content_based_deduplication = true
-  kms_master_key_id = "alias/aws/sns"
+  kms_master_key_id           = "alias/aws/sns"
 }
 
 resource "aws_ssm_parameter" "person_sns_arn" {
   name  = "/sns-topic/development/person/arn"
   type  = "String"
   value = aws_sns_topic.person_topic.arn
+}
+
+module "person_api_cloudwatch_dashboard" {
+  source              = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/cloudwatch/dashboards/api-dashboard"
+  environment_name    = var.environment_name
+  api_name            = "person-api"
+  sns_topic_name      = aws_sns_topic.person_topic.name
+  dynamodb_table_name = aws_dynamodb_table.personapi_dynamodb_table.name
 }
 
