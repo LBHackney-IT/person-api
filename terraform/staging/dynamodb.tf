@@ -10,13 +10,10 @@ resource "aws_dynamodb_table" "personapi_dynamodb_table" {
     type = "S"
   }
 
-  tags = {
-    Name              = "person-api-${var.environment_name}"
-    Environment       = var.environment_name
-    terraform-managed = true
-    project_name      = var.project_name
-    BackupPolicy      = "Stg"
-  }
+  tags = merge(
+    local.default_tags,
+    { BackupPolicy = "Stg" }
+  )
 
   point_in_time_recovery {
     enabled = true

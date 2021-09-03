@@ -26,6 +26,12 @@ data "aws_region" "current" {}
 
 locals {
   parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
+  default_tags = {
+    Name              = "person-api-${var.environment_name}"
+    Environment       = var.environment_name
+    terraform-managed = true
+    project_name      = var.project_name
+  }
 }
 
 terraform {
