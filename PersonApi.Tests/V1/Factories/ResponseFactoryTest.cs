@@ -19,6 +19,10 @@ namespace PersonApi.Tests.V1.Factories
 
         private readonly Random _random = new Random();
 
+        private readonly string _activeTenureDateValue = null;
+        private readonly string _inactiveTeunureDateValue = DateTime.UtcNow.AddDays(-7).ToString(); // generate date in past
+
+
         public ResponseFactoryTest()
         {
             _mockLinkGenerator = new Mock<IApiLinkGenerator>();
@@ -74,13 +78,18 @@ namespace PersonApi.Tests.V1.Factories
         [Fact]
         public void PersonResponseObjectToResponseWhenCalledOrdersActiveTenuresBeforeInactiveTenures()
         {
-            var numberOfActiveTenures = _random.Next(2, 5);
+            int numberOfActiveTenures = _random.Next(2, 5);
             var numberOfInactiveTenures = _random.Next(2, 5);
 
-            // Create list of active and inactive tenures
-            var shuffledTenures = CreateListOfShuffledTenures(numberOfActiveTenures, numberOfInactiveTenures);
+            // create many active tenures
+            var activeTenures = _fixture.Build<Tenure>().With(x => x.EndDate, _activeTenureDateValue).CreateMany(numberOfActiveTenures);
+            // create many inactive tenures
+            var inactiveTenures = _fixture.Build<Tenure>().With(x => x.EndDate, _inactiveTeunureDateValue).CreateMany(numberOfInactiveTenures);
 
-            // mock person
+            // shuffle list
+            var shuffledTenures = ShuffleTenures(activeTenures.Concat(inactiveTenures));
+
+            // create mock person
             var mockPerson = _fixture.Build<Person>().With(x => x.Tenures, shuffledTenures).Create();
 
             // call method
@@ -89,20 +98,31 @@ namespace PersonApi.Tests.V1.Factories
             var responseActiveTenures = response.Tenures.Take(numberOfActiveTenures);
             var responseInactiveTenures = response.Tenures.Skip(numberOfActiveTenures).Take(numberOfInactiveTenures);
 
-            // assert first half of tenures are active
+            // assert first half are active
             responseActiveTenures.Should().OnlyContain(x => x.IsActive == true);
 
-            // assert second half of tenures are inactive
+            // assert second half are inactive
             responseInactiveTenures.Should().OnlyContain(x => x.IsActive == false);
         }
 
-        [Fact]
-        public void PersonResponseObjectToResponseWhenCalledOrdersActiveTenuresByStartDate()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void PersonResponseObjectToResponseWhenCalledOrdersSecureTenuresBeforeOtherTypes(bool activeTenures)
         {
-            var numberOfActiveTenures = _random.Next(2, 5);
+            var tenureEndDate = activeTenures ? _activeTenureDateValue : _inactiveTeunureDateValue;
 
-            // create random list of active tenures
-            var shuffledTenures = CreateListOfShuffledTenures(numberOfActiveTenures, 0);
+            int numberOfSecureTenures = _random.Next(2, 5);
+            var numberOfOtherTenureTypes = _random.Next(2, 5);
+
+            // create many secure tenures
+            var secureTenures = _fixture.Build<Tenure>().With(x => x.EndDate, tenureEndDate).With(x => x.Type, "Secure").CreateMany(numberOfSecureTenures);
+
+            // create many tenures of other types
+            var otherTenureTypes = _fixture.Build<Tenure>().With(x => x.EndDate, tenureEndDate).CreateMany(numberOfOtherTenureTypes);
+
+            // shuffle list
+            var shuffledTenures = ShuffleTenures(secureTenures.Concat(otherTenureTypes));
 
             // mock person
             var mockPerson = _fixture.Build<Person>().With(x => x.Tenures, shuffledTenures).Create();
@@ -110,17 +130,42 @@ namespace PersonApi.Tests.V1.Factories
             // call method
             var response = _sut.ToResponse(mockPerson);
 
-            // assert active tenures are in date order
-            response.Tenures.Select(x => DateTime.Parse(x.StartDate)).Should().BeInDescendingOrder();
+            var responseSecureTenures = response.Tenures.Take(numberOfSecureTenures);
+            var responseOtherTenureTypes = response.Tenures.Skip(numberOfSecureTenures).Take(numberOfOtherTenureTypes);
+
+            // assert first half are secure
+            responseSecureTenures.Should().OnlyContain(x => x.Type == "Secure");
+
+            // assert second half arent secure
+            responseOtherTenureTypes.Should().NotContain(x => x.Type == "Secure");
         }
 
-        [Fact]
-        public void PersonResponseObjectToResponseWhenCalledOrdersInactiveTenuresByStartDate()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void PersonResponseObjectToResponseWhenCalledOrdersTenuresByDate(bool activeTenures)
         {
-            var numberOfInactiveTenures = _random.Next(2, 5);
+            var tenureEndDate = activeTenures ? _activeTenureDateValue : _inactiveTeunureDateValue;
 
-            // create random list of active tenures
-            var shuffledTenures = CreateListOfShuffledTenures(0, numberOfInactiveTenures);
+            int numberOfSecureTenures = _random.Next(5, 10);
+            var numberOfOtherTenureTypes = _random.Next(5, 10);
+
+            // create many secure tenures
+            var secureTenures = _fixture.Build<Tenure>()
+                .With(x => x.EndDate, tenureEndDate)
+                .With(x => x.Type, "Secure")
+                .With(x => x.StartDate, CreateRandomStartDateValue)
+                .CreateMany(numberOfSecureTenures);
+
+            // create many tenures of other types
+            var otherTenureTypes = _fixture
+                .Build<Tenure>()
+                .With(x => x.EndDate, tenureEndDate)
+                .With(x => x.StartDate, CreateRandomStartDateValue)
+                .CreateMany(numberOfOtherTenureTypes);
+
+            // shuffle list
+            var shuffledTenures = ShuffleTenures(secureTenures.Concat(otherTenureTypes));
 
             // mock person
             var mockPerson = _fixture.Build<Person>().With(x => x.Tenures, shuffledTenures).Create();
@@ -128,32 +173,19 @@ namespace PersonApi.Tests.V1.Factories
             // call method
             var response = _sut.ToResponse(mockPerson);
 
-            // assert inactive tenures are in date order
-            response.Tenures.Select(x => DateTime.Parse(x.StartDate)).Should().BeInDescendingOrder();
+            var responseSecureTenures = response.Tenures.Take(numberOfSecureTenures);
+            var responseOtherTenureTypes = response.Tenures.Skip(numberOfSecureTenures).Take(numberOfOtherTenureTypes);
+
+            // assert tenures tenures are in date order
+            responseSecureTenures.Select(x => DateTime.Parse(x.StartDate)).Should().BeInDescendingOrder();
+            responseOtherTenureTypes.Select(x => DateTime.Parse(x.StartDate)).Should().BeInDescendingOrder();
         }
 
-        private List<Tenure> CreateListOfShuffledTenures(int numberOfActiveTenures, int numberOfInactiveTenures)
+        private IEnumerable<Tenure> ShuffleTenures(IEnumerable<Tenure> list)
         {
-            // Tenure.IsActive is readonly. Must set enddate to null or date in past
-            string activeTenureDateValue = null;
-            string inactiveTeunureDateValue = DateTime.UtcNow.AddDays(-7).ToString(); // generate date in past
+            Random random = new Random();
 
-            // create list of active tenures - random dates
-            var activeTenures = _fixture.Build<Tenure>()
-                .With(x => x.EndDate, activeTenureDateValue)
-                .With(x => x.StartDate, CreateRandomStartDateValue)
-                .CreateMany(numberOfActiveTenures);
-
-            // create list of inactive tenures - random dates
-            var inactiveTenures = _fixture.Build<Tenure>()
-                .With(x => x.EndDate, inactiveTeunureDateValue)
-                .With(x => x.StartDate, CreateRandomStartDateValue)
-                .CreateMany(numberOfInactiveTenures);
-
-            // combine shuffle list
-            var shuffledTenures = activeTenures.Concat(inactiveTenures).OrderBy(item => _random.Next());
-
-            return shuffledTenures.ToList();
+            return list.OrderBy(item => random.Next());
         }
 
         private string CreateRandomStartDateValue()

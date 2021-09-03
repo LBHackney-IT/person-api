@@ -39,7 +39,6 @@ namespace PersonApi.V1.Factories
                 DateOfBirth = FormatDateOfBirth(domain.DateOfBirth),
                 PersonTypes = domain.PersonTypes,
                 Links = _apiLinkGenerator?.GenerateLinksForPerson(domain),
-                //Tenures = domain.Tenures?.Select(x => ToResponse(x)).ToList(),
                 Tenures = SortTentures(domain.Tenures),
                 Reason = domain.Reason
             };
@@ -49,17 +48,13 @@ namespace PersonApi.V1.Factories
         {
             if (tenures == null) return null;
 
-            // 1. Filter and order active tenures - newest to oldest
-            var activeTenures = tenures.Where(x => x.IsActive).OrderByDescending(ParseTenureStartDate);
+            var sortedTenures = tenures
+                .OrderByDescending(x => x.IsActive)
+                .ThenByDescending(x => x.Type == "Secure")
+                .ThenByDescending(ParseTenureStartDate)
+                .ToList();
 
-            // 2. Filter and order inactive tenures - newest to oldest
-            var inactiveTenures = tenures.Where(x => x.IsActive == false).OrderByDescending(ParseTenureStartDate);
-
-            // 3. create combined list of all tenures
-            var allTenures = activeTenures.Concat(inactiveTenures);
-
-            // 4. convert all to TenureResponseObject
-            return allTenures.ToList().Select(x => ToResponse(x)).ToList();
+            return sortedTenures.Select(x => ToResponse(x)).ToList();
         }
 
         private static DateTime? ParseTenureStartDate(Tenure tenure)
