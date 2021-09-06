@@ -2,6 +2,7 @@ using PersonApi.V1.Boundary;
 using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PersonApi.V1.Factories
@@ -38,9 +39,31 @@ namespace PersonApi.V1.Factories
                 DateOfBirth = FormatDateOfBirth(domain.DateOfBirth),
                 PersonTypes = domain.PersonTypes,
                 Links = _apiLinkGenerator?.GenerateLinksForPerson(domain),
-                Tenures = domain.Tenures?.Select(x => ToResponse(x)).ToList(),
+                Tenures = SortTentures(domain.Tenures),
                 Reason = domain.Reason
             };
+        }
+
+        private static List<TenureResponseObject> SortTentures(IEnumerable<Tenure> tenures)
+        {
+            if (tenures == null) return null;
+
+            var sortedTenures = tenures
+                .OrderByDescending(x => x.IsActive)
+                .ThenByDescending(x => x.Type == "Secure")
+                .ThenByDescending(ParseTenureStartDate)
+                .ToList();
+
+            return sortedTenures.Select(x => ToResponse(x)).ToList();
+        }
+
+        private static DateTime? ParseTenureStartDate(Tenure tenure)
+        {
+            DateTime parsedDate;
+
+            if (DateTime.TryParse(tenure.StartDate, out parsedDate)) return (DateTime?) parsedDate;
+
+            return null;
         }
 
         public static TenureResponseObject ToResponse(Tenure tenure)
