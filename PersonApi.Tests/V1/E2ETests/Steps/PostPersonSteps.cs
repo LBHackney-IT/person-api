@@ -68,7 +68,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             apiPerson.Should().BeEquivalentTo(new ResponseFactory(null).ToResponse(dbRecord.ToDomain()),
                                               config => config.Excluding(y => y.Links));
             dbRecord.VersionNumber.Should().Be(0);
-            dbRecord.LastModified.Should().BeCloseTo(DateTime.UtcNow, 500);
+            dbRecord.LastModified.Should().BeCloseTo(DateTime.UtcNow, 1000);
 
             await personFixture._dbContext.DeleteAsync<PersonDbEntity>(dbRecord.Id).ConfigureAwait(false);
         }
