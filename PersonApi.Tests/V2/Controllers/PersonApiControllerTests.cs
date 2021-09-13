@@ -31,7 +31,7 @@ namespace PersonApi.Tests.V2.Controllers
             _mockTokenFactory = new Mock<ITokenFactory>();
             _mockContextWrapper = new Mock<IHttpContextWrapper>();
 
-            _sut = new PersonApiController(_mockNewPersonUseCase.Object, 
+            _sut = new PersonApiController(_mockNewPersonUseCase.Object,
                 _mockTokenFactory.Object, _mockContextWrapper.Object);
 
             _mockContextWrapper.Setup(x => x.GetContextRequestHeaders(It.IsAny<HttpContext>())).Returns(new HeaderDictionary());
