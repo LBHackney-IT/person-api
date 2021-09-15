@@ -32,7 +32,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
 
             var eTagHeaders = _lastResponse.Headers.GetValues(HeaderConstants.ETag);
             eTagHeaders.Count().Should().Be(1);
-            eTagHeaders.First().Should().Be(expectedPerson.VersionNumber.ToString());
+            eTagHeaders.First().Should().Be($"\"{expectedPerson.VersionNumber.ToString()}\"");
 
             apiPerson.DateOfBirth.Should().Be(ResponseFactory.FormatDateOfBirth(expectedPerson.DateOfBirth));
             apiPerson.FirstName.Should().Be(expectedPerson.FirstName);
