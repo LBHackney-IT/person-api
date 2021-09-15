@@ -222,7 +222,7 @@ namespace PersonApi.Tests.V1.Controllers
         {
             // Arrange
             var query = ConstructQuery();
-            _requestHeaders.Add(HeaderConstants.IfMatch, new StringValues(expected?.ToString()));
+            _requestHeaders.Add(HeaderConstants.IfMatch, $"\"{new StringValues(expected?.ToString())}\"");
 
             var exception = new VersionNumberConflictException(expected, actual);
             _mockUpdatePersonUseCase.Setup(x => x.ExecuteAsync(It.IsAny<UpdatePersonRequestObject>(), RequestBodyText, It.IsAny<Token>(), query, expected))

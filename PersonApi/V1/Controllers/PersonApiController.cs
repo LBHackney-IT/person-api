@@ -142,7 +142,7 @@ namespace PersonApi.V1.Controllers
             if (int.TryParse(version, out var numericValue))
                 return numericValue;
 
-            return numericValue;
+            return null;
         }
     }
 }
