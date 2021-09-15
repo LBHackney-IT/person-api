@@ -112,7 +112,7 @@ namespace PersonApi.Tests.V1.Controllers
             // Assert
             response.Should().BeOfType(typeof(OkObjectResult));
             _sut.HttpContext.Response.Headers.TryGetValue(HeaderConstants.ETag, out StringValues val).Should().BeTrue();
-            val.First().Should().Be(personResponse.VersionNumber.ToString());
+            val.First().Should().Be($"\"{personResponse.VersionNumber.ToString()}\"");
             (response as OkObjectResult).Value.Should().BeEquivalentTo(_responseFactory.ToResponse(personResponse));
         }
 
