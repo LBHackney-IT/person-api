@@ -23,7 +23,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using PersonApi.V1.Boundary;
-using PersonApi.V1.Domain.Configuration;
+using Hackney.Shared.Person.Configuration;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;

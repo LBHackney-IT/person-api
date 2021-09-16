@@ -1,5 +1,5 @@
 using Hackney.Core.JWT;
-using PersonApi.V1.Domain;
+using Hackney.Shared.Person;
 using PersonApi.V1.Infrastructure;
 
 namespace PersonApi.V1.Factories

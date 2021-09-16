@@ -2,7 +2,7 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using PersonApi.V1.Boundary;
-using PersonApi.V1.Domain;
+using Hackney.Shared.Person;
 using PersonApi.V1.Factories;
 using System;
 using System.Collections.Generic;

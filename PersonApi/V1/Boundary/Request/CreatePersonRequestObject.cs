@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using PersonApi.V1.Domain;
+using Hackney.Shared.Person;
 
 namespace PersonApi.V1.Boundary.Request
 {

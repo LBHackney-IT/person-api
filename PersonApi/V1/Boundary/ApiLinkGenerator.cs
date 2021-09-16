@@ -1,5 +1,5 @@
 using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.Domain;
+using Hackney.Shared.Person;
 using System.Collections.Generic;
 using System.Linq;
 

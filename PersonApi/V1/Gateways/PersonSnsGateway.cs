@@ -1,7 +1,7 @@
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using Microsoft.Extensions.Configuration;
-using PersonApi.V1.Domain;
+using Hackney.Shared.Person;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;

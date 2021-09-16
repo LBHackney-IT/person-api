@@ -1,6 +1,6 @@
 using AutoFixture;
 using FluentAssertions;
-using PersonApi.V1.Domain;
+using Hackney.Shared.Person;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using Xunit;

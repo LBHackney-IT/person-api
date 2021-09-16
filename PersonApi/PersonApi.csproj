@@ -26,6 +26,7 @@
     <PackageReference Include="Hackney.Core.Middleware" Version="1.30.0" />
     <PackageReference Include="Hackney.Core.Sns" Version="1.30.0" />
     <PackageReference Include="Hackney.Core.Validation" Version="1.30.0" />
+    <PackageReference Include="Hackney.Shared.Person" Version="0.2.2-preview0001" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.HealthChecks" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />

@@ -1,6 +1,6 @@
 using FluentValidation.TestHelper;
 using PersonApi.V1.Boundary.Request.Validation;
-using PersonApi.V1.Domain;
+using Hackney.Shared.Person;
 using System;
 using Xunit;
 

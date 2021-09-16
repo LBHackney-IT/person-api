@@ -1,6 +1,6 @@
 using FluentValidation;
 using Hackney.Core.Validation;
-using PersonApi.V1.Domain;
+using Hackney.Shared.Person;
 using System;
 
 namespace PersonApi.V1.Boundary.Request.Validation
