@@ -11,6 +11,7 @@ using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure.Exceptions;
 using PersonApi.V1.UseCase.Interfaces;
 using System;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using HeaderConstants = PersonApi.V1.Infrastructure.HeaderConstants;
 
@@ -60,7 +61,11 @@ namespace PersonApi.V1.Controllers
             var person = await _getByIdUseCase.ExecuteAsync(query).ConfigureAwait(false);
             if (null == person) return NotFound(query.Id);
 
-            HttpContext.Response.Headers.Add(HeaderConstants.ETag, person.VersionNumber.ToString());
+            var eTag = string.Empty;
+            if (person.VersionNumber.HasValue)
+                eTag = person.VersionNumber.ToString();
+
+            HttpContext.Response.Headers.Add(HeaderConstants.ETag, EntityTagHeaderValue.Parse($"\"{eTag}\"").Tag);
 
             return Ok(_responseFactory.ToResponse(person));
         }
@@ -100,8 +105,7 @@ namespace PersonApi.V1.Controllers
             var bodyText = await HttpContext.Request.GetRawBodyStringAsync().ConfigureAwait(false);
             var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
 
-            string ifMatchString = HttpContext.Request.Headers.GetHeaderValue(HeaderConstants.IfMatch);
-            var ifMatch = int.TryParse(ifMatchString, out int i) ? i : (int?) null;
+            var ifMatch = GetIfMatchFromHeader();
 
             try
             {
@@ -119,6 +123,26 @@ namespace PersonApi.V1.Controllers
             {
                 return Conflict(vncErr.Message);
             }
+        }
+
+        private int? GetIfMatchFromHeader()
+        {
+            var header = HttpContext.Request.Headers.GetHeaderValue(HeaderConstants.IfMatch);
+
+            if (header == null)
+                return null;
+
+            var eTag = EntityTagHeaderValue.TryParse(header, out var entityTagHeaderValue);
+
+            if (entityTagHeaderValue == null)
+                return null;
+
+            var version = entityTagHeaderValue.Tag.Replace("\"", string.Empty);
+
+            if (int.TryParse(version, out var numericValue))
+                return numericValue;
+
+            return null;
         }
     }
 }
