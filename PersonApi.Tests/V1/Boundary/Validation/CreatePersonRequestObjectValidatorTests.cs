@@ -27,7 +27,6 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         }
 
         public static IEnumerable<object[]> Titles => GetEnumValues<Title>();
-        public static IEnumerable<object[]> Genders => GetEnumValues<Gender>();
 
         private const string StringWithTags = "Some string with <tag> in it.";
 
