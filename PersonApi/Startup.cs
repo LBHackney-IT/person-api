@@ -164,13 +164,18 @@ namespace PersonApi
             services.AddScoped<ISnsGateway, PersonSnsGateway>();
             services.AddScoped<ISnsFactory, PersonSnsFactory>();
             services.AddScoped<IEntityUpdater, EntityUpdater>();
+
+            services.AddScoped<V2.Factories.ISnsFactory, V2.Factories.PersonSnsFactory>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
         {
+            // V1
             services.AddScoped<IGetByIdUseCase, GetByIdUseCase>();
             services.AddScoped<IPostNewPersonUseCase, PostNewPersonUseCase>();
             services.AddScoped<IUpdatePersonUseCase, UpdatePersonUseCase>();
+            // V2
+            services.AddScoped<V2.UseCase.Interfaces.IPostNewPersonUseCase, V2.UseCase.PostNewPersonUseCase>();
 
             // Used by the Use cases to add api links to any response object
             services.AddScoped<IResponseFactory, ResponseFactory>();

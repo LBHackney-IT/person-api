@@ -20,7 +20,10 @@ namespace PersonApi.V1.Domain
     public enum PersonType
     {
         Tenant,
-        HouseholdMember
+        HouseholdMember,
+        Leaseholder,
+        Freeholder,
+        Occupant
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

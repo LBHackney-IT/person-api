@@ -270,7 +270,7 @@ namespace PersonApi.Tests.V1.Boundary.Request.Validation
         [Theory]
         [InlineData(PersonType.HouseholdMember)]
         [InlineData(PersonType.Tenant)]
-        [InlineData(PersonType.Tenant, PersonType.HouseholdMember)]
+        [InlineData(PersonType.Tenant, PersonType.HouseholdMember, PersonType.Freeholder, PersonType.Leaseholder, PersonType.Occupant)]
         public void PersonTypesShouldNotErrorWithValidValue(params PersonType[] types)
         {
             var model = new CreatePersonRequestObject() { PersonTypes = types };
