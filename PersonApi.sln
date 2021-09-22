@@ -1,9 +1,44 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonApi", "PersonApi\PersonApi.csproj", "{6F482163-3F51-487F-8F7D-37A1D4DAEA8B}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31605.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonApi", "PersonApi\PersonApi.csproj", "{6F482163-3F51-487F-8F7D-37A1D4DAEA8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonApi.Tests", "PersonApi.Tests\PersonApi.Tests.csproj", "{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonApi.Tests", "PersonApi.Tests\PersonApi.Tests.csproj", "{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{466E955F-5D40-4C64-8CB9-EF1A6E9830FC}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Terraform", "Terraform", "{65717D26-0AE4-48CA-BCBF-88D78F996993}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CircleCi", "CircleCi", "{F130D818-EFF9-4E41-A135-5A1DE3A5C49B}"
+	ProjectSection(SolutionItems) = preProject
+		.circleci\config.yml = .circleci\config.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "development", "development", "{F8AFA286-A371-44B2-BF1A-14D071D86941}"
+	ProjectSection(SolutionItems) = preProject
+		terraform\development\dynamodb.tf = terraform\development\dynamodb.tf
+		terraform\development\main.tf = terraform\development\main.tf
+		terraform\development\variables.tf = terraform\development\variables.tf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "staging", "staging", "{4D509C0C-93D7-4849-BFEE-36ADA63BDC8F}"
+	ProjectSection(SolutionItems) = preProject
+		terraform\staging\dynamodb.tf = terraform\staging\dynamodb.tf
+		terraform\staging\main.tf = terraform\staging\main.tf
+		terraform\staging\variables.tf = terraform\staging\variables.tf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "production", "production", "{8CAD60BE-00ED-4F84-A3EF-088F817F8569}"
+	ProjectSection(SolutionItems) = preProject
+		terraform\production\dynamodb.tf = terraform\production\dynamodb.tf
+		terraform\production\main.tf = terraform\production\main.tf
+		terraform\production\variables.tf = terraform\production\variables.tf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,5 +54,16 @@ Global
 		{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F8AFA286-A371-44B2-BF1A-14D071D86941} = {65717D26-0AE4-48CA-BCBF-88D78F996993}
+		{4D509C0C-93D7-4849-BFEE-36ADA63BDC8F} = {65717D26-0AE4-48CA-BCBF-88D78F996993}
+		{8CAD60BE-00ED-4F84-A3EF-088F817F8569} = {65717D26-0AE4-48CA-BCBF-88D78F996993}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19EA71A2-5D02-4EFB-A63F-A1BF42B9E59E}
 	EndGlobalSection
 EndGlobal
