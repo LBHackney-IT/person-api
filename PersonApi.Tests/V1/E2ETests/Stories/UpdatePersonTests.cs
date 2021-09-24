@@ -1,5 +1,6 @@
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.Tests.V1.E2ETests.Steps;
+using PersonApi.V1.Domain;
 using System;
 using TestStack.BDDfy;
 using Xunit;
@@ -16,12 +17,14 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         private readonly AwsIntegrationTests<Startup> _dbFixture;
         private readonly PersonFixture _personFixture;
         private readonly UpdatePersonStep _steps;
+        private readonly SnsEventVerifier<PersonSns> _snsVerifer;
 
         public UpdatePersonTests(AwsIntegrationTests<Startup> dbFixture)
         {
             _dbFixture = dbFixture;
             _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, _dbFixture.SimpleNotificationService);
             _steps = new UpdatePersonStep(_dbFixture.Client);
+            _snsVerifer = new SnsEventVerifier<PersonSns>(_dbFixture.AmazonSQS, _dbFixture.QueueUrl);
         }
 
         public void Dispose()
@@ -49,6 +52,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
                 .And(g => _personFixture.GivenAUpdatePersonRequest())
                 .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest, _personFixture.PersonId))
                 .Then(t => _steps.ThenThePersonDetailsAreUpdated(_personFixture))
+                .Then(t => _steps.ThenThePersonUpdatedEventIsRaised(_personFixture, _snsVerifer))
                 .BDDfy();
         }
 

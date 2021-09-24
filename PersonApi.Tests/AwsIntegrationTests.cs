@@ -6,6 +6,7 @@ using System.Net.Http;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using Xunit;
+using Amazon.SQS;
 
 namespace PersonApi.Tests
 {
@@ -14,12 +15,19 @@ namespace PersonApi.Tests
         public HttpClient Client { get; private set; }
         public IDynamoDBContext DynamoDbContext => _factory?.DynamoDbContext;
         public IAmazonSimpleNotificationService SimpleNotificationService => _factory?.SimpleNotificationService;
+        public IAmazonSQS AmazonSQS => _factory?.AmazonSQS;
+        public string QueueUrl { get; private set; }
 
         private readonly AwsMockWebApplicationFactory<TStartup> _factory;
         private readonly List<TableDef> _tables = new List<TableDef>
         {
             new TableDef { Name = "Persons", KeyName = "id", KeyType = ScalarAttributeType.S }
         };
+
+        private readonly string _sqsQueueName = "internal-messages";
+
+        private string _topicArn;
+        private string _subscriptionArn;
 
         public AwsIntegrationTests()
         {
@@ -44,6 +52,10 @@ namespace PersonApi.Tests
         {
             if (disposing && !_disposed)
             {
+                SimpleNotificationService.UnsubscribeAsync(_subscriptionArn).GetAwaiter().GetResult();
+                SimpleNotificationService.DeleteTopicAsync(_topicArn).GetAwaiter().GetResult();
+                AmazonSQS.DeleteQueueAsync(QueueUrl).GetAwaiter().GetResult();
+
                 if (null != _factory)
                     _factory.Dispose();
                 _disposed = true;
@@ -68,7 +80,14 @@ namespace PersonApi.Tests
                 Attributes = snsAttrs
             }).Result;
 
+            _topicArn = response.TopicArn;
             Environment.SetEnvironmentVariable("PERSON_SNS_ARN", response.TopicArn);
+
+            var queueResponse = AmazonSQS.CreateQueueAsync(_sqsQueueName).GetAwaiter().GetResult();
+            QueueUrl = queueResponse.QueueUrl;
+
+            _subscriptionArn = SimpleNotificationService.SubscribeQueueAsync(_topicArn, AmazonSQS, QueueUrl)
+                                                       .GetAwaiter().GetResult();
         }
     }
 

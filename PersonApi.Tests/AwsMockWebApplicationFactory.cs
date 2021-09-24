@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using Amazon.SimpleNotificationService;
 using PersonApi.V1.Infrastructure;
+using Amazon.SQS;
 
 namespace PersonApi.Tests
 {
@@ -20,6 +21,7 @@ namespace PersonApi.Tests
         public IAmazonDynamoDB DynamoDb { get; private set; }
         public IDynamoDBContext DynamoDbContext { get; private set; }
         public IAmazonSimpleNotificationService SimpleNotificationService { get; private set; }
+        public IAmazonSQS AmazonSQS { get; private set; }
 
         public AwsMockWebApplicationFactory(List<TableDef> tables)
         {
@@ -51,6 +53,7 @@ namespace PersonApi.Tests
                 DynamoDb = serviceProvider.GetRequiredService<IAmazonDynamoDB>();
                 DynamoDbContext = serviceProvider.GetRequiredService<IDynamoDBContext>();
                 SimpleNotificationService = serviceProvider.GetRequiredService<IAmazonSimpleNotificationService>();
+                AmazonSQS = new AmazonSQSClient(new AmazonSQSConfig() { ServiceURL = snsUrl });
 
                 EnsureTablesExist(DynamoDb, _tables);
             });

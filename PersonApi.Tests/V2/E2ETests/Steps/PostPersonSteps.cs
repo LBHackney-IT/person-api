@@ -5,6 +5,7 @@ using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.V1.Boundary.Request;
 using PersonApi.V1.Boundary.Request.Validation;
 using PersonApi.V1.Boundary.Response;
+using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using System;
@@ -53,6 +54,31 @@ namespace PersonApi.Tests.V2.E2ETests.Steps
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             _lastResponse = await _httpClient.SendAsync(message).ConfigureAwait(false);
+        }
+
+        public async Task ThenThePersonCreatedEventIsRaised(SnsEventVerifier<PersonSns> snsVerifer)
+        {
+            var responseContent = await _lastResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var apiPerson = JsonSerializer.Deserialize<PersonResponseObject>(responseContent, CreateJsonOptions());
+
+            Action<PersonSns> verifyFunc = (actual) =>
+            {
+                actual.CorrelationId.Should().NotBeEmpty();
+                actual.DateTime.Should().BeCloseTo(DateTime.UtcNow, 1000);
+                actual.EntityId.Should().Be(apiPerson.Id);
+                var newData = JsonSerializer.Deserialize<Person>(responseContent, CreateJsonOptions());
+                var newDataAsResponse = new ResponseFactory(null).ToResponse(newData);
+                newDataAsResponse.Should().BeEquivalentTo(apiPerson, c => c.Excluding(y => y.Links));
+                actual.EventType.Should().Be(PersonApi.V2.Infrastructure.CreateEventConstants.EVENTTYPE);
+                actual.Id.Should().NotBeEmpty();
+                actual.SourceDomain.Should().Be(PersonApi.V2.Infrastructure.CreateEventConstants.SOURCEDOMAIN);
+                actual.SourceSystem.Should().Be(PersonApi.V2.Infrastructure.CreateEventConstants.SOURCESYSTEM);
+                actual.User.Email.Should().Be("e2e-testing@development.com");
+                actual.User.Name.Should().Be("Tester");
+                actual.Version.Should().Be(PersonApi.V2.Infrastructure.CreateEventConstants.V2VERSION);
+            };
+
+            snsVerifer.VerifySnsEventRaised(verifyFunc);
         }
 
         public async Task ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(PersonFixture personFixture)
