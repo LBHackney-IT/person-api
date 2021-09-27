@@ -10,7 +10,7 @@ namespace PersonApi.Tests
     // TODO - move somewhere common?
 
     /// <summary>
-    /// Helper class used to verfiy that the correct Sns event gets raised during an E2E test
+    /// Helper class used to verify that the correct Sns event gets raised during an E2E test
     /// </summary>
     /// <typeparam name="T">The event class used to create the event.</typeparam>
     public class SnsEventVerifier<T> : IDisposable where T : class
@@ -81,7 +81,7 @@ namespace PersonApi.Tests
         /// Verifies that the an expected event has been raised.
         /// </summary>
         /// <param name="verifyFunction">A function that will receive a copy of each event raised.
-        /// This function should attelpt to verify that the contents of the message match what is expected.
+        /// This function should attempt to verify that the contents of the message match what is expected.
         /// Throw an exception should then contents not match.
         /// </param>
         /// <returns>true if a message in the temporary queue satisfies the verification function.
@@ -107,7 +107,8 @@ namespace PersonApi.Tests
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private bool IsExpectedMessage(Message msg, Action<T> verifyFunction)
         {
-            // Here we are assuming the message is not in raw format.
+            // Here we are assuming the message is not in raw format
+            // (which is the case when using SubscribeQueueAsync() in the constructor above)
             var payloadString = JsonDocument.Parse(msg.Body).RootElement.GetProperty("Message").GetString();
             var eventObject = JsonSerializer.Deserialize<T>(payloadString, _jsonOptions);
             try
