@@ -7,6 +7,12 @@ using System.Text.Json.Serialization;
 
 namespace PersonApi.Tests
 {
+    // TODO - move somewhere common?
+
+    /// <summary>
+    /// Helper class used to verfiy that the correct Sns event gets raised during an E2E test
+    /// </summary>
+    /// <typeparam name="T">The event class used to create the event.</typeparam>
     public class SnsEventVerifier<T> : IDisposable where T : class
     {
         private readonly JsonSerializerOptions _jsonOptions;
@@ -19,6 +25,14 @@ namespace PersonApi.Tests
 
         private readonly string _sqsQueueName = "test-messages";
 
+        /// <summary>
+        /// Constructor
+        /// * Constructs a temporary queue to receive a copy of all events raised during a test.
+        /// * Configures a subscription to ensure events raised to the topic get set to the queue.
+        /// </summary>
+        /// <param name="amazonSQS">The SQS client</param>
+        /// <param name="snsClient">The SNS client</param>
+        /// <param name="topicArn">The arn of the topic</param>
         public SnsEventVerifier(IAmazonSQS amazonSQS, IAmazonSimpleNotificationService snsClient, string topicArn)
         {
             _amazonSQS = amazonSQS;
@@ -63,6 +77,15 @@ namespace PersonApi.Tests
             }
         }
 
+        /// <summary>
+        /// Verifies that the an expected event has been raised.
+        /// </summary>
+        /// <param name="verifyFunction">A function that will receive a copy of each event raised.
+        /// This function should attelpt to verify that the contents of the message match what is expected.
+        /// Throw an exception should then contents not match.
+        /// </param>
+        /// <returns>true if a message in the temporary queue satisfies the verification function.
+        /// false if no message in the temporary queue satisfies the verification function</returns>
         public bool VerifySnsEventRaised(Action<T> verifyFunction)
         {
             bool eventFound = false;
