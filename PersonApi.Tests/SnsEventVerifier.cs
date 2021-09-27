@@ -1,3 +1,4 @@
+using Amazon.SimpleNotificationService;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using System;
@@ -6,18 +7,30 @@ using System.Text.Json.Serialization;
 
 namespace PersonApi.Tests
 {
-    public class SnsEventVerifier<T> where T : class
+    public class SnsEventVerifier<T> : IDisposable where T : class
     {
         private readonly JsonSerializerOptions _jsonOptions;
 
         private readonly IAmazonSQS _amazonSQS;
+        private readonly IAmazonSimpleNotificationService _snsClient;
+        private readonly string _topicArn;
         private readonly string _queueUrl;
+        private readonly string _subscriptionArn;
 
-        public SnsEventVerifier(IAmazonSQS amazonSQS, string queueUrl)
+        private readonly string _sqsQueueName = "test-messages";
+
+        public SnsEventVerifier(IAmazonSQS amazonSQS, IAmazonSimpleNotificationService snsClient, string topicArn)
         {
             _amazonSQS = amazonSQS;
-            _queueUrl = queueUrl;
+            _snsClient = snsClient;
+            _topicArn = topicArn;
             _jsonOptions = CreateJsonOptions();
+
+            var queueResponse = _amazonSQS.CreateQueueAsync(_sqsQueueName).GetAwaiter().GetResult();
+            _queueUrl = queueResponse.QueueUrl;
+
+            _subscriptionArn = _snsClient.SubscribeQueueAsync(_topicArn, _amazonSQS, _queueUrl)
+                                        .GetAwaiter().GetResult();
         }
 
         private static JsonSerializerOptions CreateJsonOptions()
@@ -29,6 +42,25 @@ namespace PersonApi.Tests
             };
             options.Converters.Add(new JsonStringEnumConverter());
             return options;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _disposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _snsClient.UnsubscribeAsync(_subscriptionArn).GetAwaiter().GetResult();
+                _snsClient.DeleteTopicAsync(_topicArn).GetAwaiter().GetResult();
+                _amazonSQS.DeleteQueueAsync(_queueUrl).GetAwaiter().GetResult();
+
+                _disposed = true;
+            }
         }
 
         public bool VerifySnsEventRaised(Action<T> verifyFunction)
@@ -49,9 +81,10 @@ namespace PersonApi.Tests
             return eventFound;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private bool IsExpectedMessage(Message msg, Action<T> verifyFunction)
         {
+            // Here we are assuming the message is not in raw format.
             var payloadString = JsonDocument.Parse(msg.Body).RootElement.GetProperty("Message").GetString();
             var eventObject = JsonSerializer.Deserialize<T>(payloadString, _jsonOptions);
             try
