@@ -24,8 +24,6 @@ namespace PersonApi.Tests
             new TableDef { Name = "Persons", KeyName = "id", KeyType = ScalarAttributeType.S }
         };
 
-        private string _topicArn;
-
         public AwsIntegrationTests()
         {
             EnsureEnvVarConfigured("DynamoDb_LocalMode", "true");
@@ -75,10 +73,9 @@ namespace PersonApi.Tests
                 Attributes = snsAttrs
             }).Result;
 
-            _topicArn = response.TopicArn;
             Environment.SetEnvironmentVariable("PERSON_SNS_ARN", response.TopicArn);
 
-            SnsVerifer = new SnsEventVerifier<PersonSns>(_factory.AmazonSQS, SimpleNotificationService, _topicArn);
+            SnsVerifer = new SnsEventVerifier<PersonSns>(_factory.AmazonSQS, SimpleNotificationService, response.TopicArn);
         }
     }
 
