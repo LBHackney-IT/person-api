@@ -1,15 +1,15 @@
-using System;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
+using Amazon.SimpleNotificationService;
+using Amazon.SQS;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using Amazon.SimpleNotificationService;
 using PersonApi.V1.Infrastructure;
-using Amazon.SQS;
+using System;
+using System.Collections.Generic;
 
 namespace PersonApi.Tests
 {

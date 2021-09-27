@@ -1,12 +1,12 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
+using Amazon.SQS;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using Amazon.SimpleNotificationService;
-using Amazon.SimpleNotificationService.Model;
 using Xunit;
-using Amazon.SQS;
 
 namespace PersonApi.Tests
 {
@@ -24,7 +24,7 @@ namespace PersonApi.Tests
             new TableDef { Name = "Persons", KeyName = "id", KeyType = ScalarAttributeType.S }
         };
 
-        private readonly string _sqsQueueName = "internal-messages";
+        private readonly string _sqsQueueName = "test-messages";
 
         private string _topicArn;
         private string _subscriptionArn;
