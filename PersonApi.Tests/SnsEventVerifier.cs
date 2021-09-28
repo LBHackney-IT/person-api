@@ -25,6 +25,8 @@ namespace PersonApi.Tests
 
         private readonly string _sqsQueueName = "test-messages";
 
+        public Exception LastException { get; private set; }
+
         /// <summary>
         /// Constructor
         /// * Constructs a temporary queue to receive a copy of all events raised during a test.
@@ -116,8 +118,9 @@ namespace PersonApi.Tests
                 verifyFunction(eventObject);
                 return true;
             }
-            catch
+            catch (Exception e)
             {
+                LastException = e;
                 return false;
             }
         }

@@ -78,7 +78,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
                 actual.Version.Should().Be(CreateEventConstants.V1VERSION);
             };
 
-            snsVerifer.VerifySnsEventRaised(verifyFunc);
+            snsVerifer.VerifySnsEventRaised(verifyFunc).Should().BeTrue(snsVerifer.LastException?.Message);
         }
 
         public async Task ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(PersonFixture personFixture)

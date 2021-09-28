@@ -105,7 +105,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
                 actual.Version.Should().Be(UpdatePersonConstants.V1VERSION);
             };
 
-            snsVerifer.VerifySnsEventRaised(verifyFunc).Should().BeTrue();
+            snsVerifer.VerifySnsEventRaised(verifyFunc).Should().BeTrue(snsVerifer.LastException?.Message);
         }
 
         public async Task ThenConflictIsReturned(int? versionNumber)
