@@ -4,13 +4,16 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.V1.Boundary.Request;
+using PersonApi.V1.Domain;
 using PersonApi.V1.Infrastructure;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace PersonApi.Tests.V1.E2ETests.Steps
 {
@@ -72,6 +75,37 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             result.Surname.Should().Be(personFixture.UpdatePersonRequest.Surname);
             result.VersionNumber.Should().Be(1);
             result.LastModified.Should().BeCloseTo(DateTime.UtcNow, 1500);
+        }
+
+        public async Task ThenThePersonUpdatedEventIsRaised(PersonFixture personFixture, SnsEventVerifier<PersonSns> snsVerifer)
+        {
+            var dbPerson = await personFixture._dbContext.LoadAsync<PersonDbEntity>(personFixture.Person.Id).ConfigureAwait(false);
+
+            Action<string, PersonDbEntity> verifyData = (dataAsString, person) =>
+            {
+                var dataDic = JsonSerializer.Deserialize<Dictionary<string, object>>(dataAsString, CreateJsonOptions());
+                dataDic["title"].ToString().Should().Be(Enum.GetName(typeof(Title), person.Title.Value));
+                dataDic["firstName"].ToString().Should().Be(person.FirstName);
+                dataDic["surname"].ToString().Should().Be(person.Surname);
+            };
+
+            Action<PersonSns> verifyFunc = (actual) =>
+            {
+                actual.CorrelationId.Should().NotBeEmpty();
+                actual.DateTime.Should().BeCloseTo(DateTime.UtcNow, 1000);
+                actual.EntityId.Should().Be(personFixture.PersonId);
+                verifyData(actual.EventData.OldData.ToString(), personFixture.Person);
+                verifyData(actual.EventData.NewData.ToString(), dbPerson);
+                actual.EventType.Should().Be(UpdatePersonConstants.EVENTTYPE);
+                actual.Id.Should().NotBeEmpty();
+                actual.SourceDomain.Should().Be(UpdatePersonConstants.SOURCEDOMAIN);
+                actual.SourceSystem.Should().Be(UpdatePersonConstants.SOURCESYSTEM);
+                actual.User.Email.Should().Be("e2e-testing@development.com");
+                actual.User.Name.Should().Be("Tester");
+                actual.Version.Should().Be(UpdatePersonConstants.V1VERSION);
+            };
+
+            snsVerifer.VerifySnsEventRaised(verifyFunc).Should().BeTrue(snsVerifer.LastException?.Message);
         }
 
         public async Task ThenConflictIsReturned(int? versionNumber)
