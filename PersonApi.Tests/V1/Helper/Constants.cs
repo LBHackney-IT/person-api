@@ -1,4 +1,5 @@
-using PersonApi.V1.Domain;
+using Hackney.Shared.Person;
+using Hackney.Shared.Person.Domain;
 using System;
 using System.Collections.Generic;
 
@@ -44,7 +45,7 @@ namespace PersonApi.Tests.V1.Helper
             entity.DateOfBirth = Constants.DATEOFBIRTH;
             entity.Tenures = new[]
             {
-                new Tenure
+                new TenureDetails
                 {
                     AssetFullAddress = ASSETFULLADDRESS,
                     AssetId = ASSETID,

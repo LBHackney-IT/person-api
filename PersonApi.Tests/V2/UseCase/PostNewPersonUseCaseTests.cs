@@ -1,24 +1,25 @@
 using AutoFixture;
 using FluentAssertions;
 using Hackney.Core.JWT;
+using Hackney.Shared.Person;
+using Hackney.Shared.Person.Boundary.Request;
+using Hackney.Shared.Person.Boundary.Response;
+using Hackney.Shared.Person.Factories;
 using Moq;
-using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
-using PersonApi.V2.Factories;
 using PersonApi.V1.Gateways;
+using PersonApi.V2.Factories;
 using PersonApi.V2.UseCase;
 using System;
 using System.Threading.Tasks;
 using Xunit;
-using V1Factories = PersonApi.V1.Factories;
 
 namespace PersonApi.Tests.V2.UseCase
 {
     public class PostNewPersonUseCaseTests
     {
         private readonly Mock<IPersonApiGateway> _mockGateway;
-        private readonly V1Factories.ResponseFactory _responseFactory;
+        private readonly ResponseFactory _responseFactory;
         private readonly Mock<ISnsGateway> _mockSnsGateway;
         private readonly Mock<ISnsFactory> _mockSnsFactory;
         private readonly PostNewPersonUseCase _classUnderTest;
@@ -27,7 +28,7 @@ namespace PersonApi.Tests.V2.UseCase
         public PostNewPersonUseCaseTests()
         {
             _mockGateway = new Mock<IPersonApiGateway>();
-            _responseFactory = new V1Factories.ResponseFactory(null);
+            _responseFactory = new ResponseFactory(null);
             _mockSnsGateway = new Mock<ISnsGateway>();
             _mockSnsFactory = new Mock<ISnsFactory>();
             _classUnderTest = new PostNewPersonUseCase(_mockGateway.Object, _responseFactory, _mockSnsGateway.Object, _mockSnsFactory.Object);
