@@ -49,6 +49,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
                 .And(g => _personFixture.GivenAUpdatePersonRequest())
                 .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest, _personFixture.PersonId))
                 .Then(t => _steps.ThenThePersonDetailsAreUpdated(_personFixture))
+                .Then(t => _steps.ThenThePersonUpdatedEventIsRaised(_personFixture, _dbFixture.SnsVerifer))
                 .BDDfy();
         }
 

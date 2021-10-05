@@ -1,7 +1,7 @@
 using FluentAssertions;
-using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.Domain;
-using PersonApi.V1.Factories;
+using Hackney.Shared.Person.Boundary.Response;
+using Hackney.Shared.Person.Factories;
+using Hackney.Shared.Person.Infrastructure;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Linq;

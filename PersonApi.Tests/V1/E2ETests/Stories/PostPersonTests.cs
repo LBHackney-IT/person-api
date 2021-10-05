@@ -48,6 +48,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
             this.Given(g => _personFixture.GivenANewPersonRequest())
                 .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.CreatePersonRequest))
                 .Then(t => _steps.ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(_personFixture))
+                .Then(t => _steps.ThenThePersonCreatedEventIsRaised(_dbFixture.SnsVerifer))
                 .BDDfy();
         }
 

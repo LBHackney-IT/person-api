@@ -1,9 +1,10 @@
 using Amazon.DynamoDBv2.DataModel;
 using Hackney.Core.Logging;
+using Hackney.Shared.Person;
+using Hackney.Shared.Person.Boundary.Request;
+using Hackney.Shared.Person.Factories;
+using Hackney.Shared.Person.Infrastructure;
 using Microsoft.Extensions.Logging;
-using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Domain;
-using PersonApi.V1.Factories;
 using PersonApi.V1.Infrastructure;
 using PersonApi.V1.Infrastructure.Exceptions;
 using System;

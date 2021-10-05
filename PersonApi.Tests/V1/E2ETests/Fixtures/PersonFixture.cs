@@ -2,9 +2,9 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using AutoFixture;
-using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Domain;
-using PersonApi.V1.Infrastructure;
+using Hackney.Shared.Person.Boundary.Request;
+using Hackney.Shared.Person.Domain;
+using Hackney.Shared.Person.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -78,7 +78,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 var person = _fixture.Build<PersonDbEntity>()
                                      .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
                                      .With(x => x.Title, Title.Mr)
-                                     .With(x => x.Tenures, _fixture.Build<Tenure>()
+                                     .With(x => x.Tenures, _fixture.Build<TenureDetails>()
                                               .With(y => y.StartDate, "")
                                               .With(y => y.EndDate, "")
                                               .CreateMany(2).ToList())
@@ -105,7 +105,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         {
             var personRequest = _fixture.Build<CreatePersonRequestObject>()
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                .With(x => x.Tenures, _fixture.Build<Tenure>()
+                .With(x => x.Tenures, _fixture.Build<TenureDetails>()
                                               .With(y => y.StartDate, (string) null)
                                               .With(y => y.EndDate, (string) null)
                                               .CreateMany(2))
@@ -136,7 +136,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 .With(x => x.Surname, string.Empty)
                 .With(x => x.PersonTypes, Enumerable.Empty<PersonType>())
                 .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(1))
-                .With(x => x.Tenures, _fixture.Build<Tenure>()
+                .With(x => x.Tenures, _fixture.Build<TenureDetails>()
                                               .With(y => y.StartDate, "asdwsad")
                                               .With(y => y.EndDate, "asdsad")
                                               .CreateMany(1))

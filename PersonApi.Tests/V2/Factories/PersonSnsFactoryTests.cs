@@ -1,6 +1,7 @@
 using AutoFixture;
 using FluentAssertions;
 using Hackney.Core.JWT;
+using Hackney.Shared.Person;
 using PersonApi.V1.Domain;
 using PersonApi.V2.Factories;
 using PersonApi.V2.Infrastructure;
