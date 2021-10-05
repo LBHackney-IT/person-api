@@ -1,11 +1,14 @@
 using FluentAssertions;
+using Hackney.Shared.Person;
+using Hackney.Shared.Person.Boundary.Request;
+using Hackney.Shared.Person.Boundary.Request.Validation;
+using Hackney.Shared.Person.Boundary.Response;
+using Hackney.Shared.Person.Factories;
+using Hackney.Shared.Person.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PersonApi.Tests.V1.E2ETests.Fixtures;
-using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Boundary.Request.Validation;
-using PersonApi.V1.Boundary.Response;
-using PersonApi.V1.Factories;
+using PersonApi.V1.Domain;
 using PersonApi.V1.Infrastructure;
 using System;
 using System.Linq;
@@ -55,6 +58,31 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             _lastResponse = await _httpClient.SendAsync(message).ConfigureAwait(false);
         }
 
+        public async Task ThenThePersonCreatedEventIsRaised(SnsEventVerifier<PersonSns> snsVerifer)
+        {
+            var responseContent = await _lastResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var apiPerson = JsonSerializer.Deserialize<PersonResponseObject>(responseContent, CreateJsonOptions());
+
+            Action<PersonSns> verifyFunc = (actual) =>
+            {
+                actual.CorrelationId.Should().NotBeEmpty();
+                actual.DateTime.Should().BeCloseTo(DateTime.UtcNow, 1000);
+                actual.EntityId.Should().Be(apiPerson.Id);
+                var newData = JsonSerializer.Deserialize<Person>(responseContent, CreateJsonOptions());
+                var newDataAsResponse = new ResponseFactory(null).ToResponse(newData);
+                newDataAsResponse.Should().BeEquivalentTo(apiPerson, c => c.Excluding(y => y.Links));
+                actual.EventType.Should().Be(CreateEventConstants.EVENTTYPE);
+                actual.Id.Should().NotBeEmpty();
+                actual.SourceDomain.Should().Be(CreateEventConstants.SOURCEDOMAIN);
+                actual.SourceSystem.Should().Be(CreateEventConstants.SOURCESYSTEM);
+                actual.User.Email.Should().Be("e2e-testing@development.com");
+                actual.User.Name.Should().Be("Tester");
+                actual.Version.Should().Be(CreateEventConstants.V1VERSION);
+            };
+
+            snsVerifer.VerifySnsEventRaised(verifyFunc).Should().BeTrue(snsVerifer.LastException?.Message);
+        }
+
         public async Task ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(PersonFixture personFixture)
         {
             _lastResponse.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -68,7 +96,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             apiPerson.Should().BeEquivalentTo(new ResponseFactory(null).ToResponse(dbRecord.ToDomain()),
                                               config => config.Excluding(y => y.Links));
             dbRecord.VersionNumber.Should().Be(0);
-            dbRecord.LastModified.Should().BeCloseTo(DateTime.UtcNow, 1000);
+            dbRecord.LastModified.Should().BeCloseTo(DateTime.UtcNow, 1500);
 
             await personFixture._dbContext.DeleteAsync<PersonDbEntity>(dbRecord.Id).ConfigureAwait(false);
         }

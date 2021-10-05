@@ -1,4 +1,6 @@
 using Hackney.Core.JWT;
+using Hackney.Shared.Person;
+using Hackney.Shared.Person.Infrastructure;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Infrastructure;
 using System;

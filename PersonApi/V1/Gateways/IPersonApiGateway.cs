@@ -1,5 +1,6 @@
-using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Domain;
+using Hackney.Shared.Person;
+using Hackney.Shared.Person.Boundary.Request;
+using Hackney.Shared.Person.Infrastructure;
 using PersonApi.V1.Infrastructure;
 using System.Threading.Tasks;
 

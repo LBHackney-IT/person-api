@@ -172,7 +172,6 @@ workflows:
           requires:
             - assume-role-development
       - deploy-to-development:
-          context: api-assume-role-housing-development-context
           requires:
             - terraform-init-and-apply-to-development
   check-and-deploy-staging-and-production:

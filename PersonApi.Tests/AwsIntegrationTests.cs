@@ -1,10 +1,11 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
+using PersonApi.V1.Domain;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using Amazon.SimpleNotificationService;
-using Amazon.SimpleNotificationService.Model;
 using Xunit;
 
 namespace PersonApi.Tests
@@ -14,6 +15,8 @@ namespace PersonApi.Tests
         public HttpClient Client { get; private set; }
         public IDynamoDBContext DynamoDbContext => _factory?.DynamoDbContext;
         public IAmazonSimpleNotificationService SimpleNotificationService => _factory?.SimpleNotificationService;
+
+        public SnsEventVerifier<PersonSns> SnsVerifer { get; private set; }
 
         private readonly AwsMockWebApplicationFactory<TStartup> _factory;
         private readonly List<TableDef> _tables = new List<TableDef>
@@ -44,6 +47,8 @@ namespace PersonApi.Tests
         {
             if (disposing && !_disposed)
             {
+                if (null != SnsVerifer)
+                    SnsVerifer.Dispose();
                 if (null != _factory)
                     _factory.Dispose();
                 _disposed = true;
@@ -69,6 +74,8 @@ namespace PersonApi.Tests
             }).Result;
 
             Environment.SetEnvironmentVariable("PERSON_SNS_ARN", response.TopicArn);
+
+            SnsVerifer = new SnsEventVerifier<PersonSns>(_factory.AmazonSQS, SimpleNotificationService, response.TopicArn);
         }
     }
 

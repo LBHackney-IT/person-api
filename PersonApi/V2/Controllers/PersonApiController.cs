@@ -1,11 +1,11 @@
 using Hackney.Core.Http;
 using Hackney.Core.JWT;
 using Hackney.Core.Logging;
+using Hackney.Shared.Person.Boundary.Request;
+using Hackney.Shared.Person.Boundary.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Controllers;
 using PersonApi.V2.UseCase.Interfaces;
 using System;
