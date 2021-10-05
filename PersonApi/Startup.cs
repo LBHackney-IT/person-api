@@ -11,6 +11,10 @@ using Hackney.Core.Middleware;
 using Hackney.Core.Middleware.CorrelationId;
 using Hackney.Core.Middleware.Exception;
 using Hackney.Core.Middleware.Logging;
+using Hackney.Shared.Person.Boundary;
+using Hackney.Shared.Person.Boundary.Request.Validation;
+using Hackney.Shared.Person.Factories;
+using Hackney.Shared.Person.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -22,8 +26,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using PersonApi.V1.Boundary;
-using PersonApi.V1.Domain.Configuration;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V1.Infrastructure;
@@ -69,7 +71,7 @@ namespace PersonApi
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddFluentValidation();
+            services.AddFluentValidation(Assembly.GetAssembly(typeof(CreatePersonRequestObjectValidator)));
 
             services.AddApiVersioning(o =>
             {
@@ -138,8 +140,6 @@ namespace PersonApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 if (File.Exists(xmlPath))
                     c.IncludeXmlComments(xmlPath);
-
-                services.Configure<AwsConfiguration>(options => Configuration.GetSection("AWS").Bind(options));
             });
 
             services.ConfigureLambdaLogging(Configuration);

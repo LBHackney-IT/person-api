@@ -1,9 +1,12 @@
 using AutoFixture;
 using FluentAssertions;
 using Hackney.Core.JWT;
+using Hackney.Shared.Person;
+using Hackney.Shared.Person.Boundary.Request;
+using Hackney.Shared.Person.Boundary.Response;
+using Hackney.Shared.Person.Factories;
+using Hackney.Shared.Person.Infrastructure;
 using Moq;
-using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Boundary.Response;
 using PersonApi.V1.Domain;
 using PersonApi.V1.Factories;
 using PersonApi.V1.Gateways;

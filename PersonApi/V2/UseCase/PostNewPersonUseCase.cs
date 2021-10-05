@@ -1,22 +1,22 @@
 using Hackney.Core.JWT;
-using PersonApi.V1.Boundary.Request;
-using PersonApi.V1.Boundary.Response;
+using Hackney.Shared.Person.Boundary.Request;
+using Hackney.Shared.Person.Boundary.Response;
 using PersonApi.V2.Factories;
 using PersonApi.V1.Gateways;
 using PersonApi.V2.UseCase.Interfaces;
 using System.Threading.Tasks;
-using V1Factories = PersonApi.V1.Factories;
+using Hackney.Shared.Person.Factories;
 
 namespace PersonApi.V2.UseCase
 {
     public class PostNewPersonUseCase : IPostNewPersonUseCase
     {
         private readonly IPersonApiGateway _gateway;
-        private readonly V1Factories.IResponseFactory _responseFactory;
+        private readonly IResponseFactory _responseFactory;
         private readonly ISnsGateway _snsGateway;
         private readonly ISnsFactory _snsFactory;
 
-        public PostNewPersonUseCase(IPersonApiGateway gateway, V1Factories.IResponseFactory responseFactory,
+        public PostNewPersonUseCase(IPersonApiGateway gateway, IResponseFactory responseFactory,
             ISnsGateway snsGateway, ISnsFactory snsFactory)
         {
             _gateway = gateway;
