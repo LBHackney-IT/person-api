@@ -72,7 +72,6 @@ namespace PersonApi
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddFluentValidation();
             services.AddFluentValidation(Assembly.GetAssembly(typeof(CreatePersonRequestObjectValidator)));
 
             services.AddApiVersioning(o =>
