@@ -74,7 +74,6 @@ namespace PersonApi
 
             services.AddFluentValidation();
             services.AddFluentValidation(Assembly.GetAssembly(typeof(CreatePersonRequestObjectValidator)));
-            services.AddFluentValidation(Assembly.GetAssembly(typeof(UpdatePersonRequestObjectValidator)));
 
             services.AddApiVersioning(o =>
             {
