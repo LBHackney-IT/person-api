@@ -11,6 +11,7 @@ using Hackney.Core.Middleware;
 using Hackney.Core.Middleware.CorrelationId;
 using Hackney.Core.Middleware.Exception;
 using Hackney.Core.Middleware.Logging;
+using Hackney.Core.Validation.AspNet;
 using Hackney.Shared.Person.Boundary;
 using Hackney.Shared.Person.Boundary.Request.Validation;
 using Hackney.Shared.Person.Factories;
