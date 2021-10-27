@@ -19,10 +19,6 @@ namespace PersonApi.Tests
         public SnsEventVerifier<PersonSns> SnsVerifer { get; private set; }
 
         private readonly AwsMockWebApplicationFactory<TStartup> _factory;
-        private readonly List<TableDef> _tables = new List<TableDef>
-        {
-            new TableDef { Name = "Persons", KeyName = "id", KeyType = ScalarAttributeType.S }
-        };
 
         public AwsIntegrationTests()
         {
@@ -30,7 +26,7 @@ namespace PersonApi.Tests
             EnsureEnvVarConfigured("DynamoDb_LocalServiceUrl", "http://localhost:8000");
             EnsureEnvVarConfigured("Localstack_SnsServiceUrl", "http://localhost:4566");
 
-            _factory = new AwsMockWebApplicationFactory<TStartup>(_tables);
+            _factory = new AwsMockWebApplicationFactory<TStartup>(DynamoDbTables.Tables);
             Client = _factory.CreateClient();
 
             CreateSnsTopic();

@@ -32,6 +32,9 @@ services:
       - DynamoDb_LocalMode=true
       - DynamoDb_LocalServiceUrl=http://dynamodb-database:8000
       - Localstack_SnsServiceUrl=http://localstack:4566
+      - pact-broker-provider-name=Person API V1
+      - pact-broker-path=https://contract-testing-development.hackney.gov.uk/
+      - pact-broker-user=pact-broker-user
       - AWS_REGION=eu-west-2
       - AWS_ACCESS_KEY_ID=local
       - AWS_SECRET_ACCESS_KEY=local
