@@ -22,7 +22,8 @@ namespace PersonApi.Tests.PactBroker
             {
                 Outputters = new List<IOutput>
                 {
-                    new XUnitOutput(output)
+                    new XUnitOutput(output),
+                    new ConsoleOutput()
                 }
             };
         }
