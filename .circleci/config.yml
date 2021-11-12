@@ -242,27 +242,27 @@ workflows:
           context: api-assume-role-housing-development-context
           requires:
             - build-and-test
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
       - terraform-init-and-plan-development:
           requires:
             - assume-role-development
-#      filters:
-#        branches:
-#          only: master
+          filters:
+            branches:
+              only: master
       - terraform-compliance-development:
           requires:
             - terraform-init-and-plan-development
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
       - terraform-apply-development:
           requires:
             - terraform-compliance-development
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
       - deploy-to-development:
           requires:
             - terraform-apply-development
