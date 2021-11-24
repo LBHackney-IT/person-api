@@ -1,3 +1,5 @@
+using Hackney.Core.Testing.DynamoDb;
+using Hackney.Core.Testing.Sns;
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.Tests.V1.E2ETests.Steps;
 using System;
@@ -10,18 +12,20 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
             AsA = "Internal Hackney user (such as a Housing Officer or Area housing Manager)",
             IWant = "to be able to amend a persons details",
             SoThat = "customer details are kept up to date")]
-    [Collection("Aws collection")]
+    [Collection("AppTest collection")]
     public class UpdatePersonTests : IDisposable
     {
-        private readonly AwsIntegrationTests<Startup> _dbFixture;
+        private readonly IDynamoDbFixture _dbFixture;
+        private readonly ISnsFixture _snsFixture;
         private readonly PersonFixture _personFixture;
         private readonly UpdatePersonStep _steps;
 
-        public UpdatePersonTests(AwsIntegrationTests<Startup> dbFixture)
+        public UpdatePersonTests(MockWebApplicationFactory<Startup> appFactory)
         {
-            _dbFixture = dbFixture;
-            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, _dbFixture.SimpleNotificationService);
-            _steps = new UpdatePersonStep(_dbFixture.Client);
+            _dbFixture = appFactory.DynamoDbFixture;
+            _snsFixture = appFactory.SnsFixture;
+            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, _snsFixture.SimpleNotificationService);
+            _steps = new UpdatePersonStep(appFactory.Client);
         }
 
         public void Dispose()
@@ -49,7 +53,7 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
                 .And(g => _personFixture.GivenAUpdatePersonRequest())
                 .When(w => _steps.WhenTheUpdatePersonApiIsCalled(_personFixture.UpdatePersonRequest, _personFixture.PersonId))
                 .Then(t => _steps.ThenThePersonDetailsAreUpdated(_personFixture))
-                .Then(t => _steps.ThenThePersonUpdatedEventIsRaised(_personFixture, _dbFixture.SnsVerifer))
+                .Then(t => _steps.ThenThePersonUpdatedEventIsRaised(_personFixture, _snsFixture))
                 .BDDfy();
         }
 

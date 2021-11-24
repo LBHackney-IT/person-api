@@ -1,3 +1,5 @@
+using Hackney.Core.Testing.DynamoDb;
+using Hackney.Core.Testing.Sns;
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.Tests.V2.E2ETests.Steps;
 using System;
@@ -10,18 +12,20 @@ namespace PersonApi.Tests.V2.E2ETests.Stories
         AsA = "Service",
         IWant = "an endpoint to create a new person",
         SoThat = "it is possible to create the details of a person")]
-    [Collection("Aws collection")]
+    [Collection("AppTest collection")]
     public class PostPersonTests : IDisposable
     {
-        private readonly AwsIntegrationTests<Startup> _dbFixture;
+        private readonly IDynamoDbFixture _dbFixture;
+        private readonly ISnsFixture _snsFixture;
         private readonly PersonFixture _personFixture;
         private readonly PostPersonSteps _steps;
 
-        public PostPersonTests(AwsIntegrationTests<Startup> dbFixture)
+        public PostPersonTests(MockWebApplicationFactory<Startup> appFactory)
         {
-            _dbFixture = dbFixture;
-            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, _dbFixture.SimpleNotificationService);
-            _steps = new PostPersonSteps(_dbFixture.Client);
+            _dbFixture = appFactory.DynamoDbFixture;
+            _snsFixture = appFactory.SnsFixture;
+            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, _snsFixture.SimpleNotificationService);
+            _steps = new PostPersonSteps(appFactory.Client);
         }
 
         public void Dispose()
@@ -48,7 +52,7 @@ namespace PersonApi.Tests.V2.E2ETests.Stories
             this.Given(g => _personFixture.GivenANewPersonRequest())
                 .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.CreatePersonRequest))
                 .Then(t => _steps.ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(_personFixture))
-                .Then(t => _steps.ThenThePersonCreatedEventIsRaised(_dbFixture.SnsVerifer))
+                .Then(t => _steps.ThenThePersonCreatedEventIsRaised(_snsFixture))
                 .BDDfy();
         }
 

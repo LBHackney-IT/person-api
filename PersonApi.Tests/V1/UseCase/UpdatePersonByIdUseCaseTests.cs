@@ -1,6 +1,7 @@
 using AutoFixture;
 using FluentAssertions;
 using Hackney.Core.JWT;
+using Hackney.Core.Sns;
 using Hackney.Shared.Person;
 using Hackney.Shared.Person.Boundary.Request;
 using Hackney.Shared.Person.Boundary.Response;
@@ -37,7 +38,6 @@ namespace PersonApi.Tests.V1.UseCase
             _mockSnsFactory = new Mock<ISnsFactory>();
             _classUnderTest = new UpdatePersonUseCase(_mockGateway.Object, _responseFactory,
                                                       _mockSnsGateway.Object, _mockSnsFactory.Object);
-            _mockSnsGateway.Setup(x => x.Publish(It.IsAny<PersonSns>()));
         }
 
         private PersonQueryObject ConstructQuery(Guid id)
@@ -90,7 +90,7 @@ namespace PersonApi.Tests.V1.UseCase
 
             // Assert
             _mockSnsFactory.Verify(x => x.Update(gatewayResult, token), Times.Once);
-            _mockSnsGateway.Verify(x => x.Publish(snsEvent), Times.Once);
+            _mockSnsGateway.Verify(x => x.Publish(snsEvent, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             response.Should().BeEquivalentTo(_responseFactory.ToResponse(updatedPerson));
         }
 
@@ -119,7 +119,7 @@ namespace PersonApi.Tests.V1.UseCase
 
             // Assert
             _mockSnsFactory.Verify(x => x.Update(gatewayResult, token), Times.Never);
-            _mockSnsGateway.Verify(x => x.Publish(snsEvent), Times.Never);
+            _mockSnsGateway.Verify(x => x.Publish(snsEvent, It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             response.Should().BeEquivalentTo(_responseFactory.ToResponse(updatedPerson));
         }
 
@@ -141,7 +141,7 @@ namespace PersonApi.Tests.V1.UseCase
 
             // Assert
             _mockSnsFactory.Verify(x => x.Update(It.IsAny<UpdateEntityResult<PersonDbEntity>>(), It.IsAny<Token>()), Times.Never);
-            _mockSnsGateway.Verify(x => x.Publish(It.IsAny<PersonSns>()), Times.Never);
+            _mockSnsGateway.Verify(x => x.Publish(It.IsAny<PersonSns>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             response.Should().BeNull();
         }
 
