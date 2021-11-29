@@ -20,7 +20,7 @@ namespace PersonApi.Tests.PactBroker
         {
             _dynamoDbContext = dynamoDBContext;
 
-            ProviderStates= new Dictionary<string, PactStateHandler>
+            ProviderStates = new Dictionary<string, PactStateHandler>
             {
                 {
                     "the Person API has a person with an id:6fbe024f-2316-4265-a6e8-d65a837e308a",
