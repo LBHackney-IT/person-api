@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace PersonApi.Tests.PactBroker
+namespace Hackney.Core.Testing.PactBroker
 {
     public class ProviderState
     {

@@ -4,11 +4,11 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace PersonApi.Tests.PactBroker
+namespace Hackney.Core.Testing.PactBroker
 {
     public static class TokenGenerator
     {
-        public static string Generate()
+        public static string Generate(string audience)
         {
             var claims = new[]
             {
@@ -21,7 +21,7 @@ namespace PersonApi.Tests.PactBroker
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Issuer = "https://id.example.org",
-                Audience = "person-api",
+                Audience = audience,
                 Subject = identity,
                 Expires = DateTime.UtcNow.AddHours(1)
                 //,SigningCredentials = new SigningCredentials(Startup.IssuerSigningKey, SecurityAlgorithms.HmacSha256Signature)

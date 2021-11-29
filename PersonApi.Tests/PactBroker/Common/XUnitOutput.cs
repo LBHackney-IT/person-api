@@ -1,7 +1,7 @@
 using PactNet.Infrastructure.Outputters;
 using Xunit.Abstractions;
 
-namespace PersonApi.Tests.PactBroker
+namespace Hackney.Core.Testing.PactBroker
 {
     public class XUnitOutput : IOutput
     {

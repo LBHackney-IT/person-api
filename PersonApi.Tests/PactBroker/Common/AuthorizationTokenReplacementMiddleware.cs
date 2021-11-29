@@ -1,17 +1,19 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace PersonApi.Tests.PactBroker
+namespace Hackney.Core.Testing.PactBroker
 {
     public class AuthorizationTokenReplacementMiddleware
     {
         private const string Authorization = "Authorization";
 
         private readonly RequestDelegate _next;
+        private readonly string _audience;
 
-        public AuthorizationTokenReplacementMiddleware(RequestDelegate next)
+        public AuthorizationTokenReplacementMiddleware(RequestDelegate next, string audience)
         {
             _next = next;
+            _audience = audience;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -19,7 +21,7 @@ namespace PersonApi.Tests.PactBroker
             if (context.Request.Headers.ContainsKey(Authorization))
             {
                 // swap for a valid key
-                string token = TokenGenerator.Generate();
+                string token = TokenGenerator.Generate(_audience);
                 context.Request.Headers[Authorization] = $"Bearer {token}";
             }
 
