@@ -1,11 +1,13 @@
 using Hackney.Core.JWT;
+using Hackney.Core.Sns;
 using Hackney.Shared.Person.Boundary.Request;
 using Hackney.Shared.Person.Boundary.Response;
-using PersonApi.V2.Factories;
-using PersonApi.V1.Gateways;
-using PersonApi.V2.UseCase.Interfaces;
-using System.Threading.Tasks;
 using Hackney.Shared.Person.Factories;
+using PersonApi.V1.Gateways;
+using PersonApi.V2.Factories;
+using PersonApi.V2.UseCase.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace PersonApi.V2.UseCase
 {
@@ -30,7 +32,8 @@ namespace PersonApi.V2.UseCase
             var person = await _gateway.PostNewPersonAsync(personRequestObject).ConfigureAwait(false);
 
             var personSnsMessage = _snsFactory.Create(person, token);
-            await _snsGateway.Publish(personSnsMessage).ConfigureAwait(false);
+            var topicArn = Environment.GetEnvironmentVariable("PERSON_SNS_ARN");
+            await _snsGateway.Publish(personSnsMessage, topicArn).ConfigureAwait(false);
 
             return _responseFactory.ToResponse(person);
         }

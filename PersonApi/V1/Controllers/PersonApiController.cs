@@ -132,7 +132,7 @@ namespace PersonApi.V1.Controllers
             if (header == null)
                 return null;
 
-            var eTag = EntityTagHeaderValue.TryParse(header, out var entityTagHeaderValue);
+            _ = EntityTagHeaderValue.TryParse(header, out var entityTagHeaderValue);
 
             if (entityTagHeaderValue == null)
                 return null;

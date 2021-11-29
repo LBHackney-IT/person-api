@@ -2,6 +2,7 @@ using AutoFixture;
 using FluentAssertions;
 using Force.DeepCloner;
 using Hackney.Core;
+using Hackney.Core.Testing.Shared;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PersonApi.V1.Infrastructure;

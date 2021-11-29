@@ -9,16 +9,14 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         AsA = "Api client",
         IWant = "to be able to validate that the service satus is healty",
         SoThat = "I can be sure that calls made to it will succeed.")]
-    [Collection("Aws collection")]
+    [Collection("AppTest collection")]
     public class HealthCheckTests : IDisposable
     {
-        private readonly AwsIntegrationTests<Startup> _dbFixture;
         private readonly HealthCheckSteps _steps;
 
-        public HealthCheckTests(AwsIntegrationTests<Startup> dbFixture)
+        public HealthCheckTests(MockWebApplicationFactory<Startup> appFactory)
         {
-            _dbFixture = dbFixture;
-            _steps = new HealthCheckSteps(_dbFixture.Client);
+            _steps = new HealthCheckSteps(appFactory.Client);
         }
 
         public void Dispose()
