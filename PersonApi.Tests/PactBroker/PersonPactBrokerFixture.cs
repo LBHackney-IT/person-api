@@ -6,7 +6,6 @@ using Hackney.Core.Testing.Sns;
 using Microsoft.Extensions.DependencyInjection;
 using PersonApi.V1.Domain;
 using System;
-using Xunit;
 
 namespace PersonApi.Tests.PactBroker
 {
