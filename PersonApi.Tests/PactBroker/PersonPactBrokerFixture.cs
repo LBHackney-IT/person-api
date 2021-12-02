@@ -1,3 +1,5 @@
+using Amazon.XRay.Recorder.Core;
+using Amazon.XRay.Recorder.Core.Strategies;
 using Hackney.Core.DynamoDb;
 using Hackney.Core.Sns;
 using Hackney.Core.Testing.DynamoDb;
@@ -11,12 +13,6 @@ namespace PersonApi.Tests.PactBroker
 {
     public class PersonPactBrokerFixture : PactBrokerFixture<PactBrokerTestStartup>
     {
-        public IDynamoDbFixture DynamoDbFixture { get; private set; }
-        public ISnsFixture SnsFixture { get; private set; }
-
-        public PersonPactBrokerFixture()
-        { }
-
         protected override void SetEnvironmentVariables()
         {
             EnsureEnvVarConfigured("DynamoDb_LocalMode", "true");
@@ -24,10 +20,9 @@ namespace PersonApi.Tests.PactBroker
             EnsureEnvVarConfigured("Sns_LocalMode", "true");
             EnsureEnvVarConfigured("Localstack_SnsServiceUrl", "http://localhost:4566");
 
-            EnsureEnvVarConfigured("pact-broker-user", "pact-broker-user");
-            EnsureEnvVarConfigured("pact-broker-user-password", "YBZKGe2LV4RvQ5bN");
-            EnsureEnvVarConfigured("pact-broker-path", "https://contract-testing-development.hackney.gov.uk/");
-            EnsureEnvVarConfigured("pact-broker-provider-name", "Person API V1");
+            EnsureEnvVarConfigured(Constants.ENV_VAR_PACT_BROKER_USER, "pact-broker-user");
+            EnsureEnvVarConfigured(Constants.ENV_VAR_PACT_BROKER_PATH, "https://contract-testing-development.hackney.gov.uk/");
+            EnsureEnvVarConfigured(Constants.ENV_VAR_PACT_BROKER_PROVIDER_NAME, "Person API V1");
 
             base.SetEnvironmentVariables();
         }
@@ -40,37 +35,20 @@ namespace PersonApi.Tests.PactBroker
             services.ConfigureSns();
             services.ConfigureSnsFixture();
 
+            AWSXRayRecorder.Instance.ContextMissingStrategy = ContextMissingStrategy.LOG_ERROR;
+
             base.ConfigureServices(services);
         }
 
         protected override void ConfigureFixture(IServiceProvider provider)
         {
-            DynamoDbFixture = provider.GetRequiredService<IDynamoDbFixture>();
-            DynamoDbFixture.EnsureTablesExist(DynamoDbTables.Tables);
+            var dynamoDbFixture = provider.GetRequiredService<IDynamoDbFixture>();
+            dynamoDbFixture.EnsureTablesExist(DynamoDbTables.Tables);
 
-            SnsFixture = provider.GetRequiredService<ISnsFixture>();
-            SnsFixture.CreateSnsTopic<PersonSns>("person", "PERSON_SNS_ARN");
+            var snsFixture = provider.GetRequiredService<ISnsFixture>();
+            snsFixture.CreateSnsTopic<PersonSns>("person", "PERSON_SNS_ARN");
 
             base.ConfigureFixture(provider);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && !_disposed)
-            {
-                if (DynamoDbFixture != null)
-                    DynamoDbFixture.Dispose();
-                if (SnsFixture != null)
-                    SnsFixture.Dispose();
-
-                base.Dispose(disposing);
-            }
-        }
-
-        private static void EnsureEnvVarConfigured(string name, string defaultValue)
-        {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(name)))
-                Environment.SetEnvironmentVariable(name, defaultValue);
         }
     }
 }

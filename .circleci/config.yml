@@ -146,6 +146,8 @@ jobs:
   build-and-test:
     executor: docker-python
     steps:
+      - *attach_workspace
+      - aws-cli/install
       - checkout
       - setup_remote_docker
       - run:
@@ -153,7 +155,9 @@ jobs:
           command: docker-compose build person-api-test
       - run:
           name: Run tests
-          command: docker-compose run person-api-test
+          command: |
+            export PactBrokerUserPassword=$(aws ssm get-parameter --name /housing-tl/contract-testing/development/pact-broker-password --query Parameter.Value --output text) ;
+            docker-compose run -e PactBrokerUserPassword=$PactBrokerUserPassword person-api-test
   assume-role-development:
     executor: docker-python
     steps:
@@ -237,17 +241,14 @@ workflows:
   check-and-deploy-development:
     jobs:
       - check-code-formatting
-      - build-and-test
       - assume-role-development:
           context: api-assume-role-housing-development-context
-          requires:
-            - build-and-test
-          filters:
-            branches:
-              only: master
-      - terraform-init-and-plan-development:
+      - build-and-test:
           requires:
             - assume-role-development
+      - terraform-init-and-plan-development:
+          requires:
+            - build-and-test
           filters:
             branches:
               only: master

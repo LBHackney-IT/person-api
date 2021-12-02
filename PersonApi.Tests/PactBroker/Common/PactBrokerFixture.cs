@@ -1,6 +1,3 @@
-using Amazon.XRay.Recorder.Core;
-using Amazon.XRay.Recorder.Core.Strategies;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +19,7 @@ namespace Hackney.Core.Testing.PactBroker
 
         protected PactBrokerFixture()
         {
-            ServerUri = "http://localhost:9222";
+            ServerUri = Constants.DEFAULT_SERVER_URI;
 
             SetEnvironmentVariables();
 
@@ -35,7 +32,6 @@ namespace Hackney.Core.Testing.PactBroker
                                         .ConfigureServices((ctx, services) =>
                                         {
                                             ConfigureServices(services);
-                                            AWSXRayRecorder.Instance.ContextMissingStrategy = ContextMissingStrategy.LOG_ERROR;
 
                                             var serviceProvider = services.BuildServiceProvider();
 
@@ -65,18 +61,18 @@ namespace Hackney.Core.Testing.PactBroker
                 Outputters = outputters
             };
 
-            var user = Configuration.GetValue<string>("pact-broker-user");
-            var pwd = Configuration.GetValue<string>("pact-broker-user-password");
+            var user = Configuration.GetValue<string>(Constants.ENV_VAR_PACT_BROKER_USER);
+            var pwd = Configuration.GetValue<string>(Constants.ENV_VAR_PACT_BROKER_USER_PASSWORD);
             var pactUriOptions = new PactUriOptions().SetBasicAuthentication(user, pwd);
 
-            var name = Configuration.GetValue<string>("pact-broker-provider-name");
-            var path = Configuration.GetValue<string>("pact-broker-path");
+            var name = Configuration.GetValue<string>(Constants.ENV_VAR_PACT_BROKER_PROVIDER_NAME);
+            var path = Configuration.GetValue<string>(Constants.ENV_VAR_PACT_BROKER_PATH);
 
             IPactVerifier pactVerifier = new PactVerifier(pactVerifierConfig);
             pactVerifier
                 .ServiceProvider(name, ServerUri)
                 .PactBroker(path, pactUriOptions)
-                .ProviderState(ServerUri + "/provider-states")
+                .ProviderState(ServerUri + Constants.PROVIDER_STATES_ROUTE)
                 .Verify();
         }
 
@@ -99,6 +95,12 @@ namespace Hackney.Core.Testing.PactBroker
 
                 _disposed = true;
             }
+        }
+
+        protected void EnsureEnvVarConfigured(string name, string defaultValue)
+        {
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(name)))
+                Environment.SetEnvironmentVariable(name, defaultValue);
         }
     }
 }

@@ -17,25 +17,18 @@ namespace Hackney.Core.Testing.PactBroker
             PropertyNameCaseInsensitive = true
         };
 
-        private static IPactBrokerHandler _pactBrokerHandler;
+        private readonly IPactBrokerHandler _pactBrokerHandler;
         private readonly RequestDelegate _next;
-        private readonly IServiceProvider _services;
 
         public ProviderStateMiddleware(RequestDelegate next, IServiceProvider services)
         {
             _next = next;
-            _services = services;
-        }
-
-        private IPactBrokerHandler GetHandler()
-        {
-            _pactBrokerHandler = _pactBrokerHandler ?? _services.GetRequiredService<IPactBrokerHandler>();
-            return _pactBrokerHandler;
+            _pactBrokerHandler = services.GetRequiredService<IPactBrokerHandler>();
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (!(context.Request.Path.Value?.StartsWith("/provider-states") ?? false))
+            if (!(context.Request.Path.Value?.StartsWith(Constants.PROVIDER_STATES_ROUTE) ?? false))
             {
                 await _next.Invoke(context).ConfigureAwait(false);
                 return;
@@ -56,16 +49,20 @@ namespace Hackney.Core.Testing.PactBroker
                 //A null or empty provider state key must be handled
                 if (!string.IsNullOrEmpty(providerState?.State))
                 {
-                    var handler = GetHandler();
-                    if (handler.ProviderStates.ContainsKey(providerState.State))
+                    if (_pactBrokerHandler.ProviderStates.ContainsKey(providerState.State))
                     {
-                        handler.ProviderStates[providerState.State].Invoke(providerState.State, providerState.Params);
+                        _pactBrokerHandler.ProviderStates[providerState.State].Invoke(providerState.State, providerState.Params);
                         await context.Response.WriteAsync($"Executed actions for provider state step: {providerState.State}")
                                      .ConfigureAwait(false);
                     }
                     else
                         await context.Response.WriteAsync($"No actions configured for provider state step: {providerState.State}")
                                               .ConfigureAwait(false);
+                }
+                else
+                {
+                    Console.WriteLine($"Provider state request is not valid. It is either not a ProviderState object or no State property is defined. Request body: ");
+                    Console.WriteLine(jsonRequestBody);
                 }
             }
         }

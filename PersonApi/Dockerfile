@@ -5,6 +5,9 @@ ENV DynamoDb_LocalMode='true'
 ARG LBHPACKAGESTOKEN
 ENV LBHPACKAGESTOKEN=$LBHPACKAGESTOKEN
 
+ARG PactBrokerUserPassword
+ENV PactBrokerUserPassword=$PactBrokerUserPassword
+
 WORKDIR /app
 
 # Copy csproj and nuget config and restore as distinct layers
