@@ -236,8 +236,10 @@ jobs:
 workflows:
   check-and-deploy-development:
     jobs:
-      - check-code-formatting
-      - build-and-test
+      - check-code-formatting:
+          context: api-nuget-token-context
+      - build-and-test:
+          context: api-nuget-token-context
       - assume-role-development:
           context: api-assume-role-housing-development-context
           requires:
@@ -264,6 +266,7 @@ workflows:
             branches:
               only: master
       - deploy-to-development:
+          context: api-nuget-token-context
           requires:
             - terraform-apply-development
           filters:
@@ -271,8 +274,10 @@ workflows:
               only: master
   check-and-deploy-staging-and-production:
       jobs:
-      - check-code-formatting
+      - check-code-formatting:
+          context: api-nuget-token-context
       - build-and-test:
+          context: api-nuget-token-context
           filters:
             branches:
               only: release
@@ -302,6 +307,7 @@ workflows:
             branches:
               only: release
       - deploy-to-staging:
+          context: api-nuget-token-context
           requires:
             - terraform-apply-staging
           filters:
@@ -344,6 +350,7 @@ workflows:
             branches:
               only: release
       - deploy-to-production:
+          context: api-nuget-token-context
           requires:
             - permit-production-release
           filters:
