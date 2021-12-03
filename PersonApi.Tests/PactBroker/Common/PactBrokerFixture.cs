@@ -88,10 +88,7 @@ namespace Hackney.Core.Testing.PactBroker
             if (disposing && !_disposed)
             {
                 if (_server != null)
-                {
-                    _server.StopAsync().GetAwaiter().GetResult();
                     _server.Dispose();
-                }
 
                 _disposed = true;
             }
