@@ -160,6 +160,7 @@ namespace PersonApi.Tests.V1.Gateways
             response.Reason.Should().Be(entity.Reason);
             response.Title.Should().Be(entity.Title);
             response.VersionNumber.Should().Be(0);
+            response.IsAMinor.Should().BeFalse();
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {entity.Id}", Times.Once());
         }
 
