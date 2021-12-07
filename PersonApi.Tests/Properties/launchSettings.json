@@ -19,7 +19,7 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "LocalDevelopment",
         "DynamoDb_LocalMode": "true",
         "DynamoDb_LocalServiceUrl": "http://localhost:8000",
         "Localstack_SnsServiceUrl": "http://localhost:4566"
