@@ -81,7 +81,9 @@ namespace PersonApi.Tests.V2.E2ETests.Steps
             };
 
             var snsVerifer = snsFixture.GetSnsEventVerifier<PersonSns>();
-            await snsVerifer.VerifySnsEventRaised(verifyFunc);
+            var snsResult = await snsVerifer.VerifySnsEventRaised(verifyFunc);
+            if (!snsResult && snsVerifer.LastException != null)
+                Console.WriteLine(snsVerifer.LastException.ToString());
         }
 
         public async Task ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(PersonFixture personFixture)
