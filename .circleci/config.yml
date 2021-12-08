@@ -145,7 +145,6 @@ jobs:
           command: ./dotnet-format-local/dotnet-format --check
   build-and-test:
     executor: docker-python
-    context: SonarCloud
     steps:
       - *attach_workspace
       - aws-cli/install
@@ -246,7 +245,7 @@ workflows:
       - assume-role-development:
           context: api-assume-role-housing-development-context
       - build-and-test:
-          context: api-nuget-token-context
+          context: api-nuget-token-context, SonarCloud
           requires:
             - assume-role-development
       - terraform-init-and-plan-development:
