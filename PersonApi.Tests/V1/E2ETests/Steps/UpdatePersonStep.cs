@@ -109,7 +109,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             };
 
             var snsVerifer = snsFixture.GetSnsEventVerifier<PersonSns>();
-            (await snsVerifer.VerifySnsEventRaised(verifyFunc)).Should().BeTrue(snsVerifer.LastException?.Message);
+            await snsVerifer.VerifySnsEventRaised(verifyFunc);
         }
 
         public async Task ThenConflictIsReturned(int? versionNumber)
