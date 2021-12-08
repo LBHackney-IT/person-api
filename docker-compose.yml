@@ -30,6 +30,7 @@ services:
       args:
       - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
       - PactBrokerUserPassword=${PactBrokerUserPassword}
+      - SONAR_TOKEN=${SONAR_TOKEN}
     environment:
       - DynamoDb_LocalMode=true
       - DynamoDb_LocalServiceUrl=http://dynamodb-database:8000
