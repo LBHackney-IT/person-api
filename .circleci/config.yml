@@ -245,7 +245,9 @@ workflows:
       - assume-role-development:
           context: api-assume-role-housing-development-context
       - build-and-test:
-          context: api-nuget-token-context, SonarCloud
+          context: 
+            - api-nuget-token-context
+            - SonarCloud
           requires:
             - assume-role-development
       - terraform-init-and-plan-development:
