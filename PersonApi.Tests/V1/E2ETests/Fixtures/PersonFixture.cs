@@ -121,7 +121,8 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
             {
                 FirstName = "Update",
                 Surname = "Updating",
-                Title = Title.Dr
+                Title = Title.Dr,
+                DateOfDeath = DateTime.UtcNow.AddYears(50)
             };
 
             UpdateSnsTopic();
