@@ -35,7 +35,7 @@ namespace PersonApi.Tests.V1.Gateways
 
         private readonly List<Action> _cleanup = new List<Action>();
 
-        private const string RequestBody = "{ \"firstName\": \"new first name\", \"placeOfBirth\": \"Towcester\"}";
+        private const string RequestBody = "{ \"firstName\": \"new first name\", \"placeOfBirth\": \"Towcester\", \"dateOfDeath\": \"2021-04-07T00:00:00\"}";
 
         public DynamoDbGatewayTests(MockWebApplicationFactory<Startup> appFactory)
         {
@@ -81,7 +81,10 @@ namespace PersonApi.Tests.V1.Gateways
 
         private UpdatePersonRequestObject ConstructRequest()
         {
-            return JsonSerializer.Deserialize<UpdatePersonRequestObject>(RequestBody, CreateJsonOptions());
+            var updatedPerson = _fixture.Build<UpdatePersonRequestObject>()
+                                        .With(x => x.DateOfDeath, DateTime.UtcNow.AddYears(70))
+                                        .Create();
+            return updatedPerson;
         }
 
         private CreatePersonRequestObject ConstructCreatePerson(bool nullOptionalEnums = false)
@@ -103,6 +106,7 @@ namespace PersonApi.Tests.V1.Gateways
         {
             var person = _fixture.Build<Person>()
                             .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                            .With(x=> x.DateOfDeath, DateTime.UtcNow.AddYears(50))
                             .With(x => x.VersionNumber, versionNumber)
                             .Create();
             if (nullOptionalEnums)
@@ -161,6 +165,7 @@ namespace PersonApi.Tests.V1.Gateways
             response.Title.Should().Be(entity.Title);
             response.VersionNumber.Should().Be(0);
             response.IsAMinor.Should().BeFalse();
+            response.DateOfDeath.Should().Be(entity.DateOfDeath);
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {entity.Id}", Times.Once());
         }
 
@@ -224,6 +229,7 @@ namespace PersonApi.Tests.V1.Gateways
             var updatedPerson = person.DeepClone();
             updatedPerson.FirstName = constructRequest.FirstName;
             updatedPerson.PlaceOfBirth = constructRequest.PlaceOfBirth;
+            updatedPerson.DateOfDeath = constructRequest.DateOfDeath;
             updatedPerson.VersionNumber = 0;
             _mockUpdater.Setup(x => x.UpdateEntity(It.IsAny<PersonDbEntity>(), RequestBody, constructRequest))
                         .Returns(new UpdateEntityResult<PersonDbEntity>()
@@ -232,17 +238,19 @@ namespace PersonApi.Tests.V1.Gateways
                             OldValues = new Dictionary<string, object>
                             {
                                 { "firstName", person.FirstName },
-                                { "placeOfBirth", person.PlaceOfBirth }
+                                { "placeOfBirth", person.PlaceOfBirth },
+                                { "dateOfDeath", person.DateOfDeath}
                             },
                             NewValues = new Dictionary<string, object>
                             {
                                 { "firstName", updatedPerson.FirstName },
-                                { "placeOfBirth", updatedPerson.PlaceOfBirth }
+                                { "placeOfBirth", updatedPerson.PlaceOfBirth },
+                                {"dateOfDeath", updatedPerson.DateOfDeath }
                             }
                         });
 
             //Act
-            await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query, 0).ConfigureAwait(false);
+             var response = await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query, 0).ConfigureAwait(false);
 
             //Assert
             var load = await _dbFixture.DynamoDbContext.LoadAsync<PersonDbEntity>(person.Id).ConfigureAwait(false);
@@ -250,6 +258,7 @@ namespace PersonApi.Tests.V1.Gateways
             // Changed
             load.FirstName.Should().Be(updatedPerson.FirstName);
             load.PlaceOfBirth.Should().Be(updatedPerson.PlaceOfBirth);
+            load.DateOfDeath.Should().Be(updatedPerson.DateOfDeath);
 
             // Not changed
             load.Surname.Should().Be(person.Surname);

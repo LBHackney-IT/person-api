@@ -76,6 +76,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             var result = await personFixture._dbContext.LoadAsync<PersonDbEntity>(personFixture.Person.Id).ConfigureAwait(false);
             result.FirstName.Should().Be(personFixture.UpdatePersonRequest.FirstName);
             result.Surname.Should().Be(personFixture.UpdatePersonRequest.Surname);
+            result.DateOfDeath.Should().Be(personFixture.UpdatePersonRequest.DateOfDeath);
             result.VersionNumber.Should().Be(1);
             result.LastModified.Should().BeCloseTo(DateTime.UtcNow, 1500);
         }
