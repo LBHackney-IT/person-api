@@ -106,7 +106,7 @@ namespace PersonApi.Tests.V1.Gateways
         {
             var person = _fixture.Build<Person>()
                             .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                            .With(x=> x.DateOfDeath, DateTime.UtcNow.AddYears(50))
+                            .With(x => x.DateOfDeath, DateTime.UtcNow.AddYears(50))
                             .With(x => x.VersionNumber, versionNumber)
                             .Create();
             if (nullOptionalEnums)
@@ -250,7 +250,7 @@ namespace PersonApi.Tests.V1.Gateways
                         });
 
             //Act
-             var response = await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query, 0).ConfigureAwait(false);
+            var response = await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query, 0).ConfigureAwait(false);
 
             //Assert
             var load = await _dbFixture.DynamoDbContext.LoadAsync<PersonDbEntity>(person.Id).ConfigureAwait(false);
