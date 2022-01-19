@@ -2,6 +2,7 @@ using Amazon;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using FluentValidation.AspNetCore;
+using Hackney.Core.DynamoDb;
 using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.HealthCheck;
 using Hackney.Core.Http;
@@ -11,6 +12,7 @@ using Hackney.Core.Middleware;
 using Hackney.Core.Middleware.CorrelationId;
 using Hackney.Core.Middleware.Exception;
 using Hackney.Core.Middleware.Logging;
+using Hackney.Core.Sns;
 using Hackney.Core.Validation.AspNet;
 using Hackney.Shared.Person.Boundary;
 using Hackney.Shared.Person.Boundary.Request.Validation;
@@ -149,7 +151,9 @@ namespace PersonApi
             AWSXRayRecorder.RegisterLogger(LoggingOptions.SystemDiagnostics);
 
             services.AddLogCallAspect();
-            services.ConfigureAws();
+            services.ConfigureDynamoDB();
+            services.ConfigureSns();
+            services.AddSnsGateway();
             services.AddTokenFactory();
             services.AddHttpContextWrapper();
 
@@ -162,7 +166,6 @@ namespace PersonApi
         private static void RegisterGateways(IServiceCollection services)
         {
             services.AddScoped<IPersonApiGateway, DynamoDbGateway>();
-            services.AddScoped<ISnsGateway, PersonSnsGateway>();
             services.AddScoped<ISnsFactory, PersonSnsFactory>();
             services.AddScoped<IEntityUpdater, EntityUpdater>();
 

@@ -8,6 +8,7 @@ services:
       dockerfile: PersonApi/Dockerfile
       args:
       - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+      - PactBrokerUserPassword=${PactBrokerUserPassword}
     ports:
       - 3000:3000
     environment:
@@ -28,10 +29,15 @@ services:
       dockerfile: PersonApi.Tests/Dockerfile
       args:
       - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+      - PactBrokerUserPassword=${PactBrokerUserPassword}
+      - SONAR_TOKEN=${SONAR_TOKEN}
     environment:
       - DynamoDb_LocalMode=true
       - DynamoDb_LocalServiceUrl=http://dynamodb-database:8000
       - Localstack_SnsServiceUrl=http://localstack:4566
+      - PactBrokerProviderName=Person API V1
+      - PactBrokerPath=https://contract-testing-development.hackney.gov.uk/
+      - PactBrokerUser=pact-broker-user
       - AWS_REGION=eu-west-2
       - AWS_ACCESS_KEY_ID=local
       - AWS_SECRET_ACCESS_KEY=local

@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Hackney.Core.Testing.Sns;
 using Hackney.Shared.Person;
 using Hackney.Shared.Person.Boundary.Request;
 using Hackney.Shared.Person.Boundary.Request.Validation;
@@ -58,7 +59,7 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             _lastResponse = await _httpClient.SendAsync(message).ConfigureAwait(false);
         }
 
-        public async Task ThenThePersonCreatedEventIsRaised(SnsEventVerifier<PersonSns> snsVerifer)
+        public async Task ThenThePersonCreatedEventIsRaised(ISnsFixture snsFixture)
         {
             var responseContent = await _lastResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             var apiPerson = JsonSerializer.Deserialize<PersonResponseObject>(responseContent, CreateJsonOptions());
@@ -80,7 +81,10 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
                 actual.Version.Should().Be(CreateEventConstants.V1VERSION);
             };
 
-            snsVerifer.VerifySnsEventRaised(verifyFunc).Should().BeTrue(snsVerifer.LastException?.Message);
+            var snsVerifer = snsFixture.GetSnsEventVerifier<PersonSns>();
+            var snsResult = await snsVerifer.VerifySnsEventRaised(verifyFunc);
+            if (!snsResult && snsVerifer.LastException != null)
+                throw snsVerifer.LastException;
         }
 
         public async Task ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(PersonFixture personFixture)

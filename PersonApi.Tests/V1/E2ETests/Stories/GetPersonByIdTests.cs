@@ -1,7 +1,7 @@
+using Hackney.Core.Testing.DynamoDb;
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.Tests.V1.E2ETests.Steps;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using TestStack.BDDfy;
 using Xunit;
 
@@ -11,18 +11,18 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         AsA = "Service",
         IWant = "an endpoint to return person details",
         SoThat = "it is possible to view the details of a person")]
-    [Collection("Aws collection")]
+    [Collection("AppTest collection")]
     public class GetPersonByIdTests : IDisposable
     {
-        private readonly AwsIntegrationTests<Startup> _dbFixture;
+        private readonly IDynamoDbFixture _dbFixture;
         private readonly PersonFixture _personFixture;
         private readonly GetPersonSteps _steps;
 
-        public GetPersonByIdTests(AwsIntegrationTests<Startup> dbFixture)
+        public GetPersonByIdTests(MockWebApplicationFactory<Startup> appFactory)
         {
-            _dbFixture = dbFixture;
-            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, _dbFixture.SimpleNotificationService);
-            _steps = new GetPersonSteps(_dbFixture.Client);
+            _dbFixture = appFactory.DynamoDbFixture;
+            _personFixture = new PersonFixture(_dbFixture.DynamoDbContext, appFactory.SnsFixture.SimpleNotificationService);
+            _steps = new GetPersonSteps(appFactory.Client);
         }
 
         public void Dispose()
@@ -44,7 +44,6 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         }
 
         [Fact]
-        [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "BDDfy")]
         public void ServiceReturnsTheRequestedPerson()
         {
             this.Given(g => _personFixture.GivenAPersonAlreadyExists())
@@ -54,7 +53,6 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         }
 
         [Fact]
-        [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "BDDfy")]
         public void ServiceReturnsNotFoundIfPersonNotExist()
         {
             this.Given(g => _personFixture.GivenAPersonDoesNotExist())
@@ -64,7 +62,6 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         }
 
         [Fact]
-        [SuppressMessage("Blocker Code Smell", "S2699:Tests should include assertions", Justification = "BDDfy")]
         public void ServiceReturnsBadRequestIfIdInvalid()
         {
             this.Given(g => _personFixture.GivenAnInvalidPersonId())

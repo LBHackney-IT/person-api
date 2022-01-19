@@ -1,6 +1,7 @@
 using AutoFixture;
 using FluentAssertions;
 using Hackney.Core.JWT;
+using Hackney.Core.Sns;
 using Hackney.Shared.Person;
 using Hackney.Shared.Person.Boundary.Request;
 using Hackney.Shared.Person.Boundary.Response;
@@ -53,7 +54,7 @@ namespace PersonApi.Tests.V2.UseCase
             response.Should().BeEquivalentTo(_responseFactory.ToResponse(person));
 
             _mockSnsFactory.Verify(x => x.Create(person, token), Times.Once);
-            _mockSnsGateway.Verify(x => x.Publish(It.IsAny<PersonSns>()), Times.Once);
+            _mockSnsGateway.Verify(x => x.Publish(It.IsAny<PersonSns>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
@@ -72,7 +73,7 @@ namespace PersonApi.Tests.V2.UseCase
             func.Should().Throw<ApplicationException>().WithMessage(exception.Message);
 
             _mockSnsFactory.Verify(x => x.Create(It.IsAny<Person>(), It.IsAny<Token>()), Times.Never);
-            _mockSnsGateway.Verify(x => x.Publish(It.IsAny<PersonSns>()), Times.Never);
+            _mockSnsGateway.Verify(x => x.Publish(It.IsAny<PersonSns>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
     }
 }

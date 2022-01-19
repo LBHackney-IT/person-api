@@ -2,6 +2,8 @@ using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
 using FluentAssertions;
 using Force.DeepCloner;
+using Hackney.Core.Testing.DynamoDb;
+using Hackney.Core.Testing.Shared;
 using Hackney.Shared.Person;
 using Hackney.Shared.Person.Boundary.Request;
 using Hackney.Shared.Person.Factories;
@@ -21,7 +23,7 @@ using Xunit;
 
 namespace PersonApi.Tests.V1.Gateways
 {
-    [Collection("Aws collection")]
+    [Collection("AppTest collection")]
     public class DynamoDbGatewayTests : IDisposable
     {
         private readonly Fixture _fixture = new Fixture();
@@ -29,18 +31,18 @@ namespace PersonApi.Tests.V1.Gateways
         private readonly Mock<IEntityUpdater> _mockUpdater;
         private DynamoDbGateway _classUnderTest;
 
-        private readonly IDynamoDBContext _dynamoDb;
+        private readonly IDynamoDbFixture _dbFixture;
 
         private readonly List<Action> _cleanup = new List<Action>();
 
-        private const string RequestBody = "{ \"firstName\": \"new first name\", \"placeOfBirth\": \"Towcester\"}";
+        private const string RequestBody = "{ \"firstName\": \"new first name\", \"placeOfBirth\": \"Towcester\", \"dateOfDeath\": \"2021-04-07T00:00:00\"}";
 
-        public DynamoDbGatewayTests(AwsIntegrationTests<Startup> dbTestFixture)
+        public DynamoDbGatewayTests(MockWebApplicationFactory<Startup> appFactory)
         {
-            _dynamoDb = dbTestFixture.DynamoDbContext;
+            _dbFixture = appFactory.DynamoDbFixture;
             _mockUpdater = new Mock<IEntityUpdater>();
             _logger = new Mock<ILogger<DynamoDbGateway>>();
-            _classUnderTest = new DynamoDbGateway(_dynamoDb, _mockUpdater.Object, _logger.Object);
+            _classUnderTest = new DynamoDbGateway(_dbFixture.DynamoDbContext, _mockUpdater.Object, _logger.Object);
         }
 
         public void Dispose()
@@ -79,7 +81,10 @@ namespace PersonApi.Tests.V1.Gateways
 
         private UpdatePersonRequestObject ConstructRequest()
         {
-            return JsonSerializer.Deserialize<UpdatePersonRequestObject>(RequestBody, CreateJsonOptions());
+            var updatedPerson = _fixture.Build<UpdatePersonRequestObject>()
+                                        .With(x => x.DateOfDeath, DateTime.UtcNow.AddYears(70))
+                                        .Create();
+            return updatedPerson;
         }
 
         private CreatePersonRequestObject ConstructCreatePerson(bool nullOptionalEnums = false)
@@ -101,6 +106,7 @@ namespace PersonApi.Tests.V1.Gateways
         {
             var person = _fixture.Build<Person>()
                             .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                            .With(x => x.DateOfDeath, DateTime.UtcNow.AddYears(50))
                             .With(x => x.VersionNumber, versionNumber)
                             .Create();
             if (nullOptionalEnums)
@@ -136,8 +142,7 @@ namespace PersonApi.Tests.V1.Gateways
 
             var dbEntity = entity.ToDatabase();
 
-            await _dynamoDb.SaveAsync(dbEntity).ConfigureAwait(false);
-            _cleanup.Add(async () => await _dynamoDb.DeleteAsync(dbEntity).ConfigureAwait(false));
+            await _dbFixture.SaveEntityAsync(dbEntity).ConfigureAwait(false);
 
             // Act
             var query = ConstructQuery(entity.Id);
@@ -159,6 +164,8 @@ namespace PersonApi.Tests.V1.Gateways
             response.Reason.Should().Be(entity.Reason);
             response.Title.Should().Be(entity.Title);
             response.VersionNumber.Should().Be(0);
+            response.IsAMinor.Should().BeFalse();
+            response.DateOfDeath.Should().Be(entity.DateOfDeath);
             _logger.VerifyExact(LogLevel.Debug, $"Calling IDynamoDBContext.LoadAsync for id {entity.Id}", Times.Once());
         }
 
@@ -197,7 +204,7 @@ namespace PersonApi.Tests.V1.Gateways
             _ = await _classUnderTest.PostNewPersonAsync(entity).ConfigureAwait(false);
 
             // Assert
-            var dbEntity = await _dynamoDb.LoadAsync<PersonDbEntity>(entity.Id).ConfigureAwait(false);
+            var dbEntity = await _dbFixture.DynamoDbContext.LoadAsync<PersonDbEntity>(entity.Id).ConfigureAwait(false);
 
             dbEntity.Should().BeEquivalentTo(entity.ToDatabase(),
                                              config => config.Excluding(y => y.LastModified)
@@ -205,7 +212,7 @@ namespace PersonApi.Tests.V1.Gateways
             dbEntity.VersionNumber.Should().Be(0);
             dbEntity.LastModified.Should().BeCloseTo(DateTime.UtcNow, 500);
 
-            _cleanup.Add(async () => await _dynamoDb.DeleteAsync(dbEntity).ConfigureAwait(false));
+            _cleanup.Add(async () => await _dbFixture.DynamoDbContext.DeleteAsync(dbEntity).ConfigureAwait(false));
         }
 
         [Fact]
@@ -215,13 +222,14 @@ namespace PersonApi.Tests.V1.Gateways
             var person = ConstructPerson();
             var personDb = person.ToDatabase();
             var query = ConstructQuery(person.Id);
-            await _dynamoDb.SaveAsync(personDb).ConfigureAwait(false);
+            await _dbFixture.SaveEntityAsync(personDb).ConfigureAwait(false);
 
             var constructRequest = ConstructRequest();
 
             var updatedPerson = person.DeepClone();
             updatedPerson.FirstName = constructRequest.FirstName;
             updatedPerson.PlaceOfBirth = constructRequest.PlaceOfBirth;
+            updatedPerson.DateOfDeath = constructRequest.DateOfDeath;
             updatedPerson.VersionNumber = 0;
             _mockUpdater.Setup(x => x.UpdateEntity(It.IsAny<PersonDbEntity>(), RequestBody, constructRequest))
                         .Returns(new UpdateEntityResult<PersonDbEntity>()
@@ -230,25 +238,27 @@ namespace PersonApi.Tests.V1.Gateways
                             OldValues = new Dictionary<string, object>
                             {
                                 { "firstName", person.FirstName },
-                                { "placeOfBirth", person.PlaceOfBirth }
+                                { "placeOfBirth", person.PlaceOfBirth },
+                                { "dateOfDeath", person.DateOfDeath}
                             },
                             NewValues = new Dictionary<string, object>
                             {
                                 { "firstName", updatedPerson.FirstName },
-                                { "placeOfBirth", updatedPerson.PlaceOfBirth }
+                                { "placeOfBirth", updatedPerson.PlaceOfBirth },
+                                {"dateOfDeath", updatedPerson.DateOfDeath }
                             }
                         });
 
             //Act
-            await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query, 0).ConfigureAwait(false);
+            var response = await _classUnderTest.UpdatePersonByIdAsync(constructRequest, RequestBody, query, 0).ConfigureAwait(false);
 
             //Assert
-            var load = await _dynamoDb.LoadAsync<PersonDbEntity>(person.Id).ConfigureAwait(false);
-            _cleanup.Add(async () => await _dynamoDb.DeleteAsync(load).ConfigureAwait(false));
+            var load = await _dbFixture.DynamoDbContext.LoadAsync<PersonDbEntity>(person.Id).ConfigureAwait(false);
 
             // Changed
             load.FirstName.Should().Be(updatedPerson.FirstName);
             load.PlaceOfBirth.Should().Be(updatedPerson.PlaceOfBirth);
+            load.DateOfDeath.Should().Be(updatedPerson.DateOfDeath);
 
             // Not changed
             load.Surname.Should().Be(person.Surname);
@@ -277,8 +287,7 @@ namespace PersonApi.Tests.V1.Gateways
             var person = ConstructPerson();
             var personDb = person.ToDatabase();
             var query = ConstructQuery(person.Id);
-            await _dynamoDb.SaveAsync(personDb).ConfigureAwait(false);
-            _cleanup.Add(async () => await _dynamoDb.DeleteAsync(personDb).ConfigureAwait(false));
+            await _dbFixture.SaveEntityAsync(personDb).ConfigureAwait(false);
 
             var constructRequest = ConstructRequest();
 

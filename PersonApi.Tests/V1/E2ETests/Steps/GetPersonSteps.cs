@@ -47,6 +47,8 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             apiPerson.Surname.Should().Be(expectedPerson.Surname);
             apiPerson.Title.Should().Be(expectedPerson.Title);
             apiPerson.Tenures.Should().BeEquivalentTo(expectedPerson.Tenures?.Select(x => ResponseFactory.ToResponse(x)));
+            apiPerson.IsAMinor.Should().BeFalse();
+            apiPerson.DateOfDeath.Should().Be(expectedPerson.DateOfDeath);
         }
 
         public void ThenBadRequestIsReturned()

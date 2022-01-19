@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Hackney.Core.Testing.Sns;
 using Hackney.Shared.Person.Boundary.Request;
 using Hackney.Shared.Person.Domain;
 using Hackney.Shared.Person.Infrastructure;
@@ -75,11 +76,12 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
             var result = await personFixture._dbContext.LoadAsync<PersonDbEntity>(personFixture.Person.Id).ConfigureAwait(false);
             result.FirstName.Should().Be(personFixture.UpdatePersonRequest.FirstName);
             result.Surname.Should().Be(personFixture.UpdatePersonRequest.Surname);
+            result.DateOfDeath.Should().Be(personFixture.UpdatePersonRequest.DateOfDeath);
             result.VersionNumber.Should().Be(1);
             result.LastModified.Should().BeCloseTo(DateTime.UtcNow, 1500);
         }
 
-        public async Task ThenThePersonUpdatedEventIsRaised(PersonFixture personFixture, SnsEventVerifier<PersonSns> snsVerifer)
+        public async Task ThenThePersonUpdatedEventIsRaised(PersonFixture personFixture, ISnsFixture snsFixture)
         {
             var dbPerson = await personFixture._dbContext.LoadAsync<PersonDbEntity>(personFixture.Person.Id).ConfigureAwait(false);
 
@@ -107,7 +109,10 @@ namespace PersonApi.Tests.V1.E2ETests.Steps
                 actual.Version.Should().Be(UpdatePersonConstants.V1VERSION);
             };
 
-            snsVerifer.VerifySnsEventRaised(verifyFunc).Should().BeTrue(snsVerifer.LastException?.Message);
+            var snsVerifer = snsFixture.GetSnsEventVerifier<PersonSns>();
+            var snsResult = await snsVerifer.VerifySnsEventRaised(verifyFunc);
+            if (!snsResult && snsVerifer.LastException != null)
+                throw snsVerifer.LastException;
         }
 
         public async Task ThenConflictIsReturned(int? versionNumber)
