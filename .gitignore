@@ -68,3 +68,6 @@ tmp/
 
 testresults/
 *.ncrunchsolution
+
+# Ignore local stack as it is not required on GitHub (it's auto generated)
+.localstack
