@@ -180,7 +180,7 @@ resources:
 
 custom:
   associateWaf:
-    name: PersonApiWafAcl
+    name: Platform_APIs_Web_ACL
     version: V2
   vpcId:
     development: vpc-0d15f152935c8716f
