@@ -154,7 +154,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            export PactBrokerUserPassword=$(aws ssm get-parameter --name /contract-testing/development/pact-broker-password --query Parameter.Value --output text) ;
+            export PactBrokerUserPassword=$(aws ssm get-parameter --name /contract-testing/staging/pact-broker-password --query Parameter.Value --output text) ;
             docker-compose run -e PactBrokerUserPassword=$PactBrokerUserPassword person-api-test
   assume-role-development:
     executor: docker-python
