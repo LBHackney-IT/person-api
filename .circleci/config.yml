@@ -143,6 +143,9 @@ jobs:
           command: ./dotnet-format-local/dotnet-format --check
   build-and-test:
     executor: docker-python
+    parameters:
+      stage:
+        type: string
     steps:
       - *attach_workspace
       - aws-cli/install
@@ -154,7 +157,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            export PactBrokerUserPassword=$(aws ssm get-parameter --name /contract-testing/development/pact-broker-password --query Parameter.Value --output text) ;
+            export PactBrokerUserPassword=$(aws ssm get-parameter --name /contract-testing/<<parameters.stage>>/pact-broker-password --query Parameter.Value --output text) ;
             docker-compose run -e PactBrokerUserPassword=$PactBrokerUserPassword person-api-test
   assume-role-development:
     executor: docker-python
@@ -240,6 +243,7 @@ workflows:
       - assume-role-development:
           context: api-assume-role-housing-development-context
       - build-and-test:
+          stage: "development"
           context:
             - api-nuget-token-context
             - SonarCloud
@@ -275,6 +279,7 @@ workflows:
       - check-code-formatting:
           context: api-nuget-token-context
       - build-and-test:
+          stage: "staging"
           context:
               - api-nuget-token-context
               - SonarCloud
