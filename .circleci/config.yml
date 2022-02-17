@@ -286,7 +286,6 @@ workflows:
               - api-nuget-token-context
               - SonarCloud
           requires:
-            - check-code-formatting 
             - assume-role-staging
           filters:
             branches:
@@ -294,6 +293,7 @@ workflows:
       - terraform-init-and-plan-staging:
           requires:
             - assume-role-staging
+            - build-and-test
           filters:
             branches:
               only: release
