@@ -271,26 +271,28 @@ workflows:
             branches:
               only: master
   check-and-deploy-staging-and-production:
-      jobs:
+    jobs:
       - check-code-formatting:
           context: api-nuget-token-context
-      - build-and-test:
-          context:
-              - api-nuget-token-context
-              - SonarCloud
-          filters:
-            branches:
-              only: release
       - assume-role-staging:
           context: api-assume-role-housing-staging-context
           requires:
-              - build-and-test
+            - check-code-formatting
           filters:
-             branches:
-               only: release
-      - terraform-init-and-plan-staging:
+            branches:
+              only: release
+      - build-and-test:
+          context:
+            - api-nuget-token-context
+            - SonarCloud
           requires:
             - assume-role-staging
+          filters:
+            branches:
+              only: release
+      - terraform-init-and-plan-staging:
+          requires:
+            - build-and-test
           filters:
             branches:
               only: release
@@ -320,10 +322,10 @@ workflows:
       - assume-role-production:
           context: api-assume-role-housing-production-context
           requires:
-              - permit-production-terraform-release
+            - permit-production-terraform-release
           filters:
-             branches:
-               only: release
+            branches:
+              only: release
       - terraform-init-and-plan-production:
           requires:
             - assume-role-production
