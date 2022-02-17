@@ -277,7 +277,7 @@ workflows:
       - assume-role-staging:
           context: api-assume-role-housing-staging-context
           requires:
-            - build-and-test
+            - check-code-formatting
           filters:
             branches:
               only: release
@@ -285,6 +285,9 @@ workflows:
           context:
               - api-nuget-token-context
               - SonarCloud
+          requires:
+            - check-code-formatting 
+            - assume-role-staging
           filters:
             branches:
               only: release
