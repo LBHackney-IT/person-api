@@ -276,8 +276,6 @@ workflows:
           context: api-nuget-token-context
       - assume-role-staging:
           context: api-assume-role-housing-staging-context
-          requires:
-            - check-code-formatting
           filters:
             branches:
               only: release
