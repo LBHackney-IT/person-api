@@ -274,6 +274,13 @@ workflows:
       jobs:
       - check-code-formatting:
           context: api-nuget-token-context
+      - assume-role-staging:
+          context: api-assume-role-housing-staging-context
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only: release
       - build-and-test:
           context:
               - api-nuget-token-context
@@ -281,13 +288,6 @@ workflows:
           filters:
             branches:
               only: release
-      - assume-role-staging:
-          context: api-assume-role-housing-staging-context
-          requires:
-              - build-and-test
-          filters:
-             branches:
-               only: release
       - terraform-init-and-plan-staging:
           requires:
             - assume-role-staging
