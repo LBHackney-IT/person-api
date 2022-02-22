@@ -128,6 +128,8 @@ commands:
           name: Deploy lambda
           command: |
             cd ./PersonApi/
+            npm i serverless-associate-waf
+            npm i @serverless/safeguards-plugin --save-dev
             sls deploy --stage <<parameters.stage>> --conceal
 
 jobs:
@@ -143,6 +145,9 @@ jobs:
           command: ./dotnet-format-local/dotnet-format --check
   build-and-test:
     executor: docker-python
+    parameters:
+      stage:
+        type: string
     steps:
       - *attach_workspace
       - aws-cli/install
@@ -154,7 +159,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            export PactBrokerUserPassword=$(aws ssm get-parameter --name /contract-testing/development/pact-broker-password --query Parameter.Value --output text) ;
+            export PactBrokerUserPassword=$(aws ssm get-parameter --name /contract-testing/<<parameters.stage>>/pact-broker-password --query Parameter.Value --output text) ;
             docker-compose run -e PactBrokerUserPassword=$PactBrokerUserPassword person-api-test
   assume-role-development:
     executor: docker-python
@@ -240,6 +245,7 @@ workflows:
       - assume-role-development:
           context: api-assume-role-housing-development-context
       - build-and-test:
+          stage: "development"
           context:
             - api-nuget-token-context
             - SonarCloud
@@ -274,23 +280,24 @@ workflows:
     jobs:
       - check-code-formatting:
           context: api-nuget-token-context
-      - build-and-test:
-          context:
-            - api-nuget-token-context
-            - SonarCloud
+      - assume-role-staging:
+          context: api-assume-role-housing-staging-context
           filters:
             branches:
               only: release
-      - assume-role-staging:
-          context: api-assume-role-housing-staging-context
+      - build-and-test:
+          stage: "staging"          
+          context:
+            - api-nuget-token-context
+            - SonarCloud
           requires:
-            - build-and-test
+            - assume-role-staging
           filters:
             branches:
               only: release
       - terraform-init-and-plan-staging:
           requires:
-            - assume-role-staging
+            - build-and-test
           filters:
             branches:
               only: release

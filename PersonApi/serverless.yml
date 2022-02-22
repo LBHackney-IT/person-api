@@ -13,6 +13,10 @@ provider:
 package:
   artifact: ./bin/release/netcoreapp3.1/person-api.zip
 
+plugins:
+  - serverless-associate-waf
+  - '@serverless/safeguards-plugin'
+
 functions:
   PersonApi:
     name: ${self:service}-${self:provider.stage}
@@ -176,6 +180,13 @@ resources:
         ConfigurationVersion: '1'
 
 custom:
+  safeguards:
+    - title: Require authorizer
+      safeguard: require-authorizer
+      path: ./policies
+  associateWaf:
+    name: Platform_APIs_Web_ACL
+    version: V2
   vpcId:
     development: vpc-0d15f152935c8716f
     staging: vpc-064521a7a4109ba31
