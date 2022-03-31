@@ -35,6 +35,9 @@ RUN dotnet restore ./PersonApi.Tests/PersonApi.Tests.csproj
 # Copy everything else and build
 COPY . .
 
+RUN dotnet build -c Release -o out PersonApi/PersonApi.csproj
 RUN dotnet build -c debug -o out PersonApi.Tests/PersonApi.Tests.csproj
 
 CMD dotnet test
+RUN dotnet sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
+
