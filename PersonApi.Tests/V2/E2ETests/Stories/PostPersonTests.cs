@@ -39,8 +39,8 @@ namespace PersonApi.Tests.V2.E2ETests.Stories
         {
             if (disposing && !_disposed)
             {
-                if (null != _personFixture)
-                    _personFixture.Dispose();
+                _personFixture?.Dispose();
+                _snsFixture?.PurgeAllQueueMessages();
 
                 _disposed = true;
             }
