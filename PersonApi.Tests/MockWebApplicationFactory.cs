@@ -72,7 +72,7 @@ namespace PersonApi.Tests
                 DynamoDbFixture.EnsureTablesExist(DynamoDbTables.Tables);
 
                 SnsFixture = serviceProvider.GetRequiredService<ISnsFixture>();
-                SnsFixture.CreateSnsTopic<PersonSns>("person", "PERSON_SNS_ARN");
+                SnsFixture.CreateSnsTopic<PersonSns>("person.fifo", "PERSON_SNS_ARN");
             });
         }
     }

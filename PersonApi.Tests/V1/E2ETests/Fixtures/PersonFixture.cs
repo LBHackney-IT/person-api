@@ -110,7 +110,6 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                                               .With(y => y.EndDate, (string) null)
                                               .CreateMany(2))
                 .Create();
-            CreateSnsTopic();
 
             CreatePersonRequest = personRequest;
         }
@@ -124,8 +123,6 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                 Title = Title.Dr,
                 DateOfDeath = DateTime.UtcNow.AddYears(50)
             };
-
-            UpdateSnsTopic();
 
             UpdatePersonRequest = personRequest;
         }
@@ -143,44 +140,12 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
                                               .CreateMany(1))
                 .Create();
 
-            CreateSnsTopic();
-
             CreatePersonRequest = personRequest;
         }
 
         public void GivenAnInvalidPersonId()
         {
             InvalidPersonId = "12345667890";
-        }
-
-        private void CreateSnsTopic()
-        {
-            var snsAttrs = new Dictionary<string, string>();
-            snsAttrs.Add("fifo_topic", "true");
-            snsAttrs.Add("content_based_deduplication", "true");
-
-            var response = _amazonSimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
-            {
-                Name = "person",
-                Attributes = snsAttrs
-            }).Result;
-
-            Environment.SetEnvironmentVariable("PERSON_SNS_ARN", response.TopicArn);
-        }
-
-        private void UpdateSnsTopic()
-        {
-            var snsAttrs = new Dictionary<string, string>();
-            snsAttrs.Add("fifo_topic", "true");
-            snsAttrs.Add("content_based_deduplication", "true");
-
-            var response = _amazonSimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
-            {
-                Name = "personupdated",
-                Attributes = snsAttrs
-            }).Result;
-
-            Environment.SetEnvironmentVariable("UPDATED_PERSON_SNS_ARN", response.TopicArn);
         }
     }
 }
