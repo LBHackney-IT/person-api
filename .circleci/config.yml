@@ -256,15 +256,9 @@ workflows:
       - terraform-init-and-plan-development:
           requires:
             - build-and-test
-          filters:
-            branches:
-              only: master
       - terraform-compliance-development:
           requires:
             - terraform-init-and-plan-development
-          filters:
-            branches:
-              only: master
       - terraform-apply-development:
           requires:
             - terraform-compliance-development
