@@ -12,7 +12,7 @@ executors:
       - image: circleci/python:3.7
   docker-terraform:
     docker:
-      - image: "hashicorp/terraform:light"
+      - image: "hashicorp/terraform:1.1.9"
   docker-dotnet:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
@@ -256,15 +256,9 @@ workflows:
       - terraform-init-and-plan-development:
           requires:
             - build-and-test
-          filters:
-            branches:
-              only: master
       - terraform-compliance-development:
           requires:
             - terraform-init-and-plan-development
-          filters:
-            branches:
-              only: master
       - terraform-apply-development:
           requires:
             - terraform-compliance-development
