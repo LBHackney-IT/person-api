@@ -76,3 +76,91 @@ module "api-alarm" {
   error_threshold  = "1"
   sns_topic_arn    = data.aws_ssm_parameter.cloudwatch_topic_arn.value
 }
+
+resource "aws_sns_topic_policy" "default" {
+  arn = aws_sns_topic.person_topic.arn
+
+  policy = data.aws_iam_policy_document.sns_topic_policy.json
+}
+
+data "aws_ssm_parameter" "dev_account_id" {
+  name = "/dev-apis/account-id"
+}
+
+data "aws_ssm_parameter" "staging_account_id" {
+  name = "/staging-apis/account-id"
+}
+
+data "aws_iam_policy_document" "sns_topic_policy" {
+  policy_id = "__default_policy_ID"
+  statement {
+      actions = [
+        "sns:GetTopicAttributes",
+        "sns:SetTopicAttributes",
+        "sns:AddPermission",
+        "sns:RemovePermission",
+        "sns:DeleteTopic",
+        "sns:Subscribe",
+        "sns:ListSubscriptionsByTopic",
+        "sns:Publish"
+      ]
+
+      condition {
+        test     = "StringEquals"
+        variable = "AWS:SourceOwner"
+
+        values = [
+          data.aws_caller_identity.current.account_id
+        ]
+
+      }
+
+      effect = "Allow"
+
+      principals {
+        type        = "AWS"
+        identifiers = ["*"]
+      }
+
+      resources = [
+        aws_sns_topic.person_topic.arn
+      ]
+
+      sid = "__default_statement_ID"
+    }
+  statement {
+      actions = [
+        "sns:Subscribe"
+      ]
+
+      effect = "Allow"
+
+      principals {
+        type        = "AWS"
+        identifiers = ["arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/LBH_Circle_CI_Deployment_Role"]
+      }
+      resources = [
+        aws_sns_topic.person_topic.arn
+      ]
+
+      sid = "dev-statement"
+    }	
+  statement {
+      actions = [
+        "sns:Subscribe"
+      ]
+
+      effect = "Allow"
+
+      principals {
+        type        = "AWS"
+        identifiers = ["arn:aws:iam::${data.aws_ssm_parameter.staging_account_id.value}:role/LBH_Circle_CI_Deployment_Role"]
+      }
+
+      resources = [
+        aws_sns_topic.person_topic.arn
+      ]
+
+      sid = "staging_statement"
+    }	
+}	
