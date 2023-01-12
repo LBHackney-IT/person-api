@@ -88,3 +88,70 @@ module "sns-delivery-failure-alarm" {
   sns_topic_name   = "person.fifo"
   sns_topic_arn_for_notifications = data.aws_ssm_parameter.cloudwatch_topic_arn.value
 }
+
+resource "aws_sns_topic_policy" "default" {
+  arn = aws_sns_topic.cautionaryalerts_topic.arn
+
+  policy = data.aws_iam_policy_document.sns_topic_policy.json
+}
+
+data "aws_ssm_parameter" "prod_account_id" {
+  name = "/prod-apis/account-id"
+}
+
+data "aws_iam_policy_document" "sns_topic_policy" {
+  policy_id = "__default_policy_ID"
+  statement {
+      actions = [
+        "sns:GetTopicAttributes",
+        "sns:SetTopicAttributes",
+        "sns:AddPermission",
+        "sns:RemovePermission",
+        "sns:DeleteTopic",
+        "sns:Subscribe",
+        "sns:ListSubscriptionsByTopic",
+        "sns:Publish"
+      ]
+
+      condition {
+        test     = "StringEquals"
+        variable = "AWS:SourceOwner"
+
+        values = [
+          data.aws_caller_identity.current.account_id
+        ]
+
+      }
+
+      effect = "Allow"
+
+      principals {
+        type        = "AWS"
+        identifiers = ["*"]
+      }
+
+      resources = [
+        aws_sns_topic.person_topic.arn
+      ]
+
+      sid = "__default_statement_ID"
+    }
+  statement {
+      actions = [
+        "sns:Subscribe"
+      ]
+
+      effect = "Allow"
+
+      principals {
+        type        = "AWS"
+        identifiers = ["arn:aws:iam::${data.aws_ssm_parameter.prod_account_id.value}:role/LBH_Circle_CI_Deployment_Role"]
+      }
+      resources = [
+        aws_sns_topic.person_topic.arn
+      ]
+
+      sid = "prod-statement"
+    }	
+  
+
