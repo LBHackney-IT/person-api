@@ -46,7 +46,7 @@ namespace PersonApi.Tests.PactBroker
             dynamoDbFixture.EnsureTablesExist(DynamoDbTables.Tables);
 
             var snsFixture = provider.GetRequiredService<ISnsFixture>();
-            snsFixture.CreateSnsTopic<PersonSns>("person", "PERSON_SNS_ARN");
+            snsFixture.CreateSnsTopic<PersonSns>("person.fifo", "PERSON_SNS_ARN");
 
             base.ConfigureFixture(provider);
         }

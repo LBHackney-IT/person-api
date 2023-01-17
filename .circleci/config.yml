@@ -4,6 +4,7 @@ orbs:
   aws-ecr: circleci/aws-ecr@3.0.0
   aws-cli: circleci/aws-cli@0.1.9
   aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
+  sonarcloud: sonarsource/sonarcloud@1.1.1
 
 executors:
   docker-python:
@@ -11,10 +12,10 @@ executors:
       - image: circleci/python:3.7
   docker-terraform:
     docker:
-      - image: "hashicorp/terraform:light"
+      - image: "hashicorp/terraform:1.1.9"
   docker-dotnet:
     docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
+      - image: mcr.microsoft.com/dotnet/sdk:6.0
 
 references:
   workspace_root: &workspace_root "~"
@@ -113,7 +114,7 @@ commands:
       - run:
           name: Install Node.js
           command: |
-            curl -sL https://deb.nodesource.com/setup_13.x | bash -
+            curl -sL https://deb.nodesource.com/setup_14.x | bash -
             apt-get update && apt-get install -y nodejs
       - run:
           name: Install serverless CLI
@@ -153,6 +154,7 @@ jobs:
       - aws-cli/install
       - checkout
       - setup_remote_docker
+      - sonarcloud/scan
       - run:
           name: build
           command: docker-compose build person-api-test
@@ -254,15 +256,9 @@ workflows:
       - terraform-init-and-plan-development:
           requires:
             - build-and-test
-          filters:
-            branches:
-              only: master
       - terraform-compliance-development:
           requires:
             - terraform-init-and-plan-development
-          filters:
-            branches:
-              only: master
       - terraform-apply-development:
           requires:
             - terraform-compliance-development
@@ -286,7 +282,7 @@ workflows:
             branches:
               only: release
       - build-and-test:
-          stage: "staging"          
+          stage: "staging"
           context:
             - api-nuget-token-context
             - SonarCloud
