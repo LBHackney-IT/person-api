@@ -90,7 +90,7 @@ module "sns-delivery-failure-alarm" {
 }
 
 resource "aws_sns_topic_policy" "default" {
-  arn = aws_sns_topic.cautionaryalerts_topic.arn
+  arn = aws_sns_topic.person_topic.arn
 
   policy = data.aws_iam_policy_document.sns_topic_policy.json
 }
