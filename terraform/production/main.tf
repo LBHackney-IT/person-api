@@ -80,14 +80,15 @@ module "api-alarm" {
   sns_topic_arn    = data.aws_ssm_parameter.cloudwatch_topic_arn.value
 }
     
-module "sns-delivery-failure-alarm" {
-  source           = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/cloudwatch/sns-delivery-metric-and-alarm"
-  environment_name = var.environment_name
-  region           = data.aws_region.current.name
-  account_id       = data.aws_caller_identity.current.account_id
-  sns_topic_name   = "person.fifo"
-  sns_topic_arn_for_notifications = data.aws_ssm_parameter.cloudwatch_topic_arn.value
-}
+# NOT WORKING NEEDS TO BE INVESTIGATED    
+# module "sns-delivery-failure-alarm" {
+#   source           = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/cloudwatch/sns-delivery-metric-and-alarm"
+#  environment_name = var.environment_name
+#   region           = data.aws_region.current.name
+#   account_id       = data.aws_caller_identity.current.account_id
+#   sns_topic_name   = "person.fifo"
+#   sns_topic_arn_for_notifications = data.aws_ssm_parameter.cloudwatch_topic_arn.value
+# }
 
 resource "aws_sns_topic_policy" "default" {
   arn = aws_sns_topic.person_topic.arn
