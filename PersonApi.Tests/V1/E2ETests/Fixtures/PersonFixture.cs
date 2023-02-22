@@ -104,12 +104,28 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         public void GivenANewPersonRequest()
         {
             var personRequest = _fixture.Build<CreatePersonRequestObject>()
-                .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
-                .With(x => x.Tenures, _fixture.Build<TenureDetails>()
-                                              .With(y => y.StartDate, (string) null)
-                                              .With(y => y.EndDate, (string) null)
-                                              .CreateMany(2))
-                .Create();
+                                        .With(x => x.DateOfBirth, DateTime.UtcNow.AddYears(-30))
+                                        .With(x => x.Tenures, _fixture.Build<TenureDetails>()
+                                                                      .With(y => y.StartDate, (string) null)
+                                                                      .With(y => y.EndDate, (string) null)
+                                                                      .CreateMany(2))
+                                        .Create();
+
+            CreatePersonRequest = personRequest;
+        }
+
+        public void GivenANewPersonRequestWithoutDOBAndTitle(PersonType personType)
+        {
+            var personTypes = new List<PersonType>() { personType };
+            var personRequest = _fixture.Build<CreatePersonRequestObject>()
+                                        .Without(x => x.Title)
+                                        .Without(x => x.DateOfBirth)
+                                        .With(x => x.PersonTypes, personTypes)
+                                        .With(x => x.Tenures, _fixture.Build<TenureDetails>()
+                                                                      .With(y => y.StartDate, (string) null)
+                                                                      .With(y => y.EndDate, (string) null)
+                                                                      .CreateMany(2))
+                                        .Create();
 
             CreatePersonRequest = personRequest;
         }

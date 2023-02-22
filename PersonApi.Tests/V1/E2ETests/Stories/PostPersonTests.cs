@@ -1,5 +1,6 @@
 using Hackney.Core.Testing.DynamoDb;
 using Hackney.Core.Testing.Sns;
+using Hackney.Shared.Person.Domain;
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.Tests.V1.E2ETests.Steps;
 using System;
@@ -50,6 +51,18 @@ namespace PersonApi.Tests.V1.E2ETests.Stories
         public void ServiceReturnsTheRequestedPerson()
         {
             this.Given(g => _personFixture.GivenANewPersonRequest())
+                .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.CreatePersonRequest))
+                .Then(t => _steps.ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(_personFixture))
+                .Then(t => _steps.ThenThePersonCreatedEventIsRaised(_snsFixture))
+                .BDDfy();
+        }
+
+        [Theory]
+        [InlineData(PersonType.HousingOfficer)]
+        [InlineData(PersonType.HousingAreaManager)]
+        public void ServiceReturnsTheRequestedPersonWithoutDOBAndTitle(PersonType personType)
+        {
+            this.Given(g => _personFixture.GivenANewPersonRequestWithoutDOBAndTitle(personType))
                 .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.CreatePersonRequest))
                 .Then(t => _steps.ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(_personFixture))
                 .Then(t => _steps.ThenThePersonCreatedEventIsRaised(_snsFixture))
