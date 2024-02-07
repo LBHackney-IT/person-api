@@ -1,8 +1,6 @@
 resource "aws_dynamodb_table" "personapi_dynamodb_table" {
   name           = "Persons"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = 10
-  write_capacity = 10
+  billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "id"
 
   attribute {
