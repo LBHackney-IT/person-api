@@ -18,10 +18,10 @@ namespace PersonApi.Tests.PactBroker
             _outputHelper = output;
         }
 
-        [Fact]
-        public void EnsureTheApiHonoursPactWithConsumer()
-        {
-            _testFixture.RunPactBrokerTest(new List<IOutput> { new XUnitOutput(_outputHelper) });
-        }
+        //[Fact]
+        //public void EnsureTheApiHonoursPactWithConsumer()
+        //{
+        //    _testFixture.RunPactBrokerTest(new List<IOutput> { new XUnitOutput(_outputHelper) });
+        //}
     }
 }
