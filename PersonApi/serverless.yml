@@ -22,6 +22,7 @@ functions:
     name: ${self:service}-${self:provider.stage}
     handler: PersonApi::PersonApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
+    timeout: 60
     environment:
       PERSON_SNS_ARN: ${ssm:/sns-topic/${self:provider.stage}/person/arn}
       ASPNETCORE_ENVIRONMENT:  ${ssm:/housing-tl/${self:provider.stage}/aspnetcore-environment}
