@@ -1,21 +1,19 @@
 version: 2.1
 
 orbs:
-  aws-ecr: circleci/aws-ecr@3.0.0
-  aws-cli: circleci/aws-cli@0.1.9
   aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
   sonarcloud: sonarsource/sonarcloud@2.0.0
 
 executors:
   docker-python:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/python:3.12
   docker-terraform:
     docker:
       - image: "hashicorp/terraform:1.1.9"
   docker-dotnet:
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:6.0
+      - image: mcr.microsoft.com/dotnet/sdk:8.0
 
 references:
   workspace_root: &workspace_root "~"
@@ -118,7 +116,7 @@ commands:
             apt-get update && apt-get install -y nodejs
       - run:
           name: Install serverless CLI
-          command: npm i -g serverless@^3
+          command: npm i -g serverless
       - run:
           name: Build lambda
           command: |
@@ -151,18 +149,17 @@ jobs:
         type: string
     steps:
       - *attach_workspace
-      - aws-cli/install
       - checkout
       - setup_remote_docker
       - sonarcloud/scan
       - run:
           name: build
-          command: docker-compose build person-api-test
+          command: docker compose build person-api-test
       - run:
           name: Run tests
           command: |
             export PactBrokerUserPassword=$(aws ssm get-parameter --name /contract-testing/<<parameters.stage>>/pact-broker-password --query Parameter.Value --output text) ;
-            docker-compose run -e PactBrokerUserPassword=$PactBrokerUserPassword person-api-test
+            docker compose run -e PactBrokerUserPassword=$PactBrokerUserPassword person-api-test
   assume-role-development:
     executor: docker-python
     steps:
@@ -244,40 +241,37 @@ workflows:
     jobs:
       - check-code-formatting:
           context: api-nuget-token-context
-      - assume-role-development:
-          context: api-assume-role-housing-development-context
       - build-and-test:
           stage: "development"
           context:
             - api-nuget-token-context
             - SonarCloud
-          requires:
-            - assume-role-development
-      - terraform-init-and-plan-development:
+      - assume-role-development:
+          context: api-assume-role-housing-development-context
           requires:
             - build-and-test
+          filters:
+            branches:
+              only: master
+      - terraform-init-and-plan-development:
+          requires:
+            - assume-role-development
       - terraform-compliance-development:
           requires:
             - terraform-init-and-plan-development
       - terraform-apply-development:
           requires:
             - terraform-compliance-development
-          filters:
-            branches:
-              only: master
       - deploy-to-development:
-          context: api-nuget-token-context
+          context:
+            - api-nuget-token-context
+            - "Serverless Framework"
           requires:
             - terraform-apply-development
-          filters:
-            branches:
-              only: master
   check-and-deploy-staging-and-production:
     jobs:
       - check-code-formatting:
           context: api-nuget-token-context
-      - assume-role-staging:
-          context: api-assume-role-housing-staging-context
           filters:
             branches:
               only: release
@@ -286,36 +280,28 @@ workflows:
           context:
             - api-nuget-token-context
             - SonarCloud
-          requires:
-            - assume-role-staging
-          filters:
-            branches:
-              only: release
-      - terraform-init-and-plan-staging:
+      - assume-role-staging:
+          context: api-assume-role-housing-staging-context
           requires:
             - build-and-test
           filters:
             branches:
               only: release
+      - terraform-init-and-plan-staging:
+          requires:
+            - assume-role-staging
       - terraform-compliance-staging:
           requires:
             - terraform-init-and-plan-staging
-          filters:
-            branches:
-              only: release
       - terraform-apply-staging:
           requires:
             - terraform-compliance-staging
-          filters:
-            branches:
-              only: release
       - deploy-to-staging:
-          context: api-nuget-token-context
+          context:
+            - api-nuget-token-context
+            - "Serverless Framework"
           requires:
             - terraform-apply-staging
-          filters:
-            branches:
-              only: release
       - permit-production-terraform-release:
           type: approval
           requires:
@@ -324,38 +310,22 @@ workflows:
           context: api-assume-role-housing-production-context
           requires:
             - permit-production-terraform-release
-          filters:
-            branches:
-              only: release
       - terraform-init-and-plan-production:
           requires:
             - assume-role-production
-          filters:
-            branches:
-              only: release
       - terraform-compliance-production:
           requires:
             - terraform-init-and-plan-production
-          filters:
-            branches:
-              only: release
       - terraform-apply-production:
           requires:
             - terraform-compliance-production
-          filters:
-            branches:
-              only: release
       - permit-production-release:
           type: approval
           requires:
             - terraform-apply-production
-          filters:
-            branches:
-              only: release
       - deploy-to-production:
-          context: api-nuget-token-context
+          context:
+            - api-nuget-token-context
+            - "Serverless Framework"
           requires:
             - permit-production-release
-          filters:
-            branches:
-              only: release
