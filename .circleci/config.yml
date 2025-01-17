@@ -255,7 +255,7 @@ workflows:
               only: master
       - terraform-init-and-plan-development:
           requires:
-            - build-and-test
+            - assume-role-development
       - terraform-compliance-development:
           requires:
             - terraform-init-and-plan-development
