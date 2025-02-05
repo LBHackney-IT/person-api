@@ -58,6 +58,7 @@ namespace PersonApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public async Task<IActionResult> GetPersonByIdAsync([FromRoute] PersonQueryObject query)
         {
+            RestrictAccessToDisallowedEmail(query);
             var person = await _getByIdUseCase.ExecuteAsync(query).ConfigureAwait(false);
             if (null == person) return NotFound(query.Id);
 
@@ -143,6 +144,16 @@ namespace PersonApi.V1.Controllers
                 return numericValue;
 
             return null;
+        }
+
+        private void RestrictAccessToDisallowedEmail(PersonQueryObject query)
+        {
+            // This is an exceptional case where a specific user is not allowed to access a specific asset
+            // See HPT-641 for more information
+            var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
+            if (string.Equals(token?.Email, Environment.GetEnvironmentVariable("DISALLOWED_EMAIL"), StringComparison.OrdinalIgnoreCase))
+                if (query?.Id == Guid.Parse("2f5ea40f-59c2-2db7-5058-4f54a4a63443"))
+                    throw new UnauthorizedAccessException("Access to this tenure is restricted for this user");
         }
     }
 }
