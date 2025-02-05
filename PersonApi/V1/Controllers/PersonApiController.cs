@@ -148,7 +148,7 @@ namespace PersonApi.V1.Controllers
 
         private void RestrictAccessToDisallowedEmail(PersonQueryObject query)
         {
-            // This is an exceptional case where a specific user is not allowed to access a specific asset
+            // This is an exceptional case where a specific user is not allowed to access a specific record
             // See HPT-641 for more information
             var token = _tokenFactory.Create(_contextWrapper.GetContextRequestHeaders(HttpContext));
             if (string.Equals(token?.Email, Environment.GetEnvironmentVariable("DISALLOWED_EMAIL"), StringComparison.OrdinalIgnoreCase))
