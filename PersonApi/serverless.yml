@@ -25,6 +25,7 @@ functions:
     environment:
       PERSON_SNS_ARN: ${ssm:/sns-topic/${self:provider.stage}/person/arn}
       ASPNETCORE_ENVIRONMENT:  ${ssm:/housing-tl/${self:provider.stage}/aspnetcore-environment}
+      DISALLOWED_EMAIL: ${ssm:/housing-tl/${self:provider.stage}/disallowed-email}
     events:
       - http:
           path: /{proxy+}
