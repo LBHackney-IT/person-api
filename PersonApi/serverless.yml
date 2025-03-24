@@ -15,7 +15,7 @@ package:
 
 plugins:
   - serverless-associate-waf
-  - '@serverless/safeguards-plugin'
+  - "@serverless/safeguards-plugin"
 
 functions:
   PersonApi:
@@ -24,20 +24,20 @@ functions:
     role: lambdaExecutionRole
     environment:
       PERSON_SNS_ARN: ${ssm:/sns-topic/${self:provider.stage}/person/arn}
-      ASPNETCORE_ENVIRONMENT:  ${ssm:/housing-tl/${self:provider.stage}/aspnetcore-environment}
+      ASPNETCORE_ENVIRONMENT: ${ssm:/housing-tl/${self:provider.stage}/aspnetcore-environment}
       DISALLOWED_EMAIL: ${ssm:/housing-tl/${self:provider.stage}/disallowed-email}
     events:
       - http:
           path: /{proxy+}
           method: ANY
           authorizer:
-            arn: ${ssm:/api-authenticator/${self:provider.stage}/arn}
+            arn: ${self:custom.authorizerArns.${opt:stage}}
             type: request
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
             managedExternally: true
           cors:
-            origin: '*'
+            origin: "*"
             headers:
               - Content-Type
               - If-Match
@@ -70,7 +70,7 @@ resources:
         Path: /${self:service}/${self:provider.stage}/
         RoleName: ${self:service}-lambdaExecutionRole
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Principal:
@@ -83,7 +83,7 @@ resources:
         Policies:
           - PolicyName: postToSns
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
                 - Effect: Allow
                   Action:
@@ -92,7 +92,7 @@ resources:
                     - ${ssm:/sns-topic/${self:provider.stage}/person/arn}
           - PolicyName: manageLogs
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
                 - Effect: Allow
                   Action:
@@ -100,12 +100,12 @@ resources:
                     - logs:CreateLogStream
                     - logs:PutLogEvents
                   Resource:
-                    - 'Fn::Join':
-                        - ':'
-                        - - 'arn:aws:logs'
-                          - Ref: 'AWS::Region'
-                          - Ref: 'AWS::AccountId'
-                          - 'log-group:/aws/lambda/*:*:*'
+                    - "Fn::Join":
+                        - ":"
+                        - - "arn:aws:logs"
+                          - Ref: "AWS::Region"
+                          - Ref: "AWS::AccountId"
+                          - "log-group:/aws/lambda/*:*:*"
                 - Effect: "Allow"
                   Action:
                     - "s3:PutObject"
@@ -117,7 +117,7 @@ resources:
                         - "Ref": "ServerlessDeploymentBucket"
           - PolicyName: lambdaInvocation
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
                 - Effect: Allow
                   Action:
@@ -125,7 +125,7 @@ resources:
                   Resource: "*"
           - PolicyName: dynamoDBAccess
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
                 - Effect: Allow
                   Action:
@@ -140,13 +140,13 @@ resources:
                     - "dynamodb:Scan"
                     - "dynamodb:UpdateItem"
                   Resource:
-                    - 'Fn::Join':
-                        - ':'
-                        - - 'arn:aws:dynamodb'
-                          - Ref: 'AWS::Region'
-                          - Ref: 'AWS::AccountId'
-                          - 'table/Persons'
-  ## Steps required for AppConfig cloudformation
+                    - "Fn::Join":
+                        - ":"
+                        - - "arn:aws:dynamodb"
+                          - Ref: "AWS::Region"
+                          - Ref: "AWS::AccountId"
+                          - "table/Persons"
+    ## Steps required for AppConfig cloudformation
     AppConfig:
       Type: AWS::AppConfig::Application
       Properties:
@@ -178,9 +178,13 @@ resources:
         EnvironmentId: !Ref DevEnvironment
         DeploymentStrategyId: !Ref DeploymentStrategy
         ConfigurationProfileId: !Ref ConfigurationProfile
-        ConfigurationVersion: '1'
+        ConfigurationVersion: "1"
 
 custom:
+  authorizerArns:
+    development: arn:aws:lambda:eu-west-2:859159924354:function:api-auth-verify-token-development-apiauthverifytoken
+    staging: arn:aws:lambda:eu-west-2:715003523189:function:api-auth-verify-token-new-staging-apiauthverifytokennew
+    production: arn:aws:lambda:eu-west-2:153306643385:function:api-auth-verify-token-production-apiauthverifytoken
   safeguards:
     - title: Require authorizer
       safeguard: require-authorizer
