@@ -63,17 +63,6 @@ namespace PersonApi.Tests.V1.Gateways
             }
         }
 
-        private static JsonSerializerOptions CreateJsonOptions()
-        {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            options.Converters.Add(new JsonStringEnumConverter());
-            return options;
-        }
-
         private PersonQueryObject ConstructQuery(Guid id)
         {
             return new PersonQueryObject() { Id = id };
@@ -115,6 +104,19 @@ namespace PersonApi.Tests.V1.Gateways
             }
 
             return person;
+        }
+
+        private RefGeneratorEntity CreateRefGenerator()
+        {
+            var refGenerator = _fixture.Build<RefGeneratorEntity>()
+                                       .With(x => x.RefName, "personRef")
+                                       .With(x => x.RefValue, 70017743)
+                                       .With(x => x.LastModified, DateTime.UtcNow.AddYears(-1))
+                                       .Create();
+
+            _dbFixture.SaveEntityAsync<RefGeneratorEntity>(refGenerator).GetAwaiter().GetResult();
+
+            return refGenerator;
         }
 
         [Fact]
@@ -199,6 +201,7 @@ namespace PersonApi.Tests.V1.Gateways
             var entity = ConstructCreatePerson(nullOptionalEnums);
             entity.Tenures = new[] { entity.Tenures.First() };
             entity.Tenures.First().EndDate = DateTime.UtcNow.AddYears(-30).ToShortDateString();
+            var refGenerator = CreateRefGenerator();
 
             // Act
             _ = await _classUnderTest.PostNewPersonAsync(entity).ConfigureAwait(false);
@@ -208,9 +211,14 @@ namespace PersonApi.Tests.V1.Gateways
 
             dbEntity.Should().BeEquivalentTo(entity.ToDatabase(),
                                              config => config.Excluding(y => y.LastModified)
-                                                             .Excluding(y => y.VersionNumber));
+                                                             .Excluding(y => y.VersionNumber)
+                                                             .Excluding(y=> y.PersonRef));
             dbEntity.VersionNumber.Should().Be(0);
             dbEntity.LastModified.Should().BeCloseTo(DateTime.UtcNow, 500);
+
+            //assert personRef
+            var newRefGenerator = await _dbFixture.DynamoDbContext.LoadAsync<RefGeneratorEntity>("personRef").ConfigureAwait(false);
+            newRefGenerator.RefValue.Should().Be(dbEntity.PersonRef);
 
             _cleanup.Add(async () => await _dbFixture.DynamoDbContext.DeleteAsync(dbEntity).ConfigureAwait(false));
         }

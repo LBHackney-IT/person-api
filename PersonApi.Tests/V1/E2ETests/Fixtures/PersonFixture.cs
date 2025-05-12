@@ -5,6 +5,7 @@ using AutoFixture;
 using Hackney.Shared.Person.Boundary.Request;
 using Hackney.Shared.Person.Domain;
 using Hackney.Shared.Person.Infrastructure;
+using PersonApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -28,6 +29,8 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         public Guid PersonId { get; private set; }
 
         public string InvalidPersonId { get; private set; }
+
+        public int PersonRef {  get; private set; }
 
         public PersonFixture(IDynamoDBContext dbContext, IAmazonSimpleNotificationService amazonSimpleNotificationService)
         {
@@ -162,6 +165,19 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
         public void GivenAnInvalidPersonId()
         {
             InvalidPersonId = "12345667890";
+        }
+
+        public void CreateRefGenerator()
+        {
+            var refGenerator = _fixture.Build<RefGeneratorEntity>()
+                                       .With(x => x.RefName, "personRef")
+                                       .With(x => x.RefValue, 70017743)
+                                       .With(x => x.LastModified, DateTime.UtcNow.AddYears(-1))
+                                       .Create();
+
+            _dbContext.SaveAsync<RefGeneratorEntity>(refGenerator).GetAwaiter().GetResult();
+
+            PersonRef = refGenerator.RefValue;
         }
     }
 }

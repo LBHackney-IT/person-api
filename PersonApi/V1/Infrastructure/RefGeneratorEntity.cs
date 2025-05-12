@@ -1,10 +1,7 @@
 using Amazon.DynamoDBv2.DataModel;
-using Hackney.Core.DynamoDb.Converters;
-using Hackney.Shared.Person.Domain;
-using System.Collections.Generic;
 using System;
 
-namespace PersonApi.V1.Gateways
+namespace PersonApi.V1.Infrastructure
 {
     [DynamoDBTable("RefGenerator", LowerCamelCaseProperties = true)]
     public class RefGeneratorEntity
