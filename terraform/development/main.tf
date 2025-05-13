@@ -29,7 +29,7 @@ locals {
   default_tags = {
     Application       = "Person Api"
     Name              = "person-api-${var.environment_name}"
-    Environment       = var.environment_name
+    Environment       = "dev"
     TeamEmail         = "lbhictengineering@hackney.gov.uk"
     terraform-managed = true
     project_name      = var.project_name
