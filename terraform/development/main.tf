@@ -31,6 +31,8 @@ locals {
     Environment       = var.environment_name
     terraform-managed = true
     project_name      = var.project_name
+    Application = "Person Api"
+    TeamEmail   = "lbhictengineering@hackney.gov.uk"
   }
 }
 
@@ -50,6 +52,13 @@ resource "aws_sns_topic" "person_topic" {
   kms_master_key_id           = "alias/aws/sns"
 }
 
+resource "aws_sns_topic" "ref_generator_topic" {
+  name                        = "ref-generator.fifo"
+  fifo_topic                  = true
+  content_based_deduplication = true
+  kms_master_key_id           = "alias/aws/sns"
+}
+
 resource "aws_ssm_parameter" "person_sns_arn" {
   name  = "/sns-topic/development/person/arn"
   type  = "String"
@@ -62,6 +71,14 @@ module "person_api_cloudwatch_dashboard" {
   api_name            = "person-api"
   sns_topic_name      = aws_sns_topic.person_topic.name
   dynamodb_table_name = aws_dynamodb_table.personapi_dynamodb_table.name
+}
+
+module "ref_generator_cloudwatch_dashboard" {
+  source              = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/cloudwatch/dashboards/api-dashboard"
+  environment_name    = var.environment_name
+  api_name            = "ref-generator"
+  sns_topic_name      = aws_sns_topic.ref_generator_topic.name
+  dynamodb_table_name = aws_dynamodb_table.refGenerator_dynamodb_table.name
 }
 
 data "aws_ssm_parameter" "cloudwatch_topic_arn" {
