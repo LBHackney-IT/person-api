@@ -30,7 +30,7 @@ namespace PersonApi.Tests.V1.E2ETests.Fixtures
 
         public string InvalidPersonId { get; private set; }
 
-        public int PersonRef {  get; private set; }
+        public int PersonRef { get; private set; }
 
         public PersonFixture(IDynamoDBContext dbContext, IAmazonSimpleNotificationService amazonSimpleNotificationService)
         {

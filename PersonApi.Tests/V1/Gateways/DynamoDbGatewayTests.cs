@@ -212,7 +212,7 @@ namespace PersonApi.Tests.V1.Gateways
             dbEntity.Should().BeEquivalentTo(entity.ToDatabase(),
                                              config => config.Excluding(y => y.LastModified)
                                                              .Excluding(y => y.VersionNumber)
-                                                             .Excluding(y=> y.PersonRef));
+                                                             .Excluding(y => y.PersonRef));
             dbEntity.VersionNumber.Should().Be(0);
             dbEntity.LastModified.Should().BeCloseTo(DateTime.UtcNow, 500);
 

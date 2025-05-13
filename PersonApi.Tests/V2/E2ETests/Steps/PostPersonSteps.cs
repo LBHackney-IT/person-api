@@ -111,6 +111,12 @@ namespace PersonApi.Tests.V2.E2ETests.Steps
             newRefGenerator.RefValue.Should().Be(personRef + 1);
         }
 
+        public async Task ThenPersonRefIsNotUpdatedInRefGeneratorTable(PersonFixture personFixture, int personRef)
+        {
+            var newRefGenerator = await personFixture._dbContext.LoadAsync<RefGeneratorEntity>("personRef").ConfigureAwait(false);
+            newRefGenerator.RefValue.Should().Be(personRef);
+        }
+
         public async Task ThenTheValidationErrorsAreReturned()
         {
             var responseContent = await _lastResponse.Content.ReadAsStringAsync().ConfigureAwait(false);

@@ -65,6 +65,7 @@ namespace PersonApi.Tests.V2.E2ETests.Stories
                 .Given(g => _personFixture.CreateRefGenerator())
                 .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.CreatePersonRequest))
                 .Then(r => _steps.ThenBadRequestIsReturned())
+                .Then(t => _steps.ThenPersonRefIsNotUpdatedInRefGeneratorTable(_personFixture, _personFixture.PersonRef))
                 .And(t => _steps.ThenTheValidationErrorsAreReturned())
                 .BDDfy();
         }
