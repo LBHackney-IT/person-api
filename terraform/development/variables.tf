@@ -1,6 +1,6 @@
 variable "environment_name" {
   type    = string
-  default = "development"
+  default = "dev"
 }
 
 variable "project_name" {
