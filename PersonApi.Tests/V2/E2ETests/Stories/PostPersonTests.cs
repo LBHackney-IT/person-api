@@ -50,8 +50,10 @@ namespace PersonApi.Tests.V2.E2ETests.Stories
         public void ServiceReturnsTheRequestedPerson()
         {
             this.Given(g => _personFixture.GivenANewPersonRequest())
+                .Given(g => _personFixture.CreateRefGenerator())
                 .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.CreatePersonRequest))
                 .Then(t => _steps.ThenThePersonDetailsAreReturnedAndIdIsNotEmpty(_personFixture))
+                .Then(t => _steps.ThenPersonRefIsUpdatedInRefGeneratorTable(_personFixture, _personFixture.PersonRef))
                 .Then(t => _steps.ThenThePersonCreatedEventIsRaised(_snsFixture))
                 .BDDfy();
         }
@@ -60,8 +62,10 @@ namespace PersonApi.Tests.V2.E2ETests.Stories
         public void ServiceReturnsBadRequestWhenThereAreValidationErrors()
         {
             this.Given(g => _personFixture.GivenANewPersonRequestWithValidationErrors())
+                .Given(g => _personFixture.CreateRefGenerator())
                 .When(w => _steps.WhenTheCreatePersonApiIsCalled(_personFixture.CreatePersonRequest))
                 .Then(r => _steps.ThenBadRequestIsReturned())
+                .Then(t => _steps.ThenPersonRefIsNotUpdatedInRefGeneratorTable(_personFixture, _personFixture.PersonRef))
                 .And(t => _steps.ThenTheValidationErrorsAreReturned())
                 .BDDfy();
         }

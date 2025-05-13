@@ -41,8 +41,20 @@ namespace PersonApi.V1.Gateways
             _logger.LogDebug($"Calling IDynamoDBContext.SaveAsync");
             var personDbEntity = requestObject.ToDatabase();
 
+            //get lastSaved PersonRef from refGenerator table
+            var refGenerator = await _dynamoDbContext.LoadAsync<RefGeneratorEntity>("personRef").ConfigureAwait(false);
+            var personRef = refGenerator.RefValue;
+
+            //set PersonRef
+            var newPersonRef = personRef + 1;
+            personDbEntity.PersonRef = newPersonRef;
+
             personDbEntity.LastModified = DateTime.UtcNow;
             await _dynamoDbContext.SaveAsync(personDbEntity).ConfigureAwait(false);
+
+            refGenerator.RefValue = newPersonRef;
+            refGenerator.LastModified = DateTime.UtcNow;
+            await _dynamoDbContext.SaveAsync(refGenerator).ConfigureAwait(false);
 
             return personDbEntity.ToDomain();
         }
