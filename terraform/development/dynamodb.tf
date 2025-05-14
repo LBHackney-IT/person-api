@@ -30,17 +30,16 @@ resource "aws_dynamodb_table" "refGenerator_dynamodb_table" {
 
   tags = merge(
     local.default_tags,
-    { BackupPolicy = "Dev" }
+    {
+      BackupPolicy = "Dev"
+      Application  = "Manage My Home"
+      Environment  = "dev"
+      TeamEmail    = "lbhictengineering@hackney.gov.uk"
+    }
   )
 
   point_in_time_recovery {
     enabled = true
-  }
-
-  default_tags = {
-    Application       = "Person Api"
-    Environment       = "dev"
-    TeamEmail         = "lbhictengineering@hackney.gov.uk"
   }
 }
 
