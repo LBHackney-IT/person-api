@@ -27,10 +27,8 @@ data "aws_region" "current" {}
 locals {
   parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
   default_tags = {
-    Application       = "Person Api"
     Name              = "person-api-${var.environment_name}"
-    Environment       = "dev"
-    TeamEmail         = "lbhictengineering@hackney.gov.uk"
+    Environment       = var.environment_name
     terraform-managed = true
     project_name      = var.project_name
   }
