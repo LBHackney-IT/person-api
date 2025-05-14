@@ -15,4 +15,4 @@ namespace PersonApi.V1.Infrastructure
         public DateTime LastModified { get; set; }
 
     }
-}   
+}
