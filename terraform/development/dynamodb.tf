@@ -36,6 +36,12 @@ resource "aws_dynamodb_table" "refGenerator_dynamodb_table" {
   point_in_time_recovery {
     enabled = true
   }
+
+  default_tags = {
+    Application       = "Person Api"
+    Environment       = "dev"
+    TeamEmail         = "lbhictengineering@hackney.gov.uk"
+  }
 }
 
 
