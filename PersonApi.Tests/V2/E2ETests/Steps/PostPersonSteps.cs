@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PersonApi.Tests.V1.E2ETests.Fixtures;
 using PersonApi.V1.Domain;
+using PersonApi.V1.Infrastructure;
 using System;
 using System.Linq;
 using System.Net;
@@ -102,6 +103,18 @@ namespace PersonApi.Tests.V2.E2ETests.Steps
             dbRecord.LastModified.Should().BeCloseTo(DateTime.UtcNow, 1500);
 
             await personFixture._dbContext.DeleteAsync<PersonDbEntity>(dbRecord.Id).ConfigureAwait(false);
+        }
+
+        public async Task ThenPersonRefIsUpdatedInRefGeneratorTable(PersonFixture personFixture, int personRef)
+        {
+            var newRefGenerator = await personFixture._dbContext.LoadAsync<RefGeneratorEntity>("personRef").ConfigureAwait(false);
+            newRefGenerator.RefValue.Should().Be(personRef + 1);
+        }
+
+        public async Task ThenPersonRefIsNotUpdatedInRefGeneratorTable(PersonFixture personFixture, int personRef)
+        {
+            var newRefGenerator = await personFixture._dbContext.LoadAsync<RefGeneratorEntity>("personRef").ConfigureAwait(false);
+            newRefGenerator.RefValue.Should().Be(personRef);
         }
 
         public async Task ThenTheValidationErrorsAreReturned()

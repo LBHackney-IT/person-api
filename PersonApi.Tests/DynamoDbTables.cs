@@ -8,7 +8,9 @@ namespace PersonApi.Tests
     {
         public static List<TableDef> Tables => new List<TableDef>
         {
-            new TableDef { Name = "Persons", KeyName = "id", KeyType = ScalarAttributeType.S }
+            new TableDef { Name = "Persons", KeyName = "id", KeyType = ScalarAttributeType.S },
+            new TableDef { Name = "RefGenerator", KeyName = "refName", KeyType = ScalarAttributeType.S }
+
         };
     }
 }
