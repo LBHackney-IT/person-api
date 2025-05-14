@@ -154,7 +154,6 @@ resources:
                   Action:
                     - "dynamodb:BatchGet*"
                     - "dynamodb:BatchWrite"
-                    - "dynamodb:CreateTable"
                     - "dynamodb:DeleteItem"
                     - "dynamodb:DescribeStream"
                     - "dynamodb:DescribeTable"
