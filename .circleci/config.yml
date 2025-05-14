@@ -261,17 +261,17 @@ workflows:
     jobs:
       - check-code-formatting:
           context: api-nuget-token-context
-          filters:
-            branches:
-              only: master
+          # filters:
+          #   branches:
+          #     only: master
       - build-and-test:
           stage: "development"
           context:
             - api-nuget-token-context
             - SonarCloud
-          filters:
-            branches:
-              only: master
+          # filters:
+          #   branches:
+          #     only: master
       - assume-role-development:
           context: api-assume-role-housing-development-context
           requires:
