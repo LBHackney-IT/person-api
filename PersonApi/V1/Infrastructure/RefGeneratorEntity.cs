@@ -1,4 +1,5 @@
 using Amazon.DynamoDBv2.DataModel;
+using Hackney.Core.DynamoDb.Converters;
 using System;
 
 namespace PersonApi.V1.Infrastructure
@@ -9,7 +10,9 @@ namespace PersonApi.V1.Infrastructure
         [DynamoDBHashKey]
         public string RefName { get; set; }
         public int RefValue { get; set; }
+
+        [DynamoDBProperty(Converter = typeof(DynamoDbDateTimeConverter))]
         public DateTime LastModified { get; set; }
 
     }
-}
+}   
