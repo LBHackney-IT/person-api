@@ -10,7 +10,13 @@ resource "aws_dynamodb_table" "personapi_dynamodb_table" {
 
   tags = merge(
     local.default_tags,
-    { BackupPolicy = "Prod" }
+    {
+        BackupPolicy = "Prod"
+        Application  = "Manage My Home"
+        Environment  = "prod"
+        TeamEmail    = "lbhictengineering@hackney.gov.uk"
+        Confidentiality = "Internal"
+    }
   )
 
   point_in_time_recovery {
