@@ -35,6 +35,7 @@ resource "aws_dynamodb_table" "refGenerator_dynamodb_table" {
       Application  = "Manage My Home"
       Environment  = "dev"
       TeamEmail    = "lbhictengineering@hackney.gov.uk"
+      Confidentiality = "Internal"
     }
   )
 
