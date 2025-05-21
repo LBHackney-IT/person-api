@@ -30,6 +30,7 @@ data "aws_iam_policy_document" "app_config_retrieval_policy" {
 }
 
 resource "aws_iam_policy" "app_config_retrieval" {
+  name   = "allow-read-all-parameters"
   tags   = local.default_tags
   policy = data.aws_iam_policy_document.app_config_retrieval_policy.json
 }
