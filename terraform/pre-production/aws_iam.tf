@@ -5,8 +5,7 @@ data "aws_iam_policy_document" "app_config_retrieval_assume_role" {
     ]
     principals {
       identifiers = ["ssm.amazonaws.com"]
-      type        = "service"
-
+      type        = "Service"
     }
   }
 }
