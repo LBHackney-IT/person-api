@@ -38,6 +38,6 @@ resource "aws_dynamodb_table" "refGenerator_dynamodb_table" {
   )
 
   point_in_time_recovery {
-    enabled = true
+    enabled = false
   }
 }
