@@ -161,38 +161,38 @@ resources:
                           - Ref: "AWS::AccountId"
                           - "table/RefGenerator"
     ## Steps required for AppConfig cloudformation
-    AppConfig:
-      Type: AWS::AppConfig::Application
-      Properties:
-        Name: housing-tl/${self:provider.stage}/person-api
-    DevEnvironment:
-      Type: AWS::AppConfig::Environment
-      Properties:
-        ApplicationId: !Ref AppConfig
-        Name: "Development"
-    ConfigurationProfile:
-      Type: AWS::AppConfig::ConfigurationProfile
-      Properties:
-        ApplicationId: !Ref AppConfig
-        Name: "PersonConfigurationProfile"
-        RetrievalRoleArn: ${ssm:/housing-tl/${self:provider.stage}/app-config/retrieval-role-arn}
-        LocationUri: ssm-parameter:///housing-tl/person-api/configurationData
-    DeploymentStrategy:
-      Type: AWS::AppConfig::DeploymentStrategy
-      Properties:
-        Name: "DeploymentStrategy"
-        DeploymentDurationInMinutes: 0
-        GrowthFactor: 100
-        GrowthType: LINEAR
-        ReplicateTo: NONE
-    Deployment:
-      Type: AWS::AppConfig::Deployment
-      Properties:
-        ApplicationId: !Ref AppConfig
-        EnvironmentId: !Ref DevEnvironment
-        DeploymentStrategyId: !Ref DeploymentStrategy
-        ConfigurationProfileId: !Ref ConfigurationProfile
-        ConfigurationVersion: "1"
+    # AppConfig:
+    #   Type: AWS::AppConfig::Application
+    #   Properties:
+    #     Name: housing-tl/${self:provider.stage}/person-api
+    # DevEnvironment:
+    #   Type: AWS::AppConfig::Environment
+    #   Properties:
+    #     ApplicationId: !Ref AppConfig
+    #     Name: "Development"
+    # ConfigurationProfile:
+    #   Type: AWS::AppConfig::ConfigurationProfile
+    #   Properties:
+    #     ApplicationId: !Ref AppConfig
+    #     Name: "PersonConfigurationProfile"
+    #     RetrievalRoleArn: ${ssm:/housing-tl/${self:provider.stage}/app-config/retrieval-role-arn}
+    #     LocationUri: ssm-parameter:///housing-tl/person-api/configurationData
+    # DeploymentStrategy:
+    #   Type: AWS::AppConfig::DeploymentStrategy
+    #   Properties:
+    #     Name: "DeploymentStrategy"
+    #     DeploymentDurationInMinutes: 0
+    #     GrowthFactor: 100
+    #     GrowthType: LINEAR
+    #     ReplicateTo: NONE
+    # Deployment:
+    #   Type: AWS::AppConfig::Deployment
+    #   Properties:
+    #     ApplicationId: !Ref AppConfig
+    #     EnvironmentId: !Ref DevEnvironment
+    #     DeploymentStrategyId: !Ref DeploymentStrategy
+    #     ConfigurationProfileId: !Ref ConfigurationProfile
+    #     ConfigurationVersion: "1"
 
 custom:
   authorizerArns:
