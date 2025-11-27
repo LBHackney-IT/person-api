@@ -28,7 +28,7 @@ locals {
   parameter_store = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter"
   default_tags = {
     Name              = "person-api-${var.environment_name}"
-    Environment       = var.environment_name
+    Environment       = "prod"
     terraform-managed = true
     project_name      = var.project_name
   }
@@ -36,7 +36,7 @@ locals {
 
 terraform {
   backend "s3" {
-    bucket  = "terraform-state-housing-production"
+    bucket  = "terraform-state-disaster-recovery"
     encrypt = true
     region  = "eu-west-2"
     key     = "services/person-api/state"
@@ -48,37 +48,38 @@ resource "aws_sns_topic" "person_topic" {
   fifo_topic                  = true
   content_based_deduplication = true
   kms_master_key_id           = "alias/aws/sns"
-  sqs_success_feedback_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_SNS_DELIVERY_LOGGING_ROLE"
+  # sqs_success_feedback_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_SNS_DELIVERY_LOGGING_ROLE"
   sqs_success_feedback_sample_rate = "100"
-  sqs_failure_feedback_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_SNS_DELIVERY_LOGGING_ROLE"
+  # sqs_failure_feedback_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LBH_SNS_DELIVERY_LOGGING_ROLE"
 }
 
 resource "aws_ssm_parameter" "person_sns_arn" {
   name  = "/sns-topic/production/person/arn"
   type  = "String"
   value = aws_sns_topic.person_topic.arn
+  overwrite = true
 }
 
-module "person_api_cloudwatch_dashboard" {
-  source              = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/cloudwatch/dashboards/api-dashboard"
-  environment_name    = var.environment_name
-  api_name            = "person-api"
-  sns_topic_name      = aws_sns_topic.person_topic.name
-  dynamodb_table_name = aws_dynamodb_table.personapi_dynamodb_table.name
-}
+# module "person_api_cloudwatch_dashboard" {
+#   source              = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/cloudwatch/dashboards/api-dashboard"
+#   environment_name    = var.environment_name
+#   api_name            = "person-api"
+#   sns_topic_name      = aws_sns_topic.person_topic.name
+#   dynamodb_table_name = aws_dynamodb_table.personapi_dynamodb_table.name
+# }
 
-data "aws_ssm_parameter" "cloudwatch_topic_arn" {
-  name = "/housing-tl/${var.environment_name}/cloudwatch-alarms-topic-arn"
-}
+# data "aws_ssm_parameter" "cloudwatch_topic_arn" {
+#   name = "/housing-tl/${var.environment_name}/cloudwatch-alarms-topic-arn"
+# }
 
-module "api-alarm" {
-  source           = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/cloudwatch/api-alarm"
-  environment_name = var.environment_name
-  api_name         = "person-api"
-  alarm_period     = "300"
-  error_threshold  = "1"
-  sns_topic_arn    = data.aws_ssm_parameter.cloudwatch_topic_arn.value
-}
+# module "api-alarm" {
+#   source           = "github.com/LBHackney-IT/aws-hackney-common-terraform.git//modules/cloudwatch/api-alarm"
+#   environment_name = var.environment_name
+#   api_name         = "person-api"
+#   alarm_period     = "300"
+#   error_threshold  = "1"
+#   sns_topic_arn    = data.aws_ssm_parameter.cloudwatch_topic_arn.value
+# }
     
 # NOT WORKING NEEDS TO BE INVESTIGATED    
 # module "sns-delivery-failure-alarm" {
@@ -90,71 +91,71 @@ module "api-alarm" {
 #   sns_topic_arn_for_notifications = data.aws_ssm_parameter.cloudwatch_topic_arn.value
 # }
 
-resource "aws_sns_topic_policy" "default" {
-  arn = aws_sns_topic.person_topic.arn
+# resource "aws_sns_topic_policy" "default" {
+#   arn = aws_sns_topic.person_topic.arn
 
-  policy = data.aws_iam_policy_document.sns_topic_policy.json
-}
+#   policy = data.aws_iam_policy_document.sns_topic_policy.json
+# }
 
-data "aws_ssm_parameter" "prod_account_id" {
-  name = "/prod-apis/account-id"
-}
+# data "aws_ssm_parameter" "prod_account_id" {
+#   name = "/prod-apis/account-id"
+# }
 
-data "aws_iam_policy_document" "sns_topic_policy" {
-  policy_id = "__default_policy_ID"
-  statement {
-      actions = [
-        "sns:GetTopicAttributes",
-        "sns:SetTopicAttributes",
-        "sns:AddPermission",
-        "sns:RemovePermission",
-        "sns:DeleteTopic",
-        "sns:Subscribe",
-        "sns:ListSubscriptionsByTopic",
-        "sns:Publish"
-      ]
+# data "aws_iam_policy_document" "sns_topic_policy" {
+#   policy_id = "__default_policy_ID"
+#   statement {
+#       actions = [
+#         "sns:GetTopicAttributes",
+#         "sns:SetTopicAttributes",
+#         "sns:AddPermission",
+#         "sns:RemovePermission",
+#         "sns:DeleteTopic",
+#         "sns:Subscribe",
+#         "sns:ListSubscriptionsByTopic",
+#         "sns:Publish"
+#       ]
 
-      condition {
-        test     = "StringEquals"
-        variable = "AWS:SourceOwner"
+#       condition {
+#         test     = "StringEquals"
+#         variable = "AWS:SourceOwner"
 
-        values = [
-          data.aws_caller_identity.current.account_id
-        ]
+#         values = [
+#           data.aws_caller_identity.current.account_id
+#         ]
 
-      }
+#       }
 
-      effect = "Allow"
+#       effect = "Allow"
 
-      principals {
-        type        = "AWS"
-        identifiers = ["*"]
-      }
+#       principals {
+#         type        = "AWS"
+#         identifiers = ["*"]
+#       }
 
-      resources = [
-        aws_sns_topic.person_topic.arn
-      ]
+#       resources = [
+#         aws_sns_topic.person_topic.arn
+#       ]
 
-      sid = "__default_statement_ID"
-    }
-  statement {
-      actions = [
-        "sns:Subscribe"
-      ]
+#       sid = "__default_statement_ID"
+#     }
+#   statement {
+#       actions = [
+#         "sns:Subscribe"
+#       ]
 
-      effect = "Allow"
+#       effect = "Allow"
 
-      principals {
-        type        = "AWS"
-        identifiers = ["arn:aws:iam::${data.aws_ssm_parameter.prod_account_id.value}:role/LBH_Circle_CI_Deployment_Role"]
-      }
-      resources = [
-        aws_sns_topic.person_topic.arn
-      ]
+#       principals {
+#         type        = "AWS"
+#         identifiers = ["arn:aws:iam::${data.aws_ssm_parameter.prod_account_id.value}:role/LBH_Circle_CI_Deployment_Role"]
+#       }
+#       resources = [
+#         aws_sns_topic.person_topic.arn
+#       ]
 
-      sid = "prod-statement"
-    }
-}	
+#       sid = "prod-statement"
+#     }
+# }	
 
   
 
