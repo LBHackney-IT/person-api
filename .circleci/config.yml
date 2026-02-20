@@ -149,7 +149,8 @@ jobs:
         type: string
     steps:
       - *attach_workspace
-      - checkout
+      - checkout:
+          method: full
       - setup_remote_docker
       - sonarcloud/scan
       - run:
