@@ -1,0 +1,7 @@
+# Stack identity only. Removal must not require runtime SSM parameters or a deployment artifact.
+service: person-api
+
+provider:
+  name: aws
+  stage: ${opt:stage}
+  region: eu-west-2
