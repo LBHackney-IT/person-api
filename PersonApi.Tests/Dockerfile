@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0
+FROM mcr.microsoft.com/dotnet/sdk:10.0
 
 # disable microsoft telemetry
 ENV DOTNET_CLI_TELEMETRY_OPTOUT='true'
@@ -17,7 +17,7 @@ ENV SONAR_TOKEN=$SONAR_TOKEN
 WORKDIR /app
 
 # Install and run sonar cloud scanner
-RUN apt-get update && apt-get install -y openjdk-17-jdk
+RUN apt-get update && apt-get install -y openjdk-21-jdk
 RUN dotnet tool install --global dotnet-sonarscanner --version 5.6.0
 ENV PATH="$PATH:/root/.dotnet/tools"
 
